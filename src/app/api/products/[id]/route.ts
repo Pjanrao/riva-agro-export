@@ -4,26 +4,21 @@ import {
   updateProduct,
   deleteProduct,
 } from "@/lib/models/Product";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
+import cloudinary from "@/lib/cloudinary";
 
-/* ================= GET SINGLE PRODUCT ================= */
+export const runtime = "nodejs";
+export const maxDuration = 300;
+
+/* ================= GET BY ID ================= */
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = await params;
-
-  const product = await getProductById(id);
-
+  const product = await getProductById(params.id);
   if (!product) {
-    return NextResponse.json(
-      { message: "Product not found" },
-      { status: 404 }
-    );
+    return NextResponse.json({ message: "Not found" }, { status: 404 });
   }
-
   return NextResponse.json(product);
 }
 
@@ -31,94 +26,78 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = await params;
+  try {
+    const data = await req.formData();
 
-  const formData = await req.formData();
-  const updateData: any = {};
+    const updates: any = {};
+    const images = data.getAll("images") as File[];
 
-  if (formData.get("name"))
-    updateData.name = String(formData.get("name"));
-
-  if (formData.get("description"))
-    updateData.description = String(formData.get("description"));
-
-  if (formData.get("category"))
-    updateData.category = String(formData.get("category"));
-
-  if (formData.get("hsCode"))
-    updateData.hsCode = String(formData.get("hsCode"));
-
-  if (formData.get("minOrderQty"))
-    updateData.minOrderQty = String(formData.get("minOrderQty"));
-
-  if (formData.get("discountedPrice"))
-    updateData.discountedPrice = Number(
-      formData.get("discountedPrice")
+    // text fields
+    ["name", "description", "category", "hsCode", "minOrderQty"].forEach(
+      (f) => {
+        const v = data.get(f);
+        if (v !== null) updates[f] = v.toString();
+      }
     );
 
-  if (formData.get("sellingPrice"))
-    updateData.sellingPrice = Number(
-      formData.get("sellingPrice")
-    );
+    if (data.get("discountedPrice"))
+      updates.discountedPrice = Number(data.get("discountedPrice"));
 
-  updateData.featured = formData.get("featured") === "true";
-  updateData.status =
-    formData.get("status") === "active" ? "active" : "inactive";
+    if (data.get("sellingPrice"))
+      updates.sellingPrice = Number(data.get("sellingPrice"));
 
-  /* ================= IMAGES (FIXED) ================= */
+    if (data.get("status"))
+      updates.status =
+        data.get("status") === "inactive" ? "inactive" : "active";
 
-  // 1️⃣ Parse existing images (even empty)
-  let images: string[] = [];
+    updates.featured = data.get("featured") === "true";
 
-  const existingImagesRaw = formData.get("existingImages");
-  if (existingImagesRaw) {
-    images = JSON.parse(String(existingImagesRaw));
-  }
+    /* ===== IMAGE UPDATE (CLOUDINARY) ===== */
 
-  // 2️⃣ Handle new uploads
-  const files = formData.getAll("images") as File[];
+    if (images.length) {
+      const imageUrls: string[] = [];
 
-  if (files.length && files[0].size > 0) {
-    const uploadDir = join(process.cwd(), "public/uploads");
-    await mkdir(uploadDir, { recursive: true });
+      for (const image of images) {
+        if (!image || image.size === 0) continue;
 
-    for (const file of files) {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const filename = `${Date.now()}-${file.name}`;
-      await writeFile(join(uploadDir, filename), buffer);
-      images.push(`/uploads/${filename}`);
+        const buffer = Buffer.from(await image.arrayBuffer());
+        const base64 = `data:${image.type};base64,${buffer.toString("base64")}`;
+
+        const uploadRes = await cloudinary.uploader.upload(base64, {
+          folder: "products",
+        });
+
+        imageUrls.push(uploadRes.secure_url);
+      }
+
+      updates.images = imageUrls;
+      updates.primaryImage = imageUrls[0];
     }
-  }
 
-  // 3️⃣ ALWAYS overwrite images (even empty)
-  updateData.images = images;
-  updateData.primaryImage = images[0] || "";
+    const updated = await updateProduct(params.id, updates);
 
-  /* ================= UPDATE ================= */
+    if (!updated) {
+      return NextResponse.json({ message: "Update failed" }, { status: 400 });
+    }
 
-  const updated = await updateProduct(id, updateData);
-
-  if (!updated) {
+    return NextResponse.json(updated);
+  } catch (err: any) {
+    console.error("PRODUCT UPDATE ERROR:", err);
     return NextResponse.json(
-      { message: "Update failed" },
-      { status: 400 }
+      { message: "Internal Server Error", error: err.message },
+      { status: 500 }
     );
   }
-
-  return NextResponse.json(updated);
 }
 
-/* ================= DELETE ================= */
+/* ================= DELETE PRODUCT ================= */
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = await params;
-
-  await deleteProduct(id);
-
-  return NextResponse.json({ success: true });
+  const ok = await deleteProduct(params.id);
+  return NextResponse.json({ success: ok });
 }
