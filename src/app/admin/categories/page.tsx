@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Image from 'next/image';
 import { PlusCircle, Pencil, Trash2, Eye } from 'lucide-react';
 
 import {
@@ -53,7 +54,7 @@ export default function AdminCategoriesPage() {
 
   const [search, setSearch] = React.useState('');
   const [currentPage, setCurrentPage] = React.useState(1);
-  const [pageSize] = React.useState(5);
+  const pageSize = 5;
 
   const { toast } = useToast();
 
@@ -61,10 +62,9 @@ export default function AdminCategoriesPage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('/api/categories');
-      if (!response.ok) throw new Error();
-
-      const data = await response.json();
+      const res = await fetch('/api/categories');
+      if (!res.ok) throw new Error();
+      const data = await res.json();
       setCategories(data);
       setCurrentPage(1);
     } catch {
@@ -84,19 +84,14 @@ export default function AdminCategoriesPage() {
 
   /* ================= DELETE ================= */
 
-  const handleDelete = async (categoryId: string) => {
+  const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(`/api/categories/${categoryId}`, {
+      const res = await fetch(`/api/categories/${id}`, {
         method: 'DELETE',
       });
-      if (!response.ok) throw new Error();
+      if (!res.ok) throw new Error();
 
-      setCategories((prev) =>
-        prev.filter((c) => c.id !== categoryId)
-      );
-
-      setCurrentPage(1);
-
+      setCategories((prev) => prev.filter((c) => c.id !== id));
       toast({ title: '✅ Category deleted' });
     } catch {
       toast({
@@ -109,29 +104,27 @@ export default function AdminCategoriesPage() {
 
   /* ================= FILTER + PAGINATION ================= */
 
-  const filteredCategories = React.useMemo(() => {
-    return categories.filter((c) =>
-      c.name.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [categories, search]);
+  const filtered = React.useMemo(
+    () =>
+      categories.filter((c) =>
+        c.name.toLowerCase().includes(search.toLowerCase())
+      ),
+    [categories, search]
+  );
 
-  const totalPages = Math.ceil(filteredCategories.length / pageSize);
-
-  const paginatedCategories = React.useMemo(() => {
-    const start = (currentPage - 1) * pageSize;
-    return filteredCategories.slice(start, start + pageSize);
-  }, [filteredCategories, currentPage, pageSize]);
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const paginated = filtered.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   /* ================= UI ================= */
 
   return (
     <>
       {/* HEADER */}
-      <div className="flex items-center justify-between gap-4 mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">
-          Categories
-        </h1>
-
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold">Categories</h1>
         <Button onClick={() => setOpenAdd(true)}>
           <PlusCircle className="mr-2 h-4 w-4" />
           Add Category
@@ -148,17 +141,15 @@ export default function AdminCategoriesPage() {
 
         <CardContent>
           {/* SEARCH */}
-          <div className="mb-4 flex justify-between gap-4">
-            <Input
-              placeholder="Search category..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="max-w-sm"
-            />
-          </div>
+          <Input
+            placeholder="Search category..."
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="max-w-sm mb-4"
+          />
 
           {/* TABLE */}
           <Table>
@@ -178,25 +169,27 @@ export default function AdminCategoriesPage() {
               {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center">
-                    Loading...
+                    Loading…
                   </TableCell>
                 </TableRow>
-              ) : paginatedCategories.length === 0 ? (
+              ) : paginated.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center">
                     No categories found.
                   </TableCell>
                 </TableRow>
               ) : (
-                paginatedCategories.map((category) => (
-                  <TableRow key={category.id}>
+                paginated.map((c) => (
+                  <TableRow key={c.id}>
                     {/* IMAGE */}
                     <TableCell>
-                      {category.image ? (
-                        <img
-                          src={category.image}
-                          alt={category.name}
-                          className="h-10 w-10 rounded border object-cover"
+                      {c.image ? (
+                        <Image
+                          src={c.image}
+                          alt={c.name}
+                          width={40}
+                          height={40}
+                          className="rounded border object-cover"
                         />
                       ) : (
                         <div className="h-10 w-10 rounded border flex items-center justify-center text-xs text-muted-foreground">
@@ -207,27 +200,25 @@ export default function AdminCategoriesPage() {
 
                     {/* NAME */}
                     <TableCell className="font-medium">
-                      {category.name}
+                      {c.name}
                     </TableCell>
 
                     {/* STATUS */}
                     <TableCell>
                       <Badge
                         variant={
-                          category.status === 'active'
+                          c.status === 'active'
                             ? 'default'
                             : 'outline'
                         }
                       >
-                        {category.status === 'active'
-                          ? 'Active'
-                          : 'Inactive'}
+                        {c.status}
                       </Badge>
                     </TableCell>
 
                     {/* FEATURED */}
                     <TableCell>
-                      {category.featured ? 'Yes' : 'No'}
+                      {c.featured ? 'Yes' : 'No'}
                     </TableCell>
 
                     {/* ACTIONS */}
@@ -237,7 +228,7 @@ export default function AdminCategoriesPage() {
                           variant="ghost"
                           size="icon"
                           onClick={() => {
-                            setSelectedId(category.id);
+                            setSelectedId(c.id);
                             setReadOnly(true);
                             setOpenEdit(true);
                           }}
@@ -249,7 +240,7 @@ export default function AdminCategoriesPage() {
                           variant="ghost"
                           size="icon"
                           onClick={() => {
-                            setSelectedId(category.id);
+                            setSelectedId(c.id);
                             setReadOnly(false);
                             setOpenEdit(true);
                           }}
@@ -270,8 +261,7 @@ export default function AdminCategoriesPage() {
                                 Are you sure?
                               </AlertDialogTitle>
                               <AlertDialogDescription>
-                                This will permanently delete "
-                                {category.name}".
+                                This will permanently delete “{c.name}”.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
 
@@ -280,9 +270,7 @@ export default function AdminCategoriesPage() {
                                 Cancel
                               </AlertDialogCancel>
                               <AlertDialogAction
-                                onClick={() =>
-                                  handleDelete(category.id)
-                                }
+                                onClick={() => handleDelete(c.id)}
                               >
                                 Delete
                               </AlertDialogAction>
@@ -298,16 +286,16 @@ export default function AdminCategoriesPage() {
           </Table>
 
           {/* PAGINATION */}
-          {filteredCategories.length > pageSize && (
-            <div className="flex items-center justify-between mt-4">
+          {filtered.length > pageSize && (
+            <div className="flex justify-between mt-4">
               <p className="text-sm text-muted-foreground">
                 Page {currentPage} of {totalPages}
               </p>
 
               <div className="flex gap-2">
                 <Button
-                  variant="outline"
                   size="sm"
+                  variant="outline"
                   disabled={currentPage === 1}
                   onClick={() =>
                     setCurrentPage((p) => p - 1)
@@ -317,8 +305,8 @@ export default function AdminCategoriesPage() {
                 </Button>
 
                 <Button
-                  variant="outline"
                   size="sm"
+                  variant="outline"
                   disabled={currentPage === totalPages}
                   onClick={() =>
                     setCurrentPage((p) => p + 1)
