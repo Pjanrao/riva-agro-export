@@ -1,21 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createProduct, getProducts } from "@/lib/models/Product";
-import { getCategories } from "@/lib/models/Category";
-// import { writeFile, mkdir } from "fs/promises";
-// import { join } from "path";
 import cloudinary from "@/lib/cloudinary";
+
+export const runtime = "nodejs";
+export const maxDuration = 300;
+
 console.log("VERSION: CLOUDINARY ONLY - 30 DEC");
 
-
-/* ================= GET ALL / BY CATEGORY ================= */
+/* ================= GET PRODUCTS ================= */
 /*
-  IMPORTANT:
-  - Products store `category` as CATEGORY NAME (string)
-  - Import Product sends `categoryId` (_id)
-  - So we must map: categoryId → category.name
+  - Products store `category` as ObjectId
+  - Frontend may pass `categoryId`
 */
-export const runtime = "nodejs";
-export const maxDuration = 300;     
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -24,20 +20,8 @@ export async function GET(req: NextRequest) {
   let products = await getProducts();
 
   if (categoryId) {
-    const categories = await getCategories();
-
-    // ✅ Correct comparison: Mongo _id ↔ categoryId
-    const category = categories.find(
-      (c: any) => String(c._id) === String(categoryId)
-    );
-
-    if (!category) {
-      return NextResponse.json([]);
-    }
-
-    // ✅ Filter products by CATEGORY NAME
     products = products.filter(
-      (p: any) => p.category === category.name
+      (p: any) => String(p.category) === String(categoryId)
     );
   }
 
@@ -45,11 +29,6 @@ export async function GET(req: NextRequest) {
 }
 
 /* ================= CREATE PRODUCT ================= */
-/*
-  NOTE:
-  - Category is saved as CATEGORY NAME (not id)
-  - This matches existing DB structure
-*/
 
 export async function POST(req: NextRequest) {
   try {
@@ -59,7 +38,7 @@ export async function POST(req: NextRequest) {
 
     const name = data.get("name")?.toString().trim();
     const description = data.get("description")?.toString().trim();
-    const category = data.get("category")?.toString().trim();
+    const category = data.get("category")?.toString().trim(); // ✅ ObjectId string
     const hsCode = data.get("hsCode")?.toString().trim();
 
     const minOrderQty = data.get("minOrderQty")?.toString().trim();
@@ -78,6 +57,8 @@ export async function POST(req: NextRequest) {
       imagesCount: images.length,
     });
 
+    /* ================= VALIDATION ================= */
+
     if (
       !name ||
       !description ||
@@ -94,12 +75,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    /* ================= IMAGE UPLOAD ================= */
+    /* ================= IMAGE UPLOAD (CLOUDINARY) ================= */
 
     const imageUrls: string[] = [];
 
     for (const image of images) {
-      if (image.size === 0) continue;
+      if (!image || image.size === 0) continue;
 
       if (image.size > 5 * 1024 * 1024) {
         return NextResponse.json(
@@ -117,8 +98,6 @@ export async function POST(req: NextRequest) {
         folder: "products",
       });
 
-      console.log("Uploaded:", uploadRes.secure_url);
-
       imageUrls.push(uploadRes.secure_url);
     }
 
@@ -129,14 +108,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    /* ================= CREATE PRODUCT ================= */
+    /* ================= SAVE PRODUCT ================= */
 
     console.log("Saving product to DB");
 
     const product = await createProduct({
       name,
       description,
-      category,
+      category, // ✅ ObjectId string (model converts)
       hsCode,
       minOrderQty,
       discountedPrice,
@@ -147,14 +126,17 @@ export async function POST(req: NextRequest) {
       status,
     });
 
-    console.log("Product saved:", product?._id);
+    console.log("Product saved:", product?.id);
 
     return NextResponse.json(product, { status: 201 });
   } catch (err: any) {
     console.error("PRODUCT CREATE ERROR:", err);
 
     return NextResponse.json(
-      { message: "Internal Server Error", error: err?.message },
+      {
+        message: "Internal Server Error",
+        error: err?.message,
+      },
       { status: 500 }
     );
   }
