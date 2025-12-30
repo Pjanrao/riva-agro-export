@@ -4,6 +4,13 @@ import { ImportProduct } from '@/lib/models/ImportProduct';
 import { getCategories } from '@/lib/models/Category';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
+import { v2 as cloudinary } from 'cloudinary';
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || '',
+  api_key: process.env.CLOUDINARY_API_KEY || '',
+  api_secret: process.env.CLOUDINARY_API_SECRET || '',
+});
 
 /* ================= GET ================= */
 
@@ -34,12 +41,6 @@ export async function POST(req: Request) {
   );
 
   const files = formData.getAll('images') as File[];
-  const uploadDir = join(
-    process.cwd(),
-    'public/uploads/import-products'
-  );
-
-  await mkdir(uploadDir, { recursive: true });
 
   const imageUrls: string[] = [];
 
@@ -47,10 +48,26 @@ export async function POST(req: Request) {
     if (!file || file.size === 0) continue;
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    const filename = `${Date.now()}-${file.name}`;
 
-    await writeFile(join(uploadDir, filename), buffer);
-    imageUrls.push(`/uploads/import-products/${filename}`);
+    // Upload to Cloudinary in serverless environment
+    try {
+      const base64 = buffer.toString('base64');
+      const dataUri = `data:${file.type};base64,${base64}`;
+      const result = await cloudinary.uploader.upload(dataUri, {
+        folder: 'import-products',
+        use_filename: true,
+        unique_filename: false,
+      });
+
+      imageUrls.push(result.secure_url || result.url);
+    } catch (err) {
+      // Fallback: attempt to write to disk (dev only)
+      const uploadDir = join(process.cwd(), 'public/uploads/import-products');
+      await mkdir(uploadDir, { recursive: true });
+      const filename = `${Date.now()}-${file.name}`;
+      await writeFile(join(uploadDir, filename), buffer);
+      imageUrls.push(`/uploads/import-products/${filename}`);
+    }
   }
 
   const saved = await ImportProduct.create({
@@ -116,20 +133,28 @@ export async function PUT(req: Request) {
   const files = formData.getAll('images') as File[];
 
   if (files.length > 0) {
-    const uploadDir = join(
-      process.cwd(),
-      'public/uploads/import-products'
-    );
-    await mkdir(uploadDir, { recursive: true });
-
     for (const file of files) {
       if (!file || file.size === 0) continue;
 
       const buffer = Buffer.from(await file.arrayBuffer());
-      const filename = `${Date.now()}-${file.name}`;
 
-      await writeFile(join(uploadDir, filename), buffer);
-      existingImages.push(`/uploads/import-products/${filename}`);
+      try {
+        const base64 = buffer.toString('base64');
+        const dataUri = `data:${file.type};base64,${base64}`;
+        const result = await cloudinary.uploader.upload(dataUri, {
+          folder: 'import-products',
+          use_filename: true,
+          unique_filename: false,
+        });
+
+        existingImages.push(result.secure_url || result.url);
+      } catch (err) {
+        const uploadDir = join(process.cwd(), 'public/uploads/import-products');
+        await mkdir(uploadDir, { recursive: true });
+        const filename = `${Date.now()}-${file.name}`;
+        await writeFile(join(uploadDir, filename), buffer);
+        existingImages.push(`/uploads/import-products/${filename}`);
+      }
     }
   }
 
