@@ -18,6 +18,8 @@ import { useToast } from '@/hooks/use-toast';
 type Category = {
   id: string;
   name: string;
+
+  
 };
 
 type ImportProduct = {
@@ -68,6 +70,21 @@ export function ImportProductModal({
   const [newImages, setNewImages] = React.useState<File[]>([]);
   const [newPreviews, setNewPreviews] = React.useState<string[]>([]);
 
+  const resetForm = () => {
+  setForm({
+    categoryId: '',
+    productName: '',
+    totalQuantity: '',
+    purchasePrice: '',
+    shippingCost: '',
+    taxAmount: '',
+  });
+
+  setExistingImages([]);
+  setNewImages([]);
+  setNewPreviews([]);
+};
+
   /* ================= FETCH CATEGORIES ================= */
 
   React.useEffect(() => {
@@ -95,6 +112,12 @@ export function ImportProductModal({
       setNewPreviews([]);
     }
   }, [mode, data]);
+
+  React.useEffect(() => {
+  if (mode === 'add' && open) {
+    resetForm(); // ✅ ensures fresh form every time Add opens
+  }
+}, [mode, open]);
 
   /* ================= IMAGE HANDLERS ================= */
 
@@ -166,14 +189,23 @@ export function ImportProductModal({
     });
 
     onSaved();
+    if (mode === 'add') {
+  resetForm(); // ✅ clear form after add
+}
     onClose();
   };
 
   /* ================= UI (UNCHANGED) ================= */
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg p-0">
+<Dialog open={open} onOpenChange={(v) => {
+    if (!v) {
+      resetForm(); // ✅ reset on close
+      onClose();
+    }
+  }}>   
+  
+  <DialogContent className="max-w-lg p-0">
         <DialogHeader className="px-5 py-4 border-b">
           <DialogTitle>
             {mode === 'view'

@@ -67,6 +67,15 @@ export default function AddCategoryModal({
     setPreview(null);
     form.setValue('image', undefined);
   };
+  const resetForm = () => {
+  form.reset({
+    name: '',
+    status: true,
+    featured: false,
+    image: undefined,
+  });
+  setPreview(null);
+};
 
   /* ================= SUBMIT ================= */
 
@@ -88,12 +97,11 @@ export default function AddCategoryModal({
 
       if (!res.ok) throw new Error();
 
-      toast({ title: '✅ Category created' });
+     toast({ title: '✅ Category created' });
 
-      form.reset();
-      setPreview(null);
-      setOpen(false);
-      refresh();
+resetForm();
+setOpen(false);
+refresh();
     } catch {
       toast({
         variant: 'destructive',
@@ -105,8 +113,15 @@ export default function AddCategoryModal({
   /* ================= UI ================= */
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-lg p-0">
+<Dialog
+  open={open}
+  onOpenChange={(v) => {
+    if (!v) {
+      resetForm();   // ✅ clear form on close
+    }
+    setOpen(v);
+  }}
+>      <DialogContent className="max-w-lg p-0">
         
         {/* HEADER */}
         <DialogHeader className="px-5 py-4 border-b">

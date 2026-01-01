@@ -82,13 +82,32 @@ export function ProductModal({
       discountedPrice: 0,
       sellingPrice: 0,
     },
+  }); 
+
+  const resetForm = () => {
+  form.reset({
+    name: '',
+    description: '',
+    category: '',
+    hsCode: '',
+    minOrderQty: '',
+    discountedPrice: 0,
+    sellingPrice: 0,
+    status: true,
+    featured: false,
   });
+
+  setSelectedImages([]);
+  setImagePreviews([]);
+};
+
 
   /* ================= PREFILL ================= */
 
-  React.useEffect(() => {
-    if (!product) return;
+React.useEffect(() => {
+  if (!open) return;
 
+  if ((mode === 'edit' || mode === 'view') && product) {
     form.reset({
       name: product.name,
       description: product.description,
@@ -103,7 +122,15 @@ export function ProductModal({
 
     setImagePreviews(product.images || []);
     setSelectedImages([]);
-  }, [product, form]);
+  }
+}, [product, mode, open, form]);
+
+
+  React.useEffect(() => {
+  if (open && mode === 'add') {
+    resetForm();
+  }
+}, [open, mode]);
 
   /* ================= IMAGE HANDLING ================= */
 
@@ -184,13 +211,24 @@ export function ProductModal({
 
     toast({ title: 'Product saved' });
     onSaved();
+    if (mode === 'add') {
+  resetForm(); // ✅ important
+}
     onClose();
   };
 
   /* ================= UI ================= */
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog
+  open={open}
+  onOpenChange={(v) => {
+    if (!v) {
+      resetForm();
+      onClose();
+    }
+  }}
+>
       <DialogContent className="max-w-3xl p-0">
         <DialogHeader className="px-5 py-4 border-b">
           <DialogTitle>
