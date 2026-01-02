@@ -93,3 +93,26 @@ export interface User {
   password?: string;
   role: 'User' | 'Admin';
 }
+
+/* ================= Customers ================= */
+
+export type Customer = {
+  id: string;
+  customer_id: string;
+
+  fullName: string;
+  contactNo: string;
+  email: string;
+  address: string;
+
+  country: string;
+  state: string;
+  city: string;
+  pin: string;
+
+  referenceName?: string;
+  referenceContact?: string;
+
+  createdAt?: Date;
+};
+
