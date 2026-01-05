@@ -18,7 +18,7 @@ export default function Header() {
             height={120}
             priority
             className="
-    h-12 md:h-28  w-auto object-contain
+    h-20 md:h-28  w-auto object-contain
     drop-shadow-[0_6px_8px_rgba(0,0,0,0.25)]
   "
           />
@@ -47,7 +47,7 @@ export default function Header() {
 
         {/* NAVBAR */}
         <div className="w-full bg-white border-b border-black/10">
-          <div className="container flex h-16 md:h-20 items-center justify-end gap-4">
+          <div className="container flex h-12 md:h-20 items-center justify-end gap-4">
             {/* <MainNav className="hidden md:flex" /> */}
             <UserNav />
           </div>
