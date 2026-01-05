@@ -116,3 +116,25 @@ export type Customer = {
   createdAt?: Date;
 };
 
+/* ================= banners ================= */
+
+
+export type Banner = {
+  id: string;
+
+  heading: string;
+  subHeading?: string;
+
+  image: string;
+
+  button1Text: string;
+  button1Link: string;
+
+  button2Text?: string;
+  productId?: string;
+
+  position: 'HOME' | 'BRAND' | 'CATEGORY';
+  order: number;
+  status: 'active' | 'inactive';
+};
+

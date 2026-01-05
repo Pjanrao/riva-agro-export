@@ -17,12 +17,19 @@ async function getData() {
   }
 }
 
-export default async function ProductsPage() {
+export default async function ProductsPage({
+  searchParams,
+}: { searchParams: { category?: string };
+}) {
+  
   const data = await getData();
 
   return (
     <Suspense fallback={<div className="p-10 text-center">Loading products…</div>}>
-      <ProductsClient {...data} />
+      <ProductsClient
+        {...data}
+        initialCategory={searchParams.category ?? null}
+      />
     </Suspense>
   );
 }

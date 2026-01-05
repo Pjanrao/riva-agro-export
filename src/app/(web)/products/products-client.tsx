@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 type Props = {
   categories: any[];
   products: any[];
+  initialCategory: string | null;
 };
 
 /* ================= PRICE RANGES ================= */
@@ -18,9 +19,28 @@ const PRICE_RANGES = [
   { label: "Above ₹5000", min: 5000, max: Infinity },
 ];
 
-export default function ProductsClient({ categories, products }: Props) {
+export default function ProductsClient({
+  categories,
+  products,
+  initialCategory,
+}: Props) {
+
+  /* ================= STATE ================= */
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedPrices, setSelectedPrices] = useState<string[]>([]);
+
+  /* ================= APPLY URL CATEGORY ================= */
+  useEffect(() => {
+    if (!initialCategory || !categories.length) return;
+
+    const matchedCategory = categories.find(
+      (cat) => cat.slug === initialCategory
+    );
+
+    if (matchedCategory) {
+      setSelectedCategories([matchedCategory.name]);
+    }
+  }, [initialCategory, categories]);
 
   /* ================= HANDLERS ================= */
 
@@ -72,6 +92,8 @@ export default function ProductsClient({ categories, products }: Props) {
     });
   }, [products, selectedCategories, selectedPrices]);
 
+  /* ================= UI ================= */
+
   return (
     <section className="container py-16">
       <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-12">
@@ -112,7 +134,7 @@ export default function ProductsClient({ categories, products }: Props) {
             )}
           </div>
 
-          {/* Price (Checkbox) */}
+          {/* Price */}
           <div>
             <h3 className="text-lg font-semibold mb-4">
               Price
@@ -158,87 +180,39 @@ export default function ProductsClient({ categories, products }: Props) {
             </p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-              {filteredProducts.map((product, index) => {
-                const sellingPrice = product.sellingPrice;
-                const discountedPrice = product.discountedPrice;
+              {filteredProducts.map((product, index) => (
+                <div
+                  key={`${product.slug}-${index}`}
+                  className="group bg-white rounded-2xl shadow-sm transition-all hover:shadow-xl hover:-translate-y-1"
+                >
+                  <Link href={`/products/${product.slug}`}>
+                    <div className="relative aspect-[4/5] bg-gray-50 rounded-t-xl overflow-hidden">
+                      <Image
+                        src={
+                          product.primaryImage ||
+                          product.images?.[0] ||
+                          "/uploads/default-product.jpg"
+                        }
+                        alt={product.name}
+                        fill
+                        className="object-contain p-6 transition group-hover:scale-105"
+                      />
+                    </div>
 
-                return (
-                  <div
-                    key={`${product.slug}-${index}`}
-                    className="group bg-white rounded-2xl shadow-sm transition-all hover:shadow-xl hover:-translate-y-1"
-                  >
-                    <Link href={`/products/${product.slug}`}>
-                      {/* Image */}
-                      {/* Image + Hover Overlay */}
-<div className="relative aspect-[4/5] bg-gray-50 rounded-t-xl overflow-hidden">
-  <Image
-    src={
-      product.primaryImage ||
-      product.images?.[0] ||
-      "/uploads/default-product.jpg"
-    }
-    alt={product.name}
-    fill
-    className="object-contain p-6 transition group-hover:scale-105"
-  />
+                    <div className="p-5 space-y-1">
+                      <h3 className="text-base font-semibold">
+                        {product.name}
+                      </h3>
 
-  {/* Hover Overlay */}
-  <div
-    className="
-      absolute inset-0
-      flex items-center justify-center
-      bg-black/40
-      opacity-0
-      transition-opacity duration-300
-      group-hover:opacity-100
-    "
-  >
-    <span
-      className="
-        rounded-full bg-white px-6 py-2
-        text-sm font-semibold text-gray-900
-        shadow-lg
-      "
-    >
-      View Product
-    </span>
-  </div>
-</div>
-
-
-                      {/* Content */}
-                      <div className="p-5 space-y-1">
-                        <h3 className="text-base font-semibold">
-                          {product.name}
-                        </h3>
-
-                        {product.categoryName && (
-                          <p className="text-sm text-muted-foreground">
-                            {product.categoryName}
-                          </p>
-                        )}
-
-                        <div className="flex items-center gap-2 pt-2">
-                          {sellingPrice && discountedPrice && (
-                            <span className="text-sm line-through text-gray-400">
-                              ₹{sellingPrice}
-                            </span>
-                          )}
-                          <span className="text-lg font-bold">
-                            ₹{discountedPrice ?? sellingPrice}
-                          </span>
-                        </div>
-
-                        {product.minOrderQty && (
-                          <span className="inline-block mt-2 rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600">
-                            MOQ: {product.minOrderQty}
-                          </span>
-                        )}
-                      </div>
-                    </Link>
-                  </div>
-                );
-              })}
+                      {product.categoryName && (
+                        <p className="text-sm text-muted-foreground">
+                          {product.categoryName}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                </div>
+              ))}
             </div>
           )}
         </div>

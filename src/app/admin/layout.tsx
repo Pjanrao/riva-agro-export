@@ -43,6 +43,7 @@ export default function AdminLayout({
 
   const navItems = [
     { href: "/admin/dashboard", label: "Dashboard", icon: Home },
+    { href: "/admin/banner-management", label: "Banner Management", icon: LayoutGrid },
     { href: "/admin/products", label: "Products", icon: Package },
     { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
     { href: "/admin/categories", label: "Categories", icon: LayoutGrid },
