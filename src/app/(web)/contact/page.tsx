@@ -49,7 +49,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                     <h3 className="font-semibold">Email Us</h3>
-                    <p className="text-muted-foreground">contact@rivaagro.com</p>
+                    <p className="text-muted-foreground">info@rivaagroexports.com</p>
                 </div>
             </div>
             <div className="flex items-start gap-4">

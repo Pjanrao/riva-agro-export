@@ -26,7 +26,7 @@ const promoBanners = [
       "Crafted from authentic sandalwood for deep nourishment and natural radiance..",
     buttonText: "CHECK OUT",
     image: "/uploads/banners/promo-1.jpg",
-    link: "/products",
+    link: "/sandal-pure",
   },
   {
     id: 2,
@@ -35,7 +35,7 @@ const promoBanners = [
       "Carefully grown and harvested to deliver natural sweetness and consistent quality.",
     buttonText: "SHOP NOW",
     image: "/uploads/banners/promo-2.jpg",
-    link: "/products",
+    link: "/products/banana-grand-9g9",
   },
   {
     id: 3,
@@ -44,7 +44,7 @@ const promoBanners = [
       "Carefully selected for strong flavor, long shelf life, and export-grade quality.",
     buttonText: "CHECK OUT",
     image: "/uploads/banners/promo-3.jpg",
-    link: "/products",
+    link: "/products/red-onion",
   },
 ];
 
@@ -88,6 +88,8 @@ const featuredProducts = products
       {/* Featured Categories */}
     
 <CategorySlider featuredCategories={featuredCategories} />
+
+{/* ================= Promo Banners ================= */}
 
 <section className="pt-8 pb-20 bg-white">
   <div className="container">
@@ -287,24 +289,26 @@ const discountedPrice = product.discountedPrice;
           A premium range of 100% sandalwood-based herbal creams,
           cultivated, processed, and delivered directly by sandalwood farmers.
         </p>
-
+       <Link href="/sandal-pure"> 
         <div className="mt-8 flex gap-4">
           <Button className="bg-gradient-to-r from-[#f5d88c] to-[#caa24d] text-black">
             Explore Sandal Pure
-          </Button>
-        </div>
+          </Button></div>
+          </Link>
+        
       </div>
     </div>
 
     {/* RIGHT — Image (FULL WIDTH to edge) */}
    <div className="relative min-h-[520px] lg:min-h-[600px] overflow-hidden">
+    <Link href="/sandal-pure">
   <Image
     src="/uploads/banners/banner-6.png"
     alt="Sandal Pure Product Range"
     fill
     priority
     className="object-cover object-left"
-  />
+  /> </Link>
 </div>
 
   </div>

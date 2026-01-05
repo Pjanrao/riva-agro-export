@@ -89,7 +89,7 @@ export default function HeroSlider() {
   /* ================= UI ================= */
 
   return (
-    <section className="relative h-[70vh] w-full overflow-hidden text-white">
+    <section className="relative h-[75vh] w-full overflow-hidden text-white">
       <Carousel
         opts={{ loop: true }}
         plugins={[autoplay.current]}
