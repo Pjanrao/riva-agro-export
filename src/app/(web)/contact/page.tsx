@@ -8,7 +8,8 @@ export default function ContactPage() {
   return (
     <div className="container py-16">
       <div className="text-center">
-        <h1 className="font-headline text-4xl font-bold tracking-tight">Contact Us</h1>
+       <h2 className="text-center font-headline text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+Contact Us</h2>
         <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
           We'd love to hear from you. Get in touch with us for inquiries, orders, or any questions.
         </p>
@@ -33,7 +34,8 @@ export default function ContactPage() {
         </Card>
 
         <div className="space-y-6">
-            <h2 className="font-headline text-2xl font-semibold">Contact Information</h2>
+           <h2 className="text-center font-headline text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+Contact Information</h2>
             <div className="flex items-start gap-4">
                 <div className="bg-primary/10 text-primary p-3 rounded-md">
                     <MapPin className="h-6 w-6" />
