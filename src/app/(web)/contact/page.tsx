@@ -40,7 +40,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                     <h3 className="font-semibold">Our Address</h3>
-                    <p className="text-muted-foreground">123 Agri-Trade Tower, Farmville, India 400001</p>
+                    <p className="text-muted-foreground">Lorem Ipsum Industrial Area, Dolor Sit Road, Amet City – 400001, India</p>
                 </div>
             </div>
             <div className="flex items-start gap-4">

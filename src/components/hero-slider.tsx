@@ -89,7 +89,8 @@ export default function HeroSlider() {
   /* ================= UI ================= */
 
   return (
-    <section className="relative h-[75vh] w-full overflow-hidden text-white">
+    <section className="relative h-[55vh] md:h-[75vh] w-full overflow-hidden text-white">
+      
       <Carousel
         opts={{ loop: true }}
         plugins={[autoplay.current]}
@@ -99,14 +100,14 @@ export default function HeroSlider() {
           {banners.map((banner, index) => (
             <CarouselItem
               key={banner.id}
-              className="relative h-[70vh] w-full"
+              className="relative h-[55vh] md:h-[70vh] w-full"
             >
               <Image
   src={getHeroImage(banner.image)}
-                alt={banner.heading}
+                alt={banner.heading}  
                 fill
                 priority={index === 0}
-                className="object-cover object-center"
+                className="object-cover object-[65%_center] md:object-center"
               />
 
               {/* overlays */}
@@ -116,23 +117,20 @@ export default function HeroSlider() {
               {/* CONTENT – RIGHT SIDE */}
               <div className="relative z-20 flex h-full items-center justify-end px-8 md:px-16 text-right">
                 <div className="max-w-xl animate-[fadeUp_0.8s_ease-out]">
-                  <h1 className="font-headline text-4xl md:text-6xl font-bold leading-tight">
+                  <h1 className="font-headline text-2xl sm:text-3xl md:text-6xl font-bold leading-tight">
                     {banner.heading}
                   </h1>
 
                   {banner.subHeading && (
-                    <p className="mt-5 text-lg md:text-xl text-white/90">
+                    <p className="mt-4 md:mt-5 text-base sm:text-lg md:text-xl text-white/90">
                       {banner.subHeading}
                     </p>
                   )}
 
                   <div className="mt-8 flex flex-wrap gap-4 justify-end">
                     {/* Button 1 */}
-                    <Button
-                      asChild
-                      size="lg"
-                      className="bg-[#d4af37] text-black hover:bg-[#c9a227]"
-                    >
+                    <Button asChild size="lg" className="px-6 py-3 text-sm md:text-base bg-[#d4af37] text-black hover:bg-[#c9a227]">
+
                       <Link href={banner.button1Link}>
                         {banner.button1Text}
                       </Link>
