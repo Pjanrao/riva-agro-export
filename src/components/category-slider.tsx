@@ -36,7 +36,7 @@ export default function CategorySlider({
     // ✅ CLIP HERE — NOT INSIDE CAROUSEL
     <section className="py-20 bg-white overflow-x-hidden">
       <div className="container">
-        <h2 className="text-center font-headline text-4xl font-bold tracking-tight">
+<h2 className="text-center font-headline text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
           Featured Categories
         </h2>
 

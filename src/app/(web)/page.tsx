@@ -134,12 +134,12 @@ const featuredProducts = products
   <div className="container">
 
     {/* Section Heading */}
-    <h2 className="text-center font-headline text-4xl font-bold tracking-tight">
+<h2 className="text-center font-headline text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
       Featured Products
     </h2>
 
     {/* Products Grid */}
-  <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+<div className="mt-14 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
   {featuredProducts.map((product, index) => {
 const sellingPrice = product.sellingPrice ;
 const discountedPrice = product.discountedPrice;
@@ -151,14 +151,23 @@ const discountedPrice = product.discountedPrice;
           href={`/products/${product.slug}`}
           className="group block"
         >
-          <div
+          {/* <div
             className="
               bg-white rounded-2xl
               shadow-sm
               transition-all duration-300
               hover:shadow-xl hover:-translate-y-1
             "
-          >
+          > */}
+
+          <div
+  className="
+    group bg-white rounded-2xl shadow-sm
+    transition-all hover:shadow-xl hover:-translate-y-1
+    h-[360px] sm:h-auto
+    flex flex-col
+  "
+>
             {/* Image */}
           <div className="relative aspect-[4/5] bg-gray-50 rounded-t-xl overflow-hidden group">
   <Image
@@ -209,7 +218,14 @@ const discountedPrice = product.discountedPrice;
 {/* Content */}
 <div className="p-5 text-left space-y-1">
   {/* Product Name */}
-  <h3 className="text-base font-semibold text-gray-900">
+  {/* <h3 className="text-base font-semibold text-gray-900"> */}
+  <h3
+  className="
+    text-sm sm:text-base font-semibold text-gray-900
+    line-clamp-2
+    min-h-[40px]
+  "
+>
     {product.name}
   </h3>
 
