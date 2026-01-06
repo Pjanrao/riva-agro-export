@@ -89,7 +89,7 @@ export default function HeroSlider() {
   /* ================= UI ================= */
 
   return (
-    <section className="relative h-[40vh] md:h-[75vh] w-full overflow-hidden text-white">
+    <section className="relative h-[55vh] md:h-[75vh] w-full overflow-hidden text-white">
       
       <Carousel
         opts={{ loop: true }}
@@ -107,7 +107,7 @@ export default function HeroSlider() {
                 alt={banner.heading}  
                 fill
                 priority={index === 0}
-                className="object-cover object-[65%_center] md:object-center"
+                className="object-cover object-[55%_center] md:object-center"
               />
 
               {/* overlays */}
