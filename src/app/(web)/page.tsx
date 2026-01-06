@@ -285,11 +285,11 @@ const discountedPrice = product.discountedPrice;
 </section>
 {/* ================= Sandal Pure Feature Section ================= */}
 
-<section className="relative bg-[#020001] overflow-hidden">
-  <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.3fr]">
+{/* <section className="relative bg-[#020001] overflow-hidden">
+  <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.3fr]"> */}
 
     {/* LEFT — Text (container constrained) */}
-<div className="px-6 lg:px-16 py-20 flex items-center max-w-xl">
+{/* <div className="px-6 lg:px-16 py-20 flex items-center max-w-xl">
       <div>
         <span className="inline-block rounded-full bg-[#caa24d]/20 px-5 py-2 text-sm font-semibold text-[#e6c77a]">
           Featured Brand
@@ -316,7 +316,7 @@ const discountedPrice = product.discountedPrice;
     </div>
 
     {/* RIGHT — Image (FULL WIDTH to edge) */}
-   <div className="relative min-h-[520px] lg:min-h-[600px] overflow-hidden">
+ {/*  <div className="relative min-h-[520px] lg:min-h-[600px] overflow-hidden">
     <Link href="/sandal-pure">
   <Image
     src="/uploads/banners/banner-6.png"
@@ -328,7 +328,70 @@ const discountedPrice = product.discountedPrice;
 </div>
 
   </div>
+</section> */}
+<section className="relative bg-[#020001] overflow-hidden">
+  <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.3fr]">
+
+    {/* IMAGE — TOP ON MOBILE, RIGHT ON DESKTOP */}
+    <div className="relative h-[320px] sm:h-[380px] lg:h-auto lg:min-h-[600px] overflow-hidden order-1 lg:order-2">
+      <Link href="/sandal-pure">
+        <Image
+          src="/uploads/banners/banner-6.png"
+          alt="Sandal Pure Product Range"
+          fill
+          priority
+          className="object-cover object-center lg:object-left"
+        />
+      </Link>
+    </div>
+
+    {/* TEXT — BELOW IMAGE ON MOBILE */}
+    <div className="order-2 lg:order-1 px-6 sm:px-10 lg:px-16 py-14 sm:py-16 lg:py-20 flex items-center justify-center lg:justify-start">
+      <div className="max-w-xl text-center lg:text-left">
+
+        <span className="inline-block rounded-full bg-[#caa24d]/20 px-4 py-1.5 text-xs sm:text-sm font-semibold text-[#e6c77a]">
+          Featured Brand
+        </span>
+
+        <h2
+          className="
+            mt-4 sm:mt-6
+            font-headline font-bold
+            text-3xl sm:text-4xl md:text-5xl
+            bg-gradient-to-r from-[#f5d88c] via-[#e6b65c] to-[#caa24d]
+            bg-clip-text text-transparent
+          "
+        >
+          Sandal Pure
+        </h2>
+
+        <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-[#e7dbc6]">
+          A premium range of 100% sandalwood-based herbal creams,
+          cultivated, processed, and delivered directly by sandalwood farmers.
+        </p>
+
+        <div className="mt-6 sm:mt-8 flex justify-center lg:justify-start">
+          <Link href="/sandal-pure">
+            <Button
+              className="
+                px-6 sm:px-8
+                py-2.5 sm:py-3
+                text-sm sm:text-base
+                bg-gradient-to-r from-[#f5d88c] to-[#caa24d]
+                text-black
+              "
+            >
+              Explore Sandal Pure
+            </Button>
+          </Link>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
 </section>
+
 
 <section className="py-24 bg-white">
   <div className="container">

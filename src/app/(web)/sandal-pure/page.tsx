@@ -45,22 +45,33 @@ const sandalPureProducts = products.filter(
 
   return (
     <main className="bg-white">
-<section className="relative w-full h-[550px] overflow-hidden bg-black mb-20">
+{/* <section className="relative w-full h-[550px] overflow-hidden bg-black mb-20"> */}
+ <section
+  className="
+    relative w-full
+    pt-16 sm:pt-20 lg:pt-0
+    h-[280px] sm:h-[360px] md:h-[450px] lg:h-[550px]
+    overflow-hidden bg-black
+    mb-16 lg:mb-20
+  "
+>
   <Image
     src="/uploads/banners/sandal-pure.png"
     alt="Hero Banner"
     fill
     priority
+    sizes="100vw"
     className="object-cover object-center"
   />
 </section>
- 
 <section className="w-full bg-[#ffffff] py-18">
   <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16
                   grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
 
     {/* LEFT — FULL IMAGE */}
-    <div className="relative w-full h-[460px] rounded-3xl overflow-hidden">
+    {/* <div className="relative w-full h-[460px] rounded-3xl overflow-hidden"> */}
+      <div className="relative w-full h-[260px] sm:h-[340px] lg:h-[460px] rounded-3xl overflow-hidden">
+
       <img
         src="/uploads/sandal-powder-bowl.png"
         alt="Indian Sandalwood Heritage"
@@ -69,12 +80,16 @@ const sandalPureProducts = products.filter(
     </div>
 
     {/* RIGHT — STORY TEXT */}
-    <div className="max-w-xl">
+    {/* <div className="max-w-xl"> */}
+    <div className="max-w-xl text-center lg:text-left">
+
       <p className="text-sm tracking-widest text-[#9c7c2e] uppercase">
         About Sandal Pure
       </p>
 
-      <h2 className="mt-6 text-3xl md:text-4xl font-semibold text-[#1c1c1c] leading-tight">
+      {/* <h2 className="mt-6 text-3xl md:text-4xl font-semibold text-[#1c1c1c] leading-tight"> */}
+        <h2 className="mt-6 text-2xl sm:text-3xl md:text-4xl font-semibold text-[#1c1c1c] leading-tight">
+
         Crafted by the Farmers of{" "}
         <span className="text-[#b89b3f]">Pure Indian Sandalwood</span>
       </h2>
@@ -120,13 +135,16 @@ const sandalPureProducts = products.filter(
         Sandalwood Skincare Products
       </h2>
 
-      <p className="mt-4 text-lg text-[#5f3a3a]">
+      <p className="mt-4 text-sm sm:text-base md:text-lg
+ text-[#5f3a3a]">
         100% Herbal • Farmer Crafted • Export Quality
       </p>
     </div>
 
     {/* Products Grid */}
-    <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10">
+    {/* <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10"> */}
+   <div className="mt-16 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8 lg:gap-10">
+
 
       {sandalPureProducts.map((product, index) => {
         const sellingPrice = product.sellingPrice;
@@ -154,7 +172,7 @@ const sandalPureProducts = products.filter(
                   }
                   alt={product.name}
                   fill
-                  className="
+                  className=" *:p-4 sm:p-6
                     object-contain
                     transition-all duration-300
                     group-hover:scale-105 group-hover:opacity-90
@@ -188,7 +206,9 @@ const sandalPureProducts = products.filter(
               <div className="p-5 text-left space-y-1">
 
                 {/* Product Name */}
-                <h3 className="text-sm font-semibold text-gray-900">
+                {/* <h3 className="text-sm font-semibold text-gray-900"> */}
+                  <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 min-h-[40px]">
+
                   {product.name}
                 </h3>
 
@@ -229,7 +249,9 @@ const sandalPureProducts = products.filter(
 </section>
 
 
-<section className="w-full bg-[#f7f3eb] py-28 mb-20">
+{/* <section className="w-full bg-[#f7f3eb] py-28 mb-20"> */}
+  <section className="w-full bg-[#f7f3eb] py-16 sm:py-20 lg:py-28 mb-16 lg:mb-20">
+
   <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16
                   grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
 
@@ -258,10 +280,12 @@ const sandalPureProducts = products.filter(
     </div>
 
     {/* RIGHT — PURPOSE CARDS */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+    {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-10"> */}
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-10">
 
       <div className="bg-white rounded-2xl p-8 shadow-sm">
-        <h3 className="text-lg font-semibold text-[#1c1c1c]">
+        <h3 className="text-sm sm:text-base md:text-lg
+ font-semibold text-[#1c1c1c]">
           Fair Value for Farmers
         </h3>
         <p className="mt-4 text-gray-700 leading-relaxed">
@@ -271,7 +295,8 @@ const sandalPureProducts = products.filter(
       </div>
 
       <div className="bg-white rounded-2xl p-8 shadow-sm">
-        <h3 className="text-lg font-semibold text-[#1c1c1c]">
+        <h3 className="text-sm sm:text-base md:text-lg
+ font-semibold text-[#1c1c1c]">
           Herbal for Every Home
         </h3>
         <p className="mt-4 text-gray-700 leading-relaxed">
@@ -280,7 +305,8 @@ const sandalPureProducts = products.filter(
       </div>
 
       <div className="bg-white rounded-2xl p-8 shadow-sm">
-        <h3 className="text-lg font-semibold text-[#1c1c1c]">
+        <h3 className="text-sm sm:text-base md:text-lg
+ font-semibold text-[#1c1c1c]">
           Purity & Quality
         </h3>
         <p className="mt-4 text-gray-700 leading-relaxed">
@@ -289,7 +315,7 @@ const sandalPureProducts = products.filter(
       </div>
 
       <div className="bg-white rounded-2xl p-8 shadow-sm">
-        <h3 className="text-lg font-semibold text-[#1c1c1c]">
+        <h3 className="text-sm sm:text-base md:text-lg font-semibold text-[#1c1c1c]">
           Natural Lifestyle
         </h3>
         <p className="mt-4 text-gray-700 leading-relaxed">
