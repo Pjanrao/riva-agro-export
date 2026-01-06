@@ -28,6 +28,8 @@ export default function ProductsClient({
   /* ================= STATE ================= */
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedPrices, setSelectedPrices] = useState<string[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
+
 
   /* ================= APPLY URL CATEGORY ================= */
   useEffect(() => {
@@ -99,87 +101,114 @@ export default function ProductsClient({
       <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-12">
 
         {/* ================= SIDEBAR ================= */}
-        <aside className="space-y-12">
+       {/* ================= SIDEBAR / FILTERS ================= */}
+<aside
+  className={`
+    fixed inset-y-0 left-0 z-50 w-[85%] max-w-sm bg-white p-6
+    transform transition-transform duration-300
+    lg:static lg:translate-x-0 lg:w-auto lg:p-0
+    ${showFilters ? "translate-x-0" : "-translate-x-full"}
+  `}
+>
+  {/* Mobile Header */}
+  <div className="flex items-center justify-between mb-6 lg:hidden">
+    <h3 className="text-lg font-semibold">Filters</h3>
+    <button
+      onClick={() => setShowFilters(false)}
+      className="text-xl font-bold"
+    >
+      ✕
+    </button>
+  </div>
 
-          {/* Categories */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">
-              Categories
-            </h3>
+  {/* Categories */}
+  <div className="space-y-6">
+    <div>
+      <h3 className="text-lg font-semibold mb-4">Categories</h3>
 
-            <div className="space-y-3">
-              {categories.map((cat) => (
-                <label
-                  key={cat.slug}
-                  className="flex items-center gap-3 text-sm cursor-pointer"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedCategories.includes(cat.name)}
-                    onChange={() => toggleCategory(cat.name)}
-                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                  />
-                  <span>{cat.name}</span>
-                </label>
-              ))}
-            </div>
+      <div className="space-y-3">
+        {categories.map((cat) => (
+          <label
+            key={cat.slug}
+            className="flex items-center gap-3 text-sm cursor-pointer"
+          >
+            <input
+              type="checkbox"
+              checked={selectedCategories.includes(cat.name)}
+              onChange={() => toggleCategory(cat.name)}
+              className="h-4 w-4"
+            />
+            <span>{cat.name}</span>
+          </label>
+        ))}
+      </div>
+    </div>
 
-            {selectedCategories.length > 0 && (
-              <button
-                onClick={() => setSelectedCategories([])}
-                className="mt-4 text-xs text-muted-foreground underline"
-              >
-                Clear categories
-              </button>
-            )}
-          </div>
+    {/* Price */}
+    <div>
+      <h3 className="text-lg font-semibold mb-4">Price</h3>
 
-          {/* Price */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">
-              Price
-            </h3>
+      <div className="space-y-3">
+        {PRICE_RANGES.map((range) => (
+          <label
+            key={range.label}
+            className="flex items-center gap-3 text-sm cursor-pointer"
+          >
+            <input
+              type="checkbox"
+              checked={selectedPrices.includes(range.label)}
+              onChange={() => togglePrice(range.label)}
+              className="h-4 w-4"
+            />
+            <span>{range.label}</span>
+          </label>
+        ))}
+      </div>
+    </div>
 
-            <div className="space-y-3">
-              {PRICE_RANGES.map((range) => (
-                <label
-                  key={range.label}
-                  className="flex items-center gap-3 text-sm cursor-pointer"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedPrices.includes(range.label)}
-                    onChange={() => togglePrice(range.label)}
-                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                  />
-                  <span>{range.label}</span>
-                </label>
-              ))}
-            </div>
+    {/* Apply Button (Mobile) */}
+    <button
+      onClick={() => setShowFilters(false)}
+      className="mt-6 w-full rounded-full bg-primary py-3 text-white lg:hidden"
+    >
+      Apply Filters
+    </button>
+  </div>
+</aside>
+{/* Overlay */}
+{showFilters && (
+  <div
+    className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+    onClick={() => setShowFilters(false)}
+  />
+)}
 
-            {selectedPrices.length > 0 && (
-              <button
-                onClick={() => setSelectedPrices([])}
-                className="mt-4 text-xs text-muted-foreground underline"
-              >
-                Clear price filters
-              </button>
-            )}
-          </div>
-        </aside>
+        {/* Mobile Filter Button */}
+<div className="flex items-center justify-between mb-6 lg:hidden">
+  <h1 className="text-xl font-semibold">All Products</h1>
+
+  <button
+    onClick={() => setShowFilters(true)}
+    className="flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium"
+  >
+    Filters
+  </button>
+</div>
 
         {/* ================= PRODUCTS GRID ================= */}
         <div>
-          <h1 className="text-2xl font-semibold mb-8">
-            All Products
-          </h1>
+         <h1 className="hidden lg:block text-2xl font-semibold mb-8">
+  All Products
+</h1>
 
           {filteredProducts.length === 0 ? (
             <p className="text-muted-foreground">
               No products found.
             </p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            // <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-10">
+
               {filteredProducts.map((product, index) => (
                 <div
                   key={`${product.slug}-${index}`}
