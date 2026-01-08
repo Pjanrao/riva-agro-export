@@ -216,21 +216,307 @@
 //   );
 // }
 
+// "use client";
+
+// import { useEffect, useState } from 'react';
+// import { useRouter } from 'next/navigation';
+// import { useForm } from 'react-hook-form';
+// import { z } from 'zod';
+// import { zodResolver } from '@hookform/resolvers/zod';
+
+// import { useCart } from '@/hooks/use-cart';
+// import { useAuth } from '@/hooks/use-auth';
+// import { useToast } from '@/hooks/use-toast';
+
+// import { Button } from '@/components/ui/button';
+// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+// import { Input } from '@/components/ui/input';
+// import {
+//   Form,
+//   FormControl,
+//   FormField,
+//   FormItem,
+//   FormLabel,
+//   FormMessage,
+// } from '@/components/ui/form';
+// import { Separator } from '@/components/ui/separator';
+
+// import type { ShippingAddress, Order } from '@/lib/types';
+
+// /* ================= SCHEMA ================= */
+
+// const shippingSchema = z.object({
+//   name: z.string().min(1, 'Name is required'),
+//   address: z.string().min(1, 'Address is required'),
+//   city: z.string().min(1, 'City is required'),
+//   country: z.string().min(1, 'Country is required'),
+//   zip: z.string().min(1, 'ZIP code is required'),
+// });
+
+// /* ================= PAGE ================= */
+
+// export default function CheckoutPage() {
+//   const router = useRouter();
+//   const { user } = useAuth();
+//   const { cartItems, cartTotal, clearCart } = useCart();
+//   const { toast } = useToast();
+
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [isReady, setIsReady] = useState(false);
+
+//   const form = useForm<z.infer<typeof shippingSchema>>({
+//     resolver: zodResolver(shippingSchema),
+//     defaultValues: {
+//       name: '',
+//       address: '',
+//       city: '',
+//       country: '',
+//       zip: '',
+//     },
+//   });
+
+//   /* ================= GUARDS ================= */
+
+//   useEffect(() => {
+//     if (!user) {
+//       router.replace('/login?redirect=/checkout');
+//     } else if (cartItems.length === 0) {
+//       router.replace('/cart');
+//     } else {
+//       setIsReady(true);
+//     }
+//   }, [user, cartItems, router]);
+
+//   /* ================= PLACE ORDER (NO PAYMENT) ================= */
+
+//   const placeOrder = async (shippingDetails: ShippingAddress) => {
+//     setIsSubmitting(true);
+
+//     try {
+//       const orderData: Omit<Order, 'id' | '_id' | 'createdAt'> = {
+//         userId: user!.id,
+//         items: cartItems,
+//         total: cartTotal,
+//         status: 'Processing',
+//         shippingAddress: shippingDetails,
+
+//         // ✅ Payment removed
+//         paymentMethod: 'COD',
+//         paymentStatus: 'Pending',
+//       };
+
+//       const res = await fetch('/api/orders', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify(orderData),
+//       });
+
+//       if (!res.ok) {
+//         throw new Error('Failed to place order');
+//       }
+
+//       clearCart();
+
+//       toast({
+//         title: '✅ Order Placed Successfully',
+//         description: 'Your order has been placed and is being processed.',
+//       });
+
+//       router.push('/profile/orders');
+//     } catch (error) {
+//       toast({
+//         variant: 'destructive',
+//         title: 'Order Failed',
+//         description: 'Something went wrong. Please try again.',
+//       });
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   /* ================= SUBMIT ================= */
+
+//   function onSubmit(values: z.infer<typeof shippingSchema>) {
+//     placeOrder(values);
+//   }
+
+//   if (!isReady) return null;
+
+//   /* ================= UI ================= */
+
+//   return (
+//     <div className="container py-12">
+//       <h1 className="font-headline text-4xl font-bold tracking-tight mb-8">
+//         Checkout
+//       </h1>
+
+//       <Form {...form}>
+//         <form
+//           onSubmit={form.handleSubmit(onSubmit)}
+//           className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+//         >
+//           {/* LEFT */}
+//           <div className="lg:col-span-2 space-y-8">
+//             <Card>
+//               <CardHeader>
+//                 <CardTitle className="font-headline text-2xl">
+//                   Shipping Address
+//                 </CardTitle>
+//               </CardHeader>
+//               <CardContent className="space-y-4">
+//                 <FormField
+//                   name="name"
+//                   render={({ field }) => (
+//                     <FormItem>
+//                       <FormLabel>Full Name</FormLabel>
+//                       <FormControl>
+//                         <Input {...field} />
+//                       </FormControl>
+//                       <FormMessage />
+//                     </FormItem>
+//                   )}
+//                 />
+
+//                 <FormField
+//                   name="address"
+//                   render={({ field }) => (
+//                     <FormItem>
+//                       <FormLabel>Address</FormLabel>
+//                       <FormControl>
+//                         <Input {...field} />
+//                       </FormControl>
+//                       <FormMessage />
+//                     </FormItem>
+//                   )}
+//                 />
+
+//                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+//                   <FormField
+//                     name="city"
+//                     render={({ field }) => (
+//                       <FormItem>
+//                         <FormLabel>City</FormLabel>
+//                         <FormControl>
+//                           <Input {...field} />
+//                         </FormControl>
+//                         <FormMessage />
+//                       </FormItem>
+//                     )}
+//                   />
+
+//                   <FormField
+//                     name="country"
+//                     render={({ field }) => (
+//                       <FormItem>
+//                         <FormLabel>Country</FormLabel>
+//                         <FormControl>
+//                           <Input {...field} />
+//                         </FormControl>
+//                         <FormMessage />
+//                       </FormItem>
+//                     )}
+//                   />
+
+//                   <FormField
+//                     name="zip"
+//                     render={({ field }) => (
+//                       <FormItem>
+//                         <FormLabel>ZIP Code</FormLabel>
+//                         <FormControl>
+//                           <Input {...field} />
+//                         </FormControl>
+//                         <FormMessage />
+//                       </FormItem>
+//                     )}
+//                   />
+//                 </div>
+//               </CardContent>
+//             </Card>
+
+//             <Card>
+//               <CardHeader>
+//                 <CardTitle className="font-headline text-2xl">
+//                   Payment Method
+//                 </CardTitle>
+//               </CardHeader>
+//               <CardContent>
+//                 <p className="text-muted-foreground">
+//                   Cash on Delivery / Manual payment confirmation.
+//                 </p>
+//               </CardContent>
+//             </Card>
+//           </div>
+
+//           {/* RIGHT */}
+//           <div className="lg:col-span-1">
+//             <Card className="sticky top-24">
+//               <CardHeader>
+//                 <CardTitle className="font-headline text-2xl">
+//                   Order Summary
+//                 </CardTitle>
+//               </CardHeader>
+
+//               <CardContent className="space-y-4">
+//                 {cartItems.map((item, index) => (
+//                   <div
+//                     key={`${item.variantId}-${index}`}
+//                     className="flex justify-between text-sm"
+//                   >
+//                     <span className="text-muted-foreground">
+//                       {item.name} (x{item.quantity})
+//                     </span>
+//                     <span>
+//                       ₹{(item.price * item.quantity).toFixed(2)}
+//                     </span>
+//                   </div>
+//                 ))}
+
+//                 <Separator />
+
+//                 <div className="flex justify-between font-bold text-lg">
+//                   <span>Total</span>
+//                   <span>₹{cartTotal.toFixed(2)}</span>
+//                 </div>
+//               </CardContent>
+
+//               <CardContent>
+//                 <Button
+//                   type="submit"
+//                   className="w-full"
+//                   size="lg"
+//                   disabled={isSubmitting}
+//                 >
+//                   {isSubmitting ? 'Placing Order...' : 'Place Order'}
+//                 </Button>
+//               </CardContent>
+//             </Card>
+//           </div>
+//         </form>
+//       </Form>
+//     </div>
+//   );
+// }
+
 "use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useCart } from '@/hooks/use-cart';
-import { useAuth } from '@/hooks/use-auth';
-import { useToast } from '@/hooks/use-toast';
+import { useCart } from "@/hooks/use-cart";
+import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -238,19 +524,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Separator } from '@/components/ui/separator';
+} from "@/components/ui/form";
+import { Separator } from "@/components/ui/separator";
 
-import type { ShippingAddress, Order } from '@/lib/types';
+import { getUsdRate } from "@/lib/getUsdRate";
+import { formatPriceUSD } from "@/lib/price";
+import type { ShippingAddress, Order } from "@/lib/types";
 
 /* ================= SCHEMA ================= */
 
 const shippingSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  address: z.string().min(1, 'Address is required'),
-  city: z.string().min(1, 'City is required'),
-  country: z.string().min(1, 'Country is required'),
-  zip: z.string().min(1, 'ZIP code is required'),
+  name: z.string().min(1, "Name is required"),
+  address: z.string().min(1, "Address is required"),
+  city: z.string().min(1, "City is required"),
+  country: z.string().min(1, "Country is required"),
+  zip: z.string().min(1, "ZIP code is required"),
 });
 
 /* ================= PAGE ================= */
@@ -264,14 +552,29 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isReady, setIsReady] = useState(false);
 
+  // ✅ USD RATE
+  const [usdRate, setUsdRate] = useState<number>(1);
+
+  useEffect(() => {
+    async function fetchRate() {
+      try {
+        const rate = await getUsdRate();
+        setUsdRate(rate || 1);
+      } catch {
+        setUsdRate(1);
+      }
+    }
+    fetchRate();
+  }, []);
+
   const form = useForm<z.infer<typeof shippingSchema>>({
     resolver: zodResolver(shippingSchema),
     defaultValues: {
-      name: '',
-      address: '',
-      city: '',
-      country: '',
-      zip: '',
+      name: "",
+      address: "",
+      city: "",
+      country: "",
+      zip: "",
     },
   });
 
@@ -279,55 +582,59 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (!user) {
-      router.replace('/login?redirect=/checkout');
+      router.replace("/login?redirect=/checkout");
     } else if (cartItems.length === 0) {
-      router.replace('/cart');
+      router.replace("/cart");
     } else {
       setIsReady(true);
     }
   }, [user, cartItems, router]);
 
-  /* ================= PLACE ORDER (NO PAYMENT) ================= */
+  /* ================= PLACE ORDER ================= */
 
   const placeOrder = async (shippingDetails: ShippingAddress) => {
     setIsSubmitting(true);
 
     try {
-      const orderData: Omit<Order, 'id' | '_id' | 'createdAt'> = {
-        userId: user!.id,
-        items: cartItems,
-        total: cartTotal,
-        status: 'Processing',
-        shippingAddress: shippingDetails,
+      // ✅ USD TOTAL
+      const usdTotal = Number(
+        ((cartTotal / usdRate) || 0).toFixed(2)
+      );
 
-        // ✅ Payment removed
-        paymentMethod: 'COD',
-        paymentStatus: 'Pending',
+      const orderData: Omit<Order, "id" | "_id" | "createdAt"> = {
+        userId: user!._id,
+        items: cartItems,
+        total: usdTotal, // ✅ STORE USD
+        status: "Processing",
+        shippingAddress: shippingDetails,
+        paymentMethod: "COD",
+        paymentStatus: "Pending",
+        currency: "USD", // 🔥 recommended
       };
 
-      const res = await fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
       });
 
       if (!res.ok) {
-        throw new Error('Failed to place order');
+        throw new Error("Failed to place order");
       }
 
       clearCart();
 
       toast({
-        title: '✅ Order Placed Successfully',
-        description: 'Your order has been placed and is being processed.',
+        title: "✅ Order Placed Successfully",
+        description: "Your order has been placed and is being processed.",
       });
 
-      router.push('/profile/orders');
-    } catch (error) {
+      router.push("/profile/orders");
+    } catch {
       toast({
-        variant: 'destructive',
-        title: 'Order Failed',
-        description: 'Something went wrong. Please try again.',
+        variant: "destructive",
+        title: "Order Failed",
+        description: "Something went wrong. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -346,7 +653,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="container py-12">
-      <h1 className="font-headline text-4xl font-bold tracking-tight mb-8">
+      <h1 className="font-headline text-4xl font-bold mb-8">
         Checkout
       </h1>
 
@@ -432,19 +739,6 @@ export default function CheckoutPage() {
                 </div>
               </CardContent>
             </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-headline text-2xl">
-                  Payment Method
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Cash on Delivery / Manual payment confirmation.
-                </p>
-              </CardContent>
-            </Card>
           </div>
 
           {/* RIGHT */}
@@ -452,30 +746,35 @@ export default function CheckoutPage() {
             <Card className="sticky top-24">
               <CardHeader>
                 <CardTitle className="font-headline text-2xl">
-                  Order Summary
+                  Order Summary (USD)
                 </CardTitle>
               </CardHeader>
 
               <CardContent className="space-y-4">
-                {cartItems.map((item, index) => (
-                  <div
-                    key={`${item.variantId}-${index}`}
-                    className="flex justify-between text-sm"
-                  >
-                    <span className="text-muted-foreground">
-                      {item.name} (x{item.quantity})
-                    </span>
-                    <span>
-                      ₹{(item.price * item.quantity).toFixed(2)}
-                    </span>
-                  </div>
-                ))}
+                {cartItems.map((item, index) => {
+                  const itemTotal = item.price * item.quantity;
+                  return (
+                    <div
+                      key={`${item.variantId}-${index}`}
+                      className="flex justify-between text-sm"
+                    >
+                      <span className="text-muted-foreground">
+                        {item.name} (x{item.quantity})
+                      </span>
+                      <span>
+                        {formatPriceUSD(itemTotal, usdRate)}
+                      </span>
+                    </div>
+                  );
+                })}
 
                 <Separator />
 
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total</span>
-                  <span>₹{cartTotal.toFixed(2)}</span>
+                  <span>
+                    {formatPriceUSD(cartTotal, usdRate)}
+                  </span>
                 </div>
               </CardContent>
 
@@ -486,7 +785,9 @@ export default function CheckoutPage() {
                   size="lg"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Placing Order...' : 'Place Order'}
+                  {isSubmitting
+                    ? "Placing Order..."
+                    : "Place Order"}
                 </Button>
               </CardContent>
             </Card>
@@ -496,3 +797,4 @@ export default function CheckoutPage() {
     </div>
   );
 }
+

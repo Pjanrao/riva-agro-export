@@ -104,7 +104,7 @@ Contact Information</h2>
                 </div>
                 <div>
                     <h3 className="font-semibold">Call Us</h3>
-                    <p className="text-muted-foreground">+91 8000028181</p>
+                    <p className="text-muted-foreground">+91 8000028181 / +91 9687725260 </p>
                 </div>
             </div>
         </div>

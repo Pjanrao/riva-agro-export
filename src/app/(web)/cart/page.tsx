@@ -1,21 +1,60 @@
 "use client";
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react';
-import { useCart } from '@/hooks/use-cart';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import Image from "next/image";
+import Link from "next/link";
+import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useCart } from "@/hooks/use-cart";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { getUsdRate } from "@/lib/getUsdRate";
+import { formatPriceUSD } from "@/lib/price";
 
 export default function CartPage() {
-  const { cartItems, cartCount, cartTotal, updateQuantity, removeFromCart } = useCart();
+  const {
+    cartItems,
+    cartCount,
+    cartTotal,
+    updateQuantity,
+    removeFromCart,
+  } = useCart();
+
+  // ✅ USD RATE (client-side)
+  const [usdRate, setUsdRate] = useState<number>(1);
+
+  useEffect(() => {
+    async function fetchRate() {
+      try {
+        const rate = await getUsdRate();
+        setUsdRate(rate || 1);
+      } catch {
+        setUsdRate(1);
+      }
+    }
+    fetchRate();
+  }, []);
 
   if (cartCount === 0) {
     return (
       <div className="container text-center py-24">
         <ShoppingCart className="mx-auto h-24 w-24 text-muted-foreground" />
-        <h1 className="mt-8 font-headline text-3xl font-bold">Your Cart is Empty</h1>
+        <h1 className="mt-8 font-headline text-3xl font-bold">
+          Your Cart is Empty
+        </h1>
         <p className="mt-2 text-muted-foreground">
           Looks like you haven't added anything to your cart yet.
         </p>
@@ -28,8 +67,12 @@ export default function CartPage() {
 
   return (
     <div className="container py-12">
-      <h1 className="font-headline text-4xl font-bold tracking-tight mb-8">Shopping Cart</h1>
+      <h1 className="font-headline text-4xl font-bold mb-8">
+        Shopping Cart
+      </h1>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* ================= CART ITEMS ================= */}
         <div className="lg:col-span-2">
           <Card>
             <CardContent className="p-0">
@@ -39,83 +82,122 @@ export default function CartPage() {
                     <TableHead className="w-[100px]">Product</TableHead>
                     <TableHead>Details</TableHead>
                     <TableHead>Quantity</TableHead>
-                    <TableHead className="text-right">Total</TableHead>
-                    <TableHead></TableHead>
+                    <TableHead className="text-right">Total (USD)</TableHead>
+                    <TableHead />
                   </TableRow>
                 </TableHeader>
+
                 <TableBody>
-                  {cartItems.map(item => (
-                    <TableRow key={item.variantId}>
-                      <TableCell>
-                        <Image
-                          src={item.image}
-                          alt={item.name}
-                          width={80}
-                          height={80}
-                          className="rounded-md object-cover"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <p className="font-medium">{item.name}</p>
-                        <p className="text-sm text-muted-foreground">{item.variantName}</p>
-                        <p className="text-sm">₹{item.price.toFixed(2)}</p>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
+                  {cartItems.map((item) => {
+                    const itemTotal = item.price * item.quantity;
+
+                    return (
+                      <TableRow key={item.variantId}>
+                        <TableCell>
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            width={80}
+                            height={80}
+                            className="rounded-md object-cover"
+                          />
+                        </TableCell>
+
+                        <TableCell>
+                          <p className="font-medium">{item.name}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {item.variantName}
+                          </p>
+
+                          {/* USD UNIT PRICE */}
+                          <p className="text-sm font-semibold">
+                            {formatPriceUSD(item.price, usdRate)}
+                          </p>
+                        </TableCell>
+
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() =>
+                                updateQuantity(
+                                  item.variantId,
+                                  item.quantity - 1
+                                )
+                              }
+                            >
+                              <Minus className="h-4 w-4" />
+                            </Button>
+                            <span>{item.quantity}</span>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() =>
+                                updateQuantity(
+                                  item.variantId,
+                                  item.quantity + 1
+                                )
+                              }
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+
+                        {/* USD ROW TOTAL */}
+                        <TableCell className="text-right font-medium">
+                          {formatPriceUSD(itemTotal, usdRate)}
+                        </TableCell>
+
+                        <TableCell className="text-right">
                           <Button
-                            variant="outline"
+                            variant="ghost"
                             size="icon"
-                            className="h-8 w-8"
-                            onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
+                            onClick={() =>
+                              removeFromCart(item.variantId)
+                            }
                           >
-                            <Minus className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4 text-muted-foreground" />
                           </Button>
-                          <span>{item.quantity}</span>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
-                          >
-                            <Plus className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right font-medium">
-                        ₹{(item.price * item.quantity).toFixed(2)}
-                      </TableCell>
-                       <TableCell className="text-right">
-                         <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.variantId)}>
-                           <Trash2 className="h-4 w-4 text-muted-foreground" />
-                         </Button>
-                       </TableCell>
-                    </TableRow>
-                  ))}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </CardContent>
           </Card>
         </div>
 
+        {/* ================= ORDER SUMMARY ================= */}
         <div className="lg:col-span-1">
           <Card>
             <CardHeader>
-              <CardTitle className="font-headline text-2xl">Order Summary</CardTitle>
+              <CardTitle className="font-headline text-2xl">
+                Order Summary (USD)
+              </CardTitle>
             </CardHeader>
+
             <CardContent className="space-y-4">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>₹{cartTotal.toFixed(2)}</span>
+                <span>{formatPriceUSD(cartTotal, usdRate)}</span>
               </div>
+
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Shipping</span>
-                <span>₹0.00</span>
+                <span>$0.00</span>
               </div>
+
               <div className="flex justify-between font-bold text-lg">
                 <span>Total</span>
-                <span>₹{cartTotal.toFixed(2)}</span>
+                <span>{formatPriceUSD(cartTotal, usdRate)}</span>
               </div>
             </CardContent>
+
             <CardFooter>
               <Button asChild className="w-full" size="lg">
                 <Link href="/checkout">Proceed to Checkout</Link>

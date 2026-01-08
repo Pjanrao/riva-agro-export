@@ -16,6 +16,8 @@ import { getProducts } from '@/lib/models/Product';
 import type { Category, Product } from '@/lib/types';
 import HeroSlider from '@/components/hero-slider';
 import CategorySlider from "@/components/category-slider";
+import { formatPriceUSD } from '@/lib/price';
+import { getUsdRate } from '@/lib/getUsdRate';
 
 
 const promoBanners = [
@@ -67,6 +69,7 @@ async function getData() {
 export default async function HomePage() {
   const heroImage = { imageUrl: "https://images.unsplash.com/photo-1560493676-04071c5f467b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhZ3JpY3VsdHVyZSUyMGZpZWxkfGVufDB8fHx8MTc2NTgxMzQ2NXww&ixlib=rb-4.1.0&q=80&w=1080", imageHint: "agriculture field" };
   const aboutImage = { imageUrl: "https://images.unsplash.com/photo-1659021245220-8cf62b36fe25?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmYXJtZXJzJTIwd29ya2luZ3xlbnwwfHx8fDE3NjU4NjQwNTN8MA&ixlib=rb-4.1.0&q=80&w=1080", imageHint: "farmers working" };
+const usdRate = await getUsdRate();
 
   const { categories, products } = await getData();
 
@@ -140,10 +143,12 @@ const featuredProducts = products
 
     {/* Products Grid */}
 <div className="mt-14 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
-  {featuredProducts.map((product, index) => {
-const sellingPrice = product.sellingPrice ;
-const discountedPrice = product.discountedPrice;
-    return (
+ {featuredProducts.map((product, index) => {
+        const sellingPrice = product.sellingPrice ?? 0;
+        const discountedPrice =
+          product.discountedPrice ?? sellingPrice;
+
+        return (
       <div
         key={`${product._id?.toString() ?? product.slug}-${index}`}
       >
@@ -241,10 +246,10 @@ const discountedPrice = product.discountedPrice;
     <div className="flex items-center justify-left gap-2">
       {/* Final Price */}
        <span className="text-sm text-gray-400 line-through">
-          ₹{sellingPrice}
+          {formatPriceUSD(sellingPrice,usdRate)}
         </span>
       <span className="text-lg font-bold text-gray-900">
-        ₹{discountedPrice}
+        {formatPriceUSD(discountedPrice,usdRate)}
       </span>
 
       {/* MRP (only if discounted) */}

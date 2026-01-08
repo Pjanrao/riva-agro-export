@@ -79,7 +79,9 @@ export interface Order {
   paymentMethod: string;
   paymentStatus: 'Pending' | 'Paid' | 'Failed';
   paymentId?: string;
+  currency: "INR" | "USD";
   createdAt: string;
+
 }
 
 /* ================= USER ================= */
@@ -88,11 +90,34 @@ export interface User {
   _id?: ObjectId;
   id: string;
   user_id: string;
+
   name: string;
   email: string;
   password?: string;
-  role: 'User' | 'Admin';
+
+  role: "User" | "Admin";
+  status?: "active" | "blocked";
+  verified?: boolean;
+
+  contactNo?: string;
+
+  country?: string;
+  state?: string;
+  city?: string;
+  pincode?: string;
+
+  latitude?: number;
+  longitude?: number;
+
+  referenceName?: string;
+  referenceContact?: string;
+
+  profileCompleted?: boolean;
+
+  createdAt?: string;
+  updatedAt?: string;
 }
+
 
 /* ================= Customers ================= */
 

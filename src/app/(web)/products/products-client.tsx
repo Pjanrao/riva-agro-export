@@ -3,11 +3,13 @@
 import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { formatPriceUSD } from '@/lib/price';
 
 type Props = {
   categories: any[];
   products: any[];
   initialCategory: string | null;
+   usdRate: number;
 };
 
 /* ================= PRICE RANGES ================= */
@@ -23,13 +25,12 @@ export default function ProductsClient({
   categories,
   products,
   initialCategory,
+  usdRate
 }: Props) {
-
   /* ================= STATE ================= */
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedPrices, setSelectedPrices] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
-
 
   /* ================= APPLY URL CATEGORY ================= */
   useEffect(() => {
@@ -45,7 +46,6 @@ export default function ProductsClient({
   }, [initialCategory, categories]);
 
   /* ================= HANDLERS ================= */
-
   const toggleCategory = (name: string) => {
     setSelectedCategories((prev) =>
       prev.includes(name)
@@ -63,7 +63,6 @@ export default function ProductsClient({
   };
 
   /* ================= FILTER LOGIC ================= */
-
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       const category =
@@ -95,153 +94,210 @@ export default function ProductsClient({
   }, [products, selectedCategories, selectedPrices]);
 
   /* ================= UI ================= */
-
   return (
     <section className="container py-16">
       <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-12">
 
-        {/* ================= SIDEBAR ================= */}
-       {/* ================= SIDEBAR / FILTERS ================= */}
-<aside
-  className={`
-    fixed inset-y-0 left-0 z-50 w-[85%] max-w-sm bg-white p-6
-    transform transition-transform duration-300
-    lg:static lg:translate-x-0 lg:w-auto lg:p-0
-    ${showFilters ? "translate-x-0" : "-translate-x-full"}
-  `}
->
-  {/* Mobile Header */}
-  <div className="flex items-center justify-between mb-6 lg:hidden">
-    <h3 className="text-lg font-semibold">Filters</h3>
-    <button
-      onClick={() => setShowFilters(false)}
-      className="text-xl font-bold"
-    >
-      ✕
-    </button>
-  </div>
+        {/* ================= FILTER SIDEBAR ================= */}
+        <aside
+          className={`
+            fixed inset-y-0 left-0 z-50 w-[85%] max-w-sm bg-white p-6
+            transform transition-transform duration-300
+            lg:static lg:translate-x-0 lg:w-auto lg:p-0
+            ${showFilters ? "translate-x-0" : "-translate-x-full"}
+          `}
+        >
+          {/* Mobile Header */}
+          <div className="flex items-center justify-between mb-6 lg:hidden">
+            <h3 className="text-lg font-semibold">Filters</h3>
+            <button
+              onClick={() => setShowFilters(false)}
+              className="text-xl font-bold"
+            >
+              ✕
+            </button>
+          </div>
 
-  {/* Categories */}
-  <div className="space-y-6">
-    <div>
-      <h3 className="text-lg font-semibold mb-4">Categories</h3>
+          <div className="space-y-8">
+            {/* Categories */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Categories</h3>
+              <div className="space-y-3">
+                {categories.map((cat) => (
+                  <label
+                    key={cat.slug}
+                    className="flex items-center gap-3 text-sm cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedCategories.includes(cat.name)}
+                      onChange={() => toggleCategory(cat.name)}
+                      className="h-4 w-4"
+                    />
+                    <span>{cat.name}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
 
-      <div className="space-y-3">
-        {categories.map((cat) => (
-          <label
-            key={cat.slug}
-            className="flex items-center gap-3 text-sm cursor-pointer"
-          >
-            <input
-              type="checkbox"
-              checked={selectedCategories.includes(cat.name)}
-              onChange={() => toggleCategory(cat.name)}
-              className="h-4 w-4"
-            />
-            <span>{cat.name}</span>
-          </label>
-        ))}
-      </div>
-    </div>
+            {/* Price */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Price</h3>
+              <div className="space-y-3">
+                {PRICE_RANGES.map((range) => (
+                  <label
+                    key={range.label}
+                    className="flex items-center gap-3 text-sm cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedPrices.includes(range.label)}
+                      onChange={() => togglePrice(range.label)}
+                      className="h-4 w-4"
+                    />
+                    <span>{range.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
 
-    {/* Price */}
-    <div>
-      <h3 className="text-lg font-semibold mb-4">Price</h3>
+            {/* Apply Button */}
+            <button
+              onClick={() => setShowFilters(false)}
+              className="mt-6 w-full rounded-full bg-primary py-3 text-white lg:hidden"
+            >
+              Apply Filters
+            </button>
+          </div>
+        </aside>
 
-      <div className="space-y-3">
-        {PRICE_RANGES.map((range) => (
-          <label
-            key={range.label}
-            className="flex items-center gap-3 text-sm cursor-pointer"
-          >
-            <input
-              type="checkbox"
-              checked={selectedPrices.includes(range.label)}
-              onChange={() => togglePrice(range.label)}
-              className="h-4 w-4"
-            />
-            <span>{range.label}</span>
-          </label>
-        ))}
-      </div>
-    </div>
+        {/* Overlay */}
+        {showFilters && (
+          <div
+            className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+            onClick={() => setShowFilters(false)}
+          />
+        )}
 
-    {/* Apply Button (Mobile) */}
-    <button
-      onClick={() => setShowFilters(false)}
-      className="mt-6 w-full rounded-full bg-primary py-3 text-white lg:hidden"
-    >
-      Apply Filters
-    </button>
-  </div>
-</aside>
-{/* Overlay */}
-{showFilters && (
-  <div
-    className="fixed inset-0 z-40 bg-black/40 lg:hidden"
-    onClick={() => setShowFilters(false)}
-  />
-)}
-
-        {/* Mobile Filter Button */}
-<div className="flex items-center justify-between mb-6 lg:hidden">
-  <h1 className="text-xl font-semibold">All Products</h1>
-
-  <button
-    onClick={() => setShowFilters(true)}
-    className="flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium"
-  >
-    Filters
-  </button>
-</div>
-
-        {/* ================= PRODUCTS GRID ================= */}
+        {/* ================= PRODUCTS ================= */}
         <div>
-         <h1 className="hidden lg:block text-2xl font-semibold mb-8">
-  All Products
-</h1>
+          {/* Mobile Header */}
+          <div className="flex items-center justify-between mb-6 lg:hidden">
+            <h1 className="text-xl font-semibold">All Products</h1>
+            <button
+              onClick={() => setShowFilters(true)}
+              className="rounded-full border px-4 py-2 text-sm"
+            >
+              Filters
+            </button>
+          </div>
+
+          {/* Desktop Heading */}
+          <h1 className="hidden lg:block text-2xl font-semibold mb-8">
+            All Products
+          </h1>
 
           {filteredProducts.length === 0 ? (
             <p className="text-muted-foreground">
               No products found.
             </p>
           ) : (
-            // <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-10">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
+              {filteredProducts.map((product, index) => {
+                const sellingPrice = product.sellingPrice ?? 0;
+                const discountedPrice =
+                  product.discountedPrice ?? sellingPrice;
 
-              {filteredProducts.map((product, index) => (
-                <div
-                  key={`${product.slug}-${index}`}
-                  className="group bg-white rounded-2xl shadow-sm transition-all hover:shadow-xl hover:-translate-y-1"
-                >
-                  <Link href={`/products/${product.slug}`}>
-                    <div className="relative aspect-[4/5] bg-gray-50 rounded-t-xl overflow-hidden">
-                      <Image
-                        src={
-                          product.primaryImage ||
-                          product.images?.[0] ||
-                          "/uploads/default-product.jpg"
-                        }
-                        alt={product.name}
-                        fill
-                        className="object-contain p-6 transition group-hover:scale-105"
-                      />
-                    </div>
+                return (
+                  <div key={`${product.slug}-${index}`}>
+                    <Link href={`/products/${product.slug}`} className="group block">
+                      <div
+                        className="
+                          bg-white rounded-2xl shadow-sm
+                          transition-all hover:shadow-xl hover:-translate-y-1
+                          h-[360px] sm:h-auto
+                          flex flex-col
+                        "
+                      >
+                        {/* IMAGE */}
+                        <div className="relative aspect-[4/5] bg-gray-50 rounded-t-xl overflow-hidden">
+                          <Image
+                            src={
+                              product.primaryImage ||
+                              product.images?.[0] ||
+                              "/uploads/default-product.jpg"
+                            }
+                            alt={product.name}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 25vw"
+                            className="
+                              object-contain p-6
+                              transition-all duration-300
+                              group-hover:scale-105 group-hover:opacity-80
+                            "
+                          />
 
-                    <div className="p-5 space-y-1">
-                      <h3 className="text-base font-semibold">
-                        {product.name}
-                      </h3>
+                          {product.featured && (
+                            <span className="absolute top-4 left-4 rounded-full bg-emerald-600/90 px-3 py-1 text-xs font-semibold text-white shadow-md z-10">
+                              Featured
+                            </span>
+                          )}
 
-                      {product.categoryName && (
-                        <p className="text-sm text-muted-foreground">
-                          {product.categoryName}
-                        </p>
-                      )}
-                    </div>
-                  </Link>
-                </div>
-              ))}
+                          <div
+                            className="
+                              absolute inset-0
+                              flex items-center justify-center
+                              bg-black/40
+                              opacity-0
+                              transition-opacity duration-300
+                              group-hover:opacity-100
+                            "
+                          >
+                            <span className="rounded-full bg-white px-6 py-2 text-sm font-semibold text-gray-900 shadow-lg">
+                              View Product
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* CONTENT */}
+                        <div className="p-5 text-left space-y-1 flex-1">
+                          <h3 className="text-sm sm:text-base font-semibold text-gray-900 line-clamp-2 min-h-[40px]">
+                            {product.name}
+                          </h3>
+
+                          {product.categoryName && (
+                            <p className="text-sm text-gray-500">
+                              {product.categoryName}
+                            </p>
+                          )}
+
+                          <div className="pt-2 space-y-0.5">
+                            <div className="flex items-center gap-2">
+                              {sellingPrice !== discountedPrice && (
+                                <span className="text-sm text-gray-400 line-through">
+                               {formatPriceUSD(sellingPrice, usdRate)}                                </span>
+                              )}
+                              <span className="text-lg font-bold text-gray-900">
+                                 {formatPriceUSD(discountedPrice, usdRate)}
+
+                              </span>
+                            </div>
+
+                            {product.minOrderQty && (
+                              <span className="inline-block mt-2 rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600">
+                                MOQ:{" "}
+                                <span className="font-medium">
+                                  {product.minOrderQty}
+                                </span>
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

@@ -1,13 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
+import { formatPriceUSD } from "@/lib/price";
 
 interface ProductRecommendationsProps {
   products: Product[];
+    usdRate?: number;
+
 }
 
 export function ProductRecommendations({
-  products,
+  products,usdRate = 1,
 }: ProductRecommendationsProps) {
   if (!products || products.length === 0) {
     return null;
@@ -31,9 +34,8 @@ export function ProductRecommendations({
           "
         >
           {products.slice(0, 4).map((product) => {
-            const sellingPrice = product.sellingPrice;
-            const discountedPrice =
-              product.discountedPrice ?? sellingPrice;
+            const selling = product.sellingPrice ?? 0;
+            const discounted = product.discountedPrice ?? selling; 
 
             return (
               <Link
@@ -72,16 +74,14 @@ export function ProductRecommendations({
 
                   {/* Price */}
                   <div className="mt-1 flex items-center gap-2">
-                    {sellingPrice &&
-                      discountedPrice &&
-                      discountedPrice < sellingPrice && (
+                    {discounted < selling && (
                         <span className="text-xs text-gray-400 line-through">
-                          ₹{sellingPrice}
+      {formatPriceUSD(selling, usdRate)}
                         </span>
                       )}
 
                     <span className="text-sm font-bold text-gray-900">
-                      ₹{discountedPrice}
+    {formatPriceUSD(discounted, usdRate)}
                     </span>
                   </div>
                 </div>

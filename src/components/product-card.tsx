@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { formatPriceUSD } from "@/lib/price";
 
 /* ================= HELPER ================= */
 
@@ -18,16 +19,21 @@ const getMinUnitPrice = (product: Product) => {
   return Math.min(...product.units.map((u) => Number(u.price)));
 };
 
+/* ================= PROPS ================= */
+
 interface ProductCardProps {
   product: Product;
+  usdRate: number;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+/* ================= COMPONENT ================= */
+
+export function ProductCard({ product, usdRate }: ProductCardProps) {
   const imageUrl =
     product.images?.[0] ||
     "https://picsum.photos/seed/placeholder/400/300";
 
-  const minPrice = getMinUnitPrice(product);
+  const minPriceINR = getMinUnitPrice(product);
   const unitLabel = product.units?.[0]?.unit ?? "";
 
   return (
@@ -40,7 +46,6 @@ export function ProductCard({ product }: ProductCardProps) {
               alt={product.name}
               fill
               className="object-cover"
-              data-ai-hint="product image"
             />
           </div>
         </Link>
@@ -53,14 +58,16 @@ export function ProductCard({ product }: ProductCardProps) {
           </Link>
         </CardTitle>
 
-        <p className="text-sm text-muted-foreground line-clamp-2">
-          {product.description}
-        </p>
+        {product.description && (
+          <p className="text-sm text-muted-foreground line-clamp-2">
+            {product.description}
+          </p>
+        )}
       </CardContent>
 
       <CardFooter className="flex items-center justify-between p-4 pt-0">
         <p className="text-lg font-semibold">
-           ₹{minPrice.toFixed(2)}
+          {formatPriceUSD(minPriceINR, usdRate)}
           {unitLabel && (
             <span className="text-sm text-muted-foreground">
               {" "}

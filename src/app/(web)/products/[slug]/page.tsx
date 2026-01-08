@@ -1,10 +1,9 @@
 import { notFound } from "next/navigation";
 import { getProducts } from "@/lib/models/Product";
+import { getUsdRate } from "@/lib/getUsdRate";
 import { ProductDetails } from "@/components/product-details";
 import { ProductRecommendations } from "@/components/product-recommendations";
 import type { Product } from "@/lib/types";
-
-/* ================= PAGE ================= */
 
 type ProductPageProps = {
   params: {
@@ -13,9 +12,12 @@ type ProductPageProps = {
 };
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const { slug } = await params;
+  const { slug } = params;
 
-  const products = await getProducts();
+  const [products, usdRate] = await Promise.all([
+    getProducts(),
+    getUsdRate(),
+  ]);
 
   const product = products.find((p) => p.slug === slug);
 
@@ -33,8 +35,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <>
-      <ProductDetails product={product} />
-      <ProductRecommendations products={relatedProducts} />
+      <ProductDetails product={product} usdRate={usdRate} />
+      <ProductRecommendations
+        products={relatedProducts}
+        usdRate={usdRate}
+      />
     </>
   );
 }

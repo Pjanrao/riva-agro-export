@@ -2,7 +2,7 @@
 import { Metadata } from "next";
 import { getProducts } from "@/lib/models/Product";
 import Link from "next/link";
-
+import { getUsdRate } from "@/lib/getUsdRate";
 
 
 export const metadata: Metadata = {
@@ -27,9 +27,10 @@ export const metadata: Metadata = {
 
 
 import Image from "next/image";
+import { formatPriceUSD } from "@/lib/price";
 
 export default async function SandalPurePage() {
-
+  const usdRate = await getUsdRate();
   const products = await getProducts();
   const SANDAL_PURE_CATEGORY_ID = "6948e0b8005ecdc6599ba47c";
 
@@ -147,8 +148,9 @@ const sandalPureProducts = products.filter(
 
 
       {sandalPureProducts.map((product, index) => {
-        const sellingPrice = product.sellingPrice;
-        const discountedPrice = product.discountedPrice;
+         const selling = product.sellingPrice ?? 0;
+              const discounted = product.discountedPrice ?? selling;
+
 
         return (
           <div
@@ -215,13 +217,13 @@ const sandalPureProducts = products.filter(
                 {/* Price */}
                 <div className="pt-2">
                   <div className="flex items-center gap-2">
-                    {sellingPrice && discountedPrice && (
+                    {selling && discounted && (
                       <span className="text-xs text-gray-400 line-through">
-                        ₹{sellingPrice}
+                      {formatPriceUSD(selling, usdRate)}
                       </span>
                     )}
                     <span className="text-base font-bold text-gray-900">
-                      ₹{discountedPrice ?? sellingPrice}
+                {formatPriceUSD(discounted, usdRate)}
                     </span>
                   </div>
 

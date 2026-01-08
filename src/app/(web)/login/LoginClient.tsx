@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthStore } from "@/store/use-auth-store";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,7 +34,7 @@ const formSchema = z.object({
 export default function LoginClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login } = useAuth();
+const setUser = useAuthStore((s) => s.setUser);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -60,7 +60,7 @@ export default function LoginClient() {
       }
 
       const user = data.user;
-      login(user);
+setUser(user);
 
       toast({
         title: "✅ User logged in successfully",

@@ -7,12 +7,15 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { Separator } from "@/components/ui/separator";
+import { formatPriceUSD } from "@/lib/price";
+
 
 interface ProductDetailsProps {
   product: Product;
+   usdRate: number;
 }
 
-export function ProductDetails({ product }: ProductDetailsProps) {
+export function ProductDetails({ product, usdRate }: ProductDetailsProps) {
   const { addToCart } = useCart();
 
  const minOrderQty = product.minOrderQty;
@@ -80,15 +83,16 @@ const decrement = () => {
 
           {/* PRICE */}
           <div className="mt-4 flex items-end gap-3">
-            <span className="text-2xl font-semibold text-green-600">
-              ₹{discountedPrice}
-            </span>
+           <span className="text-2xl font-semibold text-green-600">
+  {formatPriceUSD(discountedPrice, usdRate)}
+</span>
 
-            {discountedPrice < sellingPrice && (
-              <span className="text-sm text-muted-foreground line-through">
-                ₹{sellingPrice}
-              </span>
-            )}
+{discountedPrice < sellingPrice && (
+  <span className="text-sm text-muted-foreground line-through">
+    {formatPriceUSD(sellingPrice, usdRate)}
+  </span>
+)}
+         
           </div>
 
           <Separator className="my-6" />

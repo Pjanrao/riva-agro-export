@@ -14,7 +14,8 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
         <text
           x="0"
           y="35"
-          className="text-4xl font-bold fill-primary"
+          className="text-4xl font-bold"
+          fill="#2F4F2F"   // ✅ Dark blackish green
         >
           Riva
         </text>
