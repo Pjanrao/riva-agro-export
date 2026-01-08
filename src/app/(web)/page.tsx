@@ -135,157 +135,145 @@ const featuredProducts = products
 </section>
 
 
-<section className="section bg-secondary">
+{/*==================== Featured Products Section ================= */}
+
+<section className="py-12 bg-secondary">
   <div className="container">
 
     {/* Section Heading */}
-<h2 className="text-center font-headline text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+    <h2 className="text-center font-headline text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
       Featured Products
     </h2>
 
     {/* Products Grid */}
-<div className="mt-14 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
- {featuredProducts.map((product, index) => {
-        const sellingPrice = product.sellingPrice ?? 0;
-        const discountedPrice =
-          product.discountedPrice ?? sellingPrice;
+    <div className="mt-14 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
+      {featuredProducts.map((product, index) => {
+        const sellingPrice = product.sellingPrice;
+        const discountedPrice = product.discountedPrice;
 
         return (
-      <div
-        key={`${product._id?.toString() ?? product.slug}-${index}`}
-      >
-        <Link
-          href={`/products/${product.slug}`}
-          className="group block"
-        >
-       
-          <div
-  className="
-    group bg-white rounded-2xl shadow-sm
-    transition-all hover:shadow-xl hover:-translate-y-1
-    h-[300px] sm:h-auto
-    flex flex-col
-  "
->                                           
-            {/* Image */}
-          <div className="relative aspect-[1/1] bg-gray-50 rounded-t-xl overflow-hidden group">
-  <Image
-    src={
-      product.primaryImage ||
-      product.images?.[0] ||
-      "/uploads/default-product.jpg"
-    }
-    alt={product.name}
-    fill
-    sizes="(max-width: 768px) 100vw, 25vw"
-    className="
-      object-contain p-6
-      transition-all duration-300
-      group-hover:scale-105 group-hover:opacity-80
-    "
-  />
+          <div key={`${product._id?.toString() ?? product.slug}-${index}`}>
+            <Link
+              href={`/products/${product.slug}`}
+              className="group block"
+            >
+              {/* CARD */}
+              <div
+                className="
+                  group bg-white rounded-2xl shadow-sm
+                  transition-all hover:shadow-xl hover:-translate-y-1 h-[360px] sm:h-auto
+                  flex flex-col
+                "
+              >
+                {/* Image */}
+                <div className="relative aspect-[1/1] bg-gray-50 rounded-t-xl overflow-hidden">
+                  <Image
+                    src={
+                      product.primaryImage ||
+                      product.images?.[0] ||
+                      "/uploads/default-product.jpg"
+                    }
+                    alt={product.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 25vw"
+                    className="
+                      object-contain p-5
+                      transition-all duration-300
+                      group-hover:scale-105 group-hover:opacity-80
+                    "
+                  />
 
-  {/* Featured badge */}
-  {product.featured && (
-    <span className="absolute top-4 left-4 rounded-full bg-emerald-600/90 px-3 py-1 text-xs font-semibold text-white shadow-md z-10">
-      Featured
-    </span>
-  )}
-   <div
-    className="
-      absolute inset-0
-      flex items-center justify-center
-      bg-black/40
-      opacity-0
-      transition-opacity duration-300
-      group-hover:opacity-100
-    "
-  >
-    <span
-      className=" 
-        rounded-full bg-white px-6 py-2
-        text-sm font-semibold text-gray-900
-        shadow-lg
-      "
-    >
-      View Product
-    </span>
-  </div>
+                  {/* Featured badge */}
+                  {product.featured && (
+                    <span className="absolute top-4 left-4 rounded-full bg-emerald-600/90 px-3 py-1 text-xs font-semibold text-white shadow-md z-10">
+                      Featured
+                    </span>
+                  )}
 
-  
-</div> 
-{/* Content */}
-<div className="px-5 py-4 text-left space-y-1">
-  {/* Product Name */}
-  {/* <h3 className="text-base font-semibold text-gray-900"> */}
-  <h3
-  className="
-    text-sm sm:text-base font-semibold text-gray-900
-    line-clamp-2
-    min-h-[40px]
-  "
->
-    {product.name}
-  </h3>
+                  {/* Hover Overlay */}
+                  <div
+                    className="
+                      absolute inset-0
+                      flex items-center justify-center
+                      bg-black/40
+                      opacity-0
+                      transition-opacity duration-300
+                      group-hover:opacity-100
+                    "
+                  >
+                    <span
+                      className="
+                        rounded-full bg-white px-6 py-2
+                        text-sm font-semibold text-gray-900
+                        shadow-lg
+                      "
+                    >
+                      View Product
+                    </span>
+                  </div>
+                </div>
 
-  {/* Category */}
-  {/* {product.categoryName && (
-    <p className="text-sm text-gray-500">
-      {product.categoryName}
-    </p>
-  )} */}
+                {/* Content */}
+                <div className="px-4 py-4 text-left space-y-1">
+                  {/* Product Name */}
+                  <h3
+                    className="
+                      text-sm sm:text-base font-semibold text-gray-900
+                      line-clamp-2
+                    "
+                  >
+                    {product.name}
+                  </h3>
 
- {/* Price + MOQ */}
-<div className="pt-2">
-  <div className="flex items-center justify-between gap-1">
+                  {/* Category */}
+                  {product.categoryName && (
+                    <p className="text-sm text-gray-500">
+                      {product.categoryName}
+                    </p>
+                  )}
 
-    {/* LEFT: Price */}
-    <div className="flex items-center gap-2">
-      <span className="text-sm text-gray-400 line-through">
-        {formatPriceUSD(sellingPrice, usdRate)}
-      </span>
+                  {/* Price */}
+                  <div className="pt-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-gray-400 line-through">
+                        ₹{sellingPrice}
+                      </span>
+                      <span className="text-lg font-bold text-gray-900">
+                        ₹{discountedPrice}
+                      </span>
+                    </div>
 
-      <span className="text-lg font-bold text-gray-900">
-        {formatPriceUSD(discountedPrice, usdRate)}
-      </span>
+                    {/* MOQ */}
+                    {product.minOrderQty && (
+                      <span className="inline-block mt-1 rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600">
+                        MOQ: <span className="font-medium">{product.minOrderQty}</span>
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
+        );
+      })}
     </div>
-
-    {/* RIGHT: MOQ Badge */}
-    {product.minOrderQty && (
-      <span className="shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
-        MOQ: {product.minOrderQty}
-      </span>
-    )}
-
   </div>
-</div>
 
-
-</div>
-
-
-
-</div>
-  </Link>
-      </div>
-    );
-  })}
-</div>
-</div>
-
-{/* All Products Button */}
-<div className="mt-14 flex justify-center">
-  <Link href="/products">
-    <Button
-      size="lg"
-      className="rounded-full px-10 py-6 text-base font-semibold"
-      variant="outline"
-    >
-      All Products
-    </Button>
-  </Link>
-</div> 
+  {/* All Products Button */}
+  <div className="mt-14 flex justify-center">
+    <Link href="/products">
+      <Button
+        size="lg"
+        className="rounded-full px-10 py-6 text-base font-semibold"
+        variant="outline"
+      >
+        All Products
+      </Button>
+    </Link>
+  </div>
 </section>
+
+
 {/* ================= Sandal Pure Feature Section ================= */}
 
 {/* <section className="relative bg-[#020001] overflow-hidden">
