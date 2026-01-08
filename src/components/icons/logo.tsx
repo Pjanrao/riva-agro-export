@@ -1,12 +1,11 @@
-import type { SVGProps } from 'react';
+import type { SVGProps } from "react";
 
 export function Logo(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 320 50"
-      width="260"
-      height="40"
+      className="w-40 h-auto sm:w-48 md:w-64"
       {...props}
     >
       <g className="font-headline">
@@ -15,12 +14,12 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
           x="0"
           y="35"
           className="text-4xl font-bold"
-          fill="#2F4F2F"   // ✅ Dark blackish green
+          fill="#2F4F2F"
         >
           Riva
         </text>
 
-        {/* Agro */}
+        {/* Agro Exports */}
         <text
           x="90"
           y="35"
@@ -28,8 +27,6 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
         >
           Agro Exports
         </text>
-
-       
       </g>
     </svg>
   );

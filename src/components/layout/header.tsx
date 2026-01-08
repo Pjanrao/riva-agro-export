@@ -122,7 +122,7 @@ export default function Header() {
               height={120}
               priority
               className="
-                h-24 md:h-20
+                h-16 md:h-20
                 w-auto object-contain
                 drop-shadow-[0_4px_6px_rgba(0,0,0,0.15)]
               "
