@@ -1,16 +1,27 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getOrdersByUserId } from '@/lib/models/Order';
+import { NextRequest, NextResponse } from "next/server";
+import { getOrdersByUserId } from "@/lib/models/Order";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  context: { params: Promise<{ userId: string }> }
 ) {
   try {
-    const { userId } = params;
+    const { userId } = await context.params; // ✅ FIX
+
+    if (!userId) {
+      return NextResponse.json(
+        { message: "User ID is required" },
+        { status: 400 }
+      );
+    }
+
     const orders = await getOrdersByUserId(userId);
     return NextResponse.json(orders);
   } catch (error) {
-    console.error('Failed to fetch user orders:', error);
-    return NextResponse.json({ message: 'Failed to fetch user orders' }, { status: 500 });
+    console.error("Failed to fetch user orders:", error);
+    return NextResponse.json(
+      { message: "Failed to fetch orders" },
+      { status: 500 }
+    );
   }
 }

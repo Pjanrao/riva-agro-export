@@ -602,7 +602,7 @@ export default function CheckoutPage() {
       );
 
       const orderData: Omit<Order, "id" | "_id" | "createdAt"> = {
-        userId: user!._id,
+        userId: user!.id,
         items: cartItems,
         total: usdTotal, // ✅ STORE USD
         status: "Processing",

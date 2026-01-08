@@ -112,9 +112,9 @@ export default function Header() {
 
       {/* ================= WHITE NAVBAR ================= */}
       <div className="w-full bg-white border-b border-black/10">
-        <div className="container flex h-16 md:h-20 items-center justify-between">
+        <div className="container flex h-16 md:h-20 md:items-center md:justify-between">
           {/* LOGO */}
-          <Link href="/" className="flex items-center gap-4">
+          <Link href="/" className="flex items-center gap-2">
             <Image
               src="/uploads/logo1.png"
               alt="Riva Agro Exports"
