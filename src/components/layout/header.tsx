@@ -133,7 +133,7 @@ export default function Header() {
             </Link>
 
           {/* NAV / USER */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             {/* <MainNav className="hidden md:flex" /> */}
             <UserNav />
           </div>
