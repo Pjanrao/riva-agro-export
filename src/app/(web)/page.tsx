@@ -82,11 +82,9 @@ const featuredProducts = products
 
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
+    
     {/* Hero Slider Section */}
  <HeroSlider />
-
-       
 
       {/* Featured Categories */}
     
@@ -273,53 +271,8 @@ const featuredProducts = products
   </div>
 </section>
 
+{/* ================= Sandal Pure Section ================= */}
 
-{/* ================= Sandal Pure Feature Section ================= */}
-
-{/* <section className="relative bg-[#020001] overflow-hidden">
-  <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.3fr]"> */}
-
-    {/* LEFT — Text (container constrained) */}
-{/* <div className="px-6 lg:px-16 py-20 flex items-center max-w-xl">
-      <div>
-        <span className="inline-block rounded-full bg-[#caa24d]/20 px-5 py-2 text-sm font-semibold text-[#e6c77a]">
-          Featured Brand
-        </span>
-
-        <h2 className="mt-6 font-headline text-4xl md:text-5xl font-bold
-          bg-gradient-to-r from-[#f5d88c] via-[#e6b65c] to-[#caa24d]
-          bg-clip-text text-transparent">
-          Sandal Pure
-        </h2>
-
-        <p className="mt-4 text-lg max-w-lg text-[#e7dbc6]">
-          A premium range of 100% sandalwood-based herbal creams,
-          cultivated, processed, and delivered directly by sandalwood farmers.
-        </p>
-       <Link href="/sandal-pure"> 
-        <div className="mt-8 flex gap-4">
-          <Button className="bg-gradient-to-r from-[#f5d88c] to-[#caa24d] text-black">
-            Explore Sandal Pure
-          </Button></div>
-          </Link>
-        
-      </div>
-    </div>
-
-    {/* RIGHT — Image (FULL WIDTH to edge) */}
- {/*  <div className="relative min-h-[520px] lg:min-h-[600px] overflow-hidden">
-    <Link href="/sandal-pure">
-  <Image
-    src="/uploads/banners/banner-6.png"
-    alt="Sandal Pure Product Range"
-    fill
-    priority
-    className="object-cover object-left"
-  /> </Link>
-</div>
-
-  </div>
-</section> */}
 <section className="relative bg-[#020001] overflow-hidden">
   <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.3fr]">
 
@@ -383,8 +336,10 @@ const featuredProducts = products
   </div>
 </section>
 
+{/* ================= How We Work Section ================= */}
 
-<section className="py-24 bg-white">
+
+<section className="py-14 bg-white">
   <div className="container">
 
     {/* Header */}
@@ -456,8 +411,10 @@ const featuredProducts = products
   </div>
 </section>
 
+{/* ================= Testimonials Section ================= */}
 
-<section className="pt-10 pb-24 bg-white">
+
+<section className="mt-5 pb-10 bg-white">
   <div className="container">
 
     {/* Header */}
@@ -550,10 +507,8 @@ const featuredProducts = products
 
   </div>
 </section>
-
-
-      {/* Why Choose Us Section */}
-{/* Why Choose Us – Alternate Design */}
+   
+{/* Why Choose Us */}
 <section className="relative py-24 bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 overflow-hidden">
   {/* Background Accent */}
   <div className="absolute inset-y-0 right-0 w-1/2 bg-primary/5 -z-10 rounded-l-[120px]" />
