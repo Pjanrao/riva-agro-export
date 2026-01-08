@@ -43,7 +43,7 @@ export default function CategorySlider({
         <Carousel
           opts={{ align: "start", loop: true }}
           plugins={[autoplay.current]}
-          className="relative mt-14 bg-white overflow-x-clip"
+          className="relative mt-8 bg-white overflow-x-clip"
         >
             <div className="overflow-hidden">
           <CarouselContent>
