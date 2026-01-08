@@ -112,7 +112,7 @@ export default function Header() {
 
       {/* ================= WHITE NAVBAR ================= */}
       <div className="w-full bg-white border-b border-black/10">
-        <div className="container flex h-16 md:h-20 md:items-center md:justify-between">
+        <div className="container flex h-16 md:h-20 items-center justify-between">
           {/* LOGO */}
           <Link href="/" className="flex items-center gap-2">
             <Image
@@ -133,7 +133,7 @@ export default function Header() {
             </Link>
 
           {/* NAV / USER */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             {/* <MainNav className="hidden md:flex" /> */}
             <UserNav />
           </div>
