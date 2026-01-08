@@ -145,3 +145,7 @@
     transform: translateY(0);
   }
 }
+
+.section {
+  @apply pt-16 pb-14;
+}

@@ -94,7 +94,7 @@ const featuredProducts = products
 
 {/* ================= Promo Banners ================= */}
 
-<section className="pt-8 pb-20 bg-white">
+<section className="section bg-white">
   <div className="container">
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
       {promoBanners.map((item) => (
@@ -133,7 +133,9 @@ const featuredProducts = products
     </div>
   </div>
 </section>
-<section className="py-20 bg-secondary">
+
+
+<section className="section bg-secondary">
   <div className="container">
 
     {/* Section Heading */}
@@ -156,25 +158,17 @@ const featuredProducts = products
           href={`/products/${product.slug}`}
           className="group block"
         >
-          {/* <div
-            className="
-              bg-white rounded-2xl
-              shadow-sm
-              transition-all duration-300
-              hover:shadow-xl hover:-translate-y-1
-            "
-          > */}
-
+       
           <div
   className="
     group bg-white rounded-2xl shadow-sm
     transition-all hover:shadow-xl hover:-translate-y-1
-    h-[360px] sm:h-auto
+    h-[300px] sm:h-auto
     flex flex-col
   "
->
+>                                           
             {/* Image */}
-          <div className="relative aspect-[4/5] bg-gray-50 rounded-t-xl overflow-hidden group">
+          <div className="relative aspect-[1/1] bg-gray-50 rounded-t-xl overflow-hidden group">
   <Image
     src={
       product.primaryImage ||
@@ -208,7 +202,7 @@ const featuredProducts = products
     "
   >
     <span
-      className="
+      className=" 
         rounded-full bg-white px-6 py-2
         text-sm font-semibold text-gray-900
         shadow-lg
@@ -221,7 +215,7 @@ const featuredProducts = products
   
 </div> 
 {/* Content */}
-<div className="p-5 text-left space-y-1">
+<div className="px-5 py-4 text-left space-y-1">
   {/* Product Name */}
   {/* <h3 className="text-base font-semibold text-gray-900"> */}
   <h3
@@ -235,34 +229,38 @@ const featuredProducts = products
   </h3>
 
   {/* Category */}
-  {product.categoryName && (
+  {/* {product.categoryName && (
     <p className="text-sm text-gray-500">
       {product.categoryName}
     </p>
-  )}
+  )} */}
 
-  {/* Price */}
-  <div className="pt-2 space-y-0.5">
-    <div className="flex items-center justify-left gap-2">
-      {/* Final Price */}
-       <span className="text-sm text-gray-400 line-through">
-          {formatPriceUSD(sellingPrice,usdRate)}
-        </span>
-      <span className="text-lg font-bold text-gray-900">
-        {formatPriceUSD(discountedPrice,usdRate)}
+ {/* Price + MOQ */}
+<div className="pt-2">
+  <div className="flex items-center justify-between gap-1">
+
+    {/* LEFT: Price */}
+    <div className="flex items-center gap-2">
+      <span className="text-sm text-gray-400 line-through">
+        {formatPriceUSD(sellingPrice, usdRate)}
       </span>
 
-      {/* MRP (only if discounted) */}
-       
+      <span className="text-lg font-bold text-gray-900">
+        {formatPriceUSD(discountedPrice, usdRate)}
+      </span>
     </div>
 
-    {/* MOQ */}
+    {/* RIGHT: MOQ Badge */}
     {product.minOrderQty && (
-<span className="inline-block mt-2 rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600">
-    MOQ: <span className="font-medium">{product.minOrderQty} </span>
-  </span>
+      <span className="shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+        MOQ: {product.minOrderQty}
+      </span>
     )}
+
   </div>
+</div>
+
+
 </div>
 
 
@@ -564,87 +562,6 @@ const featuredProducts = products
 
   </div>
 </section>
-
-
-    {/* Featured Products */}
-
-
-
-
-
-  
-     {/* About Us Section */}
-{/* <section className="relative py-24 bg-background overflow-hidden">
-  {/* Decorative Background */}
-  {/* <div className="absolute inset-0 -z-10 bg-gradient-to-r from-primary/5 via-transparent to-primary/5" />
-
-  <div className="container grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-      */}
-    {/* Image Side */}
-    {/* <div className="relative">
-      <div className="absolute -inset-4 rounded-3xl bg-primary/10 blur-2xl" />
-      <div className="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-2xl">
-        <Image
-          src={aboutImage.imageUrl}
-          alt="About Riva Agro Exports"
-          fill
-          className="object-cover"
-          data-ai-hint={aboutImage.imageHint}
-        />
-      </div>
-    </div> */}
-
-    {/* Content Side */}
-    {/* <div className="space-y-8">
-      <div>
-        <span className="inline-block rounded-full bg-primary/10 px-5 py-2 text-sm font-semibold text-primary">
-          About Us
-        </span>
-        <h2 className="mt-4 font-headline text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
-          Trusted Agro Exports,<br className="hidden sm:block" />
-          From Indian Farms to the World
-        </h2>
-      </div>
-
-      <p className="text-lg leading-relaxed text-muted-foreground">
-        At <span className="font-semibold text-gray-900">Riva Agro Exports</span>, we bridge the gap
-        between local farmers and global markets. With years of expertise in sourcing,
-        quality assurance, and international trade, we export premium agricultural
-        products that meet global standards.
-      </p> */}
-
-      {/* Highlights */}
-      {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div className="rounded-2xl bg-white p-6 shadow-md">
-          <h4 className="text-2xl font-bold text-primary">10+</h4>
-          <p className="mt-1 text-sm text-muted-foreground">Years Experience</p>
-        </div>
-        <div className="rounded-2xl bg-white p-6 shadow-md">
-          <h4 className="text-2xl font-bold text-primary">25+</h4>
-          <p className="mt-1 text-sm text-muted-foreground">Export Countries</p>
-        </div>
-        <div className="rounded-2xl bg-white p-6 shadow-md">
-          <h4 className="text-2xl font-bold text-primary">100%</h4>
-          <p className="mt-1 text-sm text-muted-foreground">Quality Assured</p>
-        </div>
-      </div> */}
-
-      {/* CTA */}
-      {/* <div className="flex items-center gap-6">
-        <Button asChild size="lg" className="rounded-full px-8">
-          <Link href="/about">Learn More</Link>
-        </Button>
-        <Link
-          href="/contact"
-          className="text-base font-semibold text-primary underline underline-offset-4 hover:text-primary/80"
-        >
-          Contact Us →
-        </Link>
-      </div>
-    </div>
-  </div>
-</section> */}
-
 
 
       {/* Why Choose Us Section */}

@@ -114,7 +114,7 @@ export default function Header() {
       <div className="w-full bg-white border-b border-black/10">
         <div className="container flex h-16 md:h-20 items-center justify-between">
           {/* LOGO */}
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-3">
             <Image
               src="/uploads/logo1.png"
               alt="Riva Agro Exports"
@@ -127,8 +127,8 @@ export default function Header() {
                 drop-shadow-[0_4px_6px_rgba(0,0,0,0.15)]
               "
             />
-              <div className="mt-2 md:mt-3">
-               <Logo />
+<div className="flex items-center">
+    <Logo className="h-6 sm:h-7 md:h-8" />
                </div>
             </Link>
 
