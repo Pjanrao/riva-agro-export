@@ -67,6 +67,80 @@ export default function AboutPage() {
   </div>
 </section>
 
+      {/* ================= OUR MISSION ================= */}
+<section className="py-10 bg-secondary bg-[radial-gradient(circle_at_top,rgba(0,0,0,0.04),transparent_60%)]">
+
+  {/* Subtle Background Accent */}
+
+  <div className="container">
+
+    {/* Header */}
+    <div className="text-center max-w-10xl mx-auto">
+      <span className="inline-block rounded-full bg-primary/10 px-5 py-2 text-sm font-semibold text-primary">
+        Our Mission
+      </span>
+
+  <h2 className="mt-4 font-headline text-4xl md:text-5xl font-bold tracking-tight text-gray-900">  Building Global Trust Through Agriculture
+      </h2>
+
+      <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+        Our mission is to empower local farmers by connecting their
+        hard-earned produce with international markets. We champion
+        sustainable farming, ethical trade, and consistent quality
+        to deliver long-term value across the global supply chain.
+      </p>
+    </div>
+
+    {/* Mission Pillars */}
+    <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-10">
+
+      {/* Pillar 1 */}
+      <div className="rounded-2xl bg-white p-10 text-center shadow-sm">
+        <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white">
+          <Leaf className="h-7 w-7" />
+        </div>
+        <h3 className="text-xl font-bold text-gray-900">
+          Farmer Empowerment
+        </h3>
+        <p className="mt-3 text-muted-foreground">
+          Enabling farmers to grow sustainably and gain access to
+          fair global trade opportunities.
+        </p>
+      </div>
+
+      {/* Pillar 2 */}
+      <div className="rounded-2xl bg-white p-10 text-center shadow-sm">
+        <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white">
+          <ShieldCheck className="h-7 w-7" />
+        </div>
+        <h3 className="text-xl font-bold text-gray-900">
+          Ethical Exports
+        </h3>
+        <p className="mt-3 text-muted-foreground">
+          Transparent sourcing, strict quality checks, and compliance
+          with international standards.
+        </p>
+      </div>
+
+      {/* Pillar 3 */}
+      <div className="rounded-2xl bg-white p-10 text-center shadow-sm">
+        <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white">
+          <Truck className="h-7 w-7" />
+        </div>
+        <h3 className="text-xl font-bold text-gray-900">
+          Global Reach
+        </h3>
+        <p className="mt-3 text-muted-foreground">
+          Reliable logistics and export expertise connecting farms
+          to markets worldwide.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
 <section className="py-24 bg-white">
   <div className="container">
 
