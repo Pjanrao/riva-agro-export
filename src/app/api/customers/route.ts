@@ -17,12 +17,8 @@ export async function GET() {
     return NextResponse.json(customers);
   } catch (err: any) {
     console.error('GET CUSTOMERS ERROR:', err);
-
     return NextResponse.json(
-      {
-        message: 'Internal Server Error',
-        error: err?.message || 'unknown',
-      },
+      { message: 'Internal Server Error' },
       { status: 500 }
     );
   }
@@ -45,11 +41,11 @@ export async function POST(req: NextRequest) {
       state,
       city,
       pin,
+      latitude,
+      longitude,
       referenceName,
       referenceContact,
     } = body;
-
-    /* ===== VALIDATION ===== */
 
     if (
       !fullName ||
@@ -67,8 +63,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    /* ===== CREATE CUSTOMER ===== */
-
     const customer = await CustomerModel.create({
       fullName,
       contactNo,
@@ -78,19 +72,19 @@ export async function POST(req: NextRequest) {
       state,
       city,
       pin,
-      referenceName,
-      referenceContact,
+
+      latitude: latitude ?? null,
+      longitude: longitude ?? null,
+
+      referenceName: referenceName ?? null,
+      referenceContact: referenceContact ?? null,
     });
 
     return NextResponse.json(customer, { status: 201 });
   } catch (err: any) {
     console.error('CREATE CUSTOMER ERROR:', err);
-
     return NextResponse.json(
-      {
-        message: 'Internal Server Error',
-        error: err?.message || 'unknown',
-      },
+      { message: 'Internal Server Error' },
       { status: 500 }
     );
   }

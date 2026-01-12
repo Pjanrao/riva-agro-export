@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
 
     // 🔐 CREATE JWT
     const token = jwt.sign(
-      { userId: user.id },
+      { id: user.id },
       process.env.JWT_SECRET!,
       { expiresIn: "7d" }
     );
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     );
 
     // 🔥 SET COOKIE (THIS WAS MISSING)
-    response.cookies.set("access_token", token, {
+    response.cookies.set("auth_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

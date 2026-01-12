@@ -82,55 +82,53 @@ export function ProductModal({
       discountedPrice: 0,
       sellingPrice: 0,
     },
-  }); 
-
-  const resetForm = () => {
-  form.reset({
-    name: '',
-    description: '',
-    category: '',
-    hsCode: '',
-    minOrderQty: '',
-    discountedPrice: 0,
-    sellingPrice: 0,
-    status: true,
-    featured: false,
   });
 
-  setSelectedImages([]);
-  setImagePreviews([]);
-};
+  const resetForm = () => {
+    form.reset({
+      name: '',
+      description: '',
+      category: '',
+      hsCode: '',
+      minOrderQty: '',
+      discountedPrice: 0,
+      sellingPrice: 0,
+      status: true,
+      featured: false,
+    });
 
+    setSelectedImages([]);
+    setImagePreviews([]);
+  };
 
   /* ================= PREFILL ================= */
 
-React.useEffect(() => {
-  if (!open) return;
+  React.useEffect(() => {
+    if (!open) return;
 
-  if ((mode === 'edit' || mode === 'view') && product) {
-    form.reset({
-      name: product.name,
-      description: product.description,
-      category: product.category,
-      hsCode: product.hsCode,
-      minOrderQty: product.minOrderQty || '',
-      discountedPrice: product.discountedPrice || 0,
-      sellingPrice: product.sellingPrice || 0,
-      status: product.status === 'active',
-      featured: product.featured,
-    });
+    if ((mode === 'edit' || mode === 'view') && product) {
+      form.reset({
+        name: product.name,
+        description: product.description,
+        category: product.category,
+        hsCode: product.hsCode,
+        minOrderQty: product.minOrderQty || '',
+        discountedPrice: product.discountedPrice || 0,
+        sellingPrice: product.sellingPrice || 0,
+        status: product.status === 'active',
+        featured: product.featured,
+      });
 
-    setImagePreviews(product.images || []);
-    setSelectedImages([]);
-  }
-}, [product, mode, open, form]);
-
+      setImagePreviews(product.images || []);
+      setSelectedImages([]);
+    }
+  }, [product, mode, open, form]);
 
   React.useEffect(() => {
-  if (open && mode === 'add') {
-    resetForm();
-  }
-}, [open, mode]);
+    if (open && mode === 'add') {
+      resetForm();
+    }
+  }, [open, mode]);
 
   /* ================= IMAGE HANDLING ================= */
 
@@ -211,9 +209,7 @@ React.useEffect(() => {
 
     toast({ title: 'Product saved' });
     onSaved();
-    if (mode === 'add') {
-  resetForm(); // ✅ important
-}
+    if (mode === 'add') resetForm();
     onClose();
   };
 
@@ -221,15 +217,16 @@ React.useEffect(() => {
 
   return (
     <Dialog
-  open={open}
-  onOpenChange={(v) => {
-    if (!v) {
-      resetForm();
-      onClose();
-    }
-  }}
->
-      <DialogContent className="max-w-3xl p-0">
+      open={open}
+      onOpenChange={(v) => {
+        if (!v) {
+          resetForm();
+          onClose();
+        }
+      }}
+    >
+      {/* 🔽 WIDTH REDUCED (ONLY CHANGE) */}
+      <DialogContent className="max-w-xl p-0">
         <DialogHeader className="px-5 py-4 border-b">
           <DialogTitle>
             {mode === 'view'
@@ -240,7 +237,7 @@ React.useEffect(() => {
           </DialogTitle>
         </DialogHeader>
 
-        {/* VIEW MODE */}
+        {/* ================= VIEW MODE (UNCHANGED) ================= */}
         {isView && product && (
           <div className="p-5 text-sm space-y-2">
             <div>
@@ -300,7 +297,7 @@ React.useEffect(() => {
           </div>
         )}
 
-        {/* ADD / EDIT FORM */}
+        {/* ================= ADD / EDIT FORM ================= */}
         {!isView && (
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -329,14 +326,27 @@ React.useEffect(() => {
               </SelectContent>
             </Select>
 
+            {/* 🔽 LABELS ADDED */}
             <div className="grid grid-cols-2 gap-3">
-              <Input placeholder="HS Code" {...form.register('hsCode')} />
-              <Input placeholder="MOQ" {...form.register('minOrderQty')} />
+              <div>
+                <Label>HS Code</Label>
+                <Input {...form.register('hsCode')} />
+              </div>
+              <div>
+                <Label>Minimum Order Quantity</Label>
+                <Input {...form.register('minOrderQty')} />
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <Input type="number" placeholder="Discounted" {...form.register('discountedPrice')} />
-              <Input type="number" placeholder="MRP" {...form.register('sellingPrice')} />
+              <div>
+                <Label>Discounted Price</Label>
+                <Input type="number" {...form.register('discountedPrice')} />
+              </div>
+              <div>
+                <Label>MRP</Label>
+                <Input type="number" {...form.register('sellingPrice')} />
+              </div>
             </div>
 
             <Label>Images (max 5)</Label>

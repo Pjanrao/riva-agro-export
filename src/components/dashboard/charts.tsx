@@ -11,25 +11,26 @@ import {
   Bar,
 } from "recharts";
 import { Card } from "@/components/ui/card";
-
-const demoData = [
-  { name: "Mon", revenue: 12000, orders: 22 },
-  { name: "Tue", revenue: 18000, orders: 30 },
-  { name: "Wed", revenue: 15000, orders: 26 },
-  { name: "Thu", revenue: 22000, orders: 34 },
-  { name: "Fri", revenue: 28000, orders: 42 },
-];
+import { useEffect, useState } from "react";
 
 export function DashboardCharts() {
+  const [data, setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/api/dashboard/charts")
+      .then((res) => res.json())
+      .then(setData);
+  }, []);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      {/* Revenue Chart */}
+      {/* Revenue */}
       <Card className="p-4 rounded-xl shadow-sm">
         <h3 className="text-sm font-medium mb-3 text-muted-foreground">
-          Revenue Trend
+          Revenue Trend (Last 7 Days)
         </h3>
         <ResponsiveContainer width="100%" height={220}>
-          <LineChart data={demoData}>
+          <LineChart data={data}>
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
@@ -43,21 +44,17 @@ export function DashboardCharts() {
         </ResponsiveContainer>
       </Card>
 
-      {/* Orders Chart */}
+      {/* Orders */}
       <Card className="p-4 rounded-xl shadow-sm">
         <h3 className="text-sm font-medium mb-3 text-muted-foreground">
-          Orders Trend
+          Orders Trend (Last 7 Days)
         </h3>
         <ResponsiveContainer width="100%" height={220}>
-          <BarChart data={demoData}>
+          <BarChart data={data}>
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
-            <Bar
-              dataKey="orders"
-              fill="#22c55e"
-              radius={[6, 6, 0, 0]}
-            />
+            <Bar dataKey="orders" fill="#22c55e" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </Card>

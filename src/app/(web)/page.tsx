@@ -18,6 +18,8 @@ import HeroSlider from '@/components/hero-slider';
 import CategorySlider from "@/components/category-slider";
 import { formatPriceUSD } from '@/lib/price';
 import { getUsdRate } from '@/lib/getUsdRate';
+import FeaturedProduct from "@/components/feature-product";
+
 
 
 const promoBanners = [
@@ -69,9 +71,10 @@ async function getData() {
 export default async function HomePage() {
   const heroImage = { imageUrl: "https://images.unsplash.com/photo-1560493676-04071c5f467b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhZ3JpY3VsdHVyZSUyMGZpZWxkfGVufDB8fHx8MTc2NTgxMzQ2NXww&ixlib=rb-4.1.0&q=80&w=1080", imageHint: "agriculture field" };
   const aboutImage = { imageUrl: "https://images.unsplash.com/photo-1659021245220-8cf62b36fe25?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmYXJtZXJzJTIwd29ya2luZ3xlbnwwfHx8fDE3NjU4NjQwNTN8MA&ixlib=rb-4.1.0&q=80&w=1080", imageHint: "farmers working" };
-const usdRate = await getUsdRate();
-
+  const usdRate = await getUsdRate();
   const { categories, products } = await getData();
+
+  
 
 const featuredProducts = products
   .filter((p) => p.featured && p.status === 'active')
@@ -135,141 +138,8 @@ const featuredProducts = products
 
 {/*==================== Featured Products Section ================= */}
 
-<section className="py-12 bg-secondary">
-  <div className="container">
+<FeaturedProduct products={products} usdRate={usdRate} />
 
-    {/* Section Heading */}
-    <h2 className="text-center font-headline text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
-      Featured Products
-    </h2>
-
-    {/* Products Grid */}
-    <div className="mt-14 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
-      {featuredProducts.map((product, index) => {
-        const sellingPrice = product.sellingPrice;
-        const discountedPrice = product.discountedPrice;
-
-        return (
-          <div key={`${product._id?.toString() ?? product.slug}-${index}`}>
-            <Link
-              href={`/products/${product.slug}`}
-              className="group block"
-            >
-              {/* CARD */}
-              <div
-                className="
-                  group bg-white rounded-2xl shadow-sm
-                  transition-all hover:shadow-xl hover:-translate-y-1 h-[360px] sm:h-auto
-                  flex flex-col
-                "
-              >
-                {/* Image */}
-                <div className="relative aspect-[1/1] bg-gray-50 rounded-t-xl overflow-hidden">
-                  <Image
-                    src={
-                      product.primaryImage ||
-                      product.images?.[0] ||
-                      "/uploads/default-product.jpg"
-                    }
-                    alt={product.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 25vw"
-                    className="
-                      object-contain p-5
-                      transition-all duration-300
-                      group-hover:scale-105 group-hover:opacity-80
-                    "
-                  />
-
-                  {/* Featured badge */}
-                  {product.featured && (
-                    <span className="absolute top-4 left-4 rounded-full bg-emerald-600/90 px-3 py-1 text-xs font-semibold text-white shadow-md z-10">
-                      Featured
-                    </span>
-                  )}
-
-                  {/* Hover Overlay */}
-                  <div
-                    className="
-                      absolute inset-0
-                      flex items-center justify-center
-                      bg-black/40
-                      opacity-0
-                      transition-opacity duration-300
-                      group-hover:opacity-100
-                    "
-                  >
-                    <span
-                      className="
-                        rounded-full bg-white px-6 py-2
-                        text-sm font-semibold text-gray-900
-                        shadow-lg
-                      "
-                    >
-                      View Product
-                    </span>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="px-4 py-4 text-left space-y-1">
-                  {/* Product Name */}
-                  <h3
-                    className="
-                      text-sm sm:text-base font-semibold text-gray-900
-                      line-clamp-2
-                    "
-                  >
-                    {product.name}
-                  </h3>
-
-                  {/* Category */}
-                  {product.categoryName && (
-                    <p className="text-sm text-gray-500">
-                      {product.categoryName}
-                    </p>
-                  )}
-
-                  {/* Price */}
-                  <div className="pt-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-400 line-through">
-                        ₹{sellingPrice}
-                      </span>
-                      <span className="text-lg font-bold text-gray-900">
-                        ₹{discountedPrice}
-                      </span>
-                    </div>
-
-                    {/* MOQ */}
-                    {product.minOrderQty && (
-                      <span className="inline-block mt-1 rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600">
-                        MOQ: <span className="font-medium">{product.minOrderQty}</span>
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </div>
-        );
-      })}
-    </div>
-  </div>
-
-  {/* All Products Button */}
-  <div className="mt-14 flex justify-center">
-    <Link href="/products">
-      <Button
-        size="lg"
-        className="rounded-full px-10 py-6 text-base font-semibold"
-        variant="outline"
-      >
-        All Products
-      </Button>
-    </Link>
-  </div>
-</section>
 
 {/* ================= Sandal Pure Section ================= */}
 
@@ -591,7 +461,9 @@ const featuredProducts = products
   </div>
 </section>
 
-
+ 
     </div>
+
+     
   );
 }

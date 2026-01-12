@@ -11,22 +11,32 @@ export async function POST(req: Request) {
 
   const admin = await Admin.findOne({ email });
   if (!admin) {
-    return Response.json({ message: "Invalid credentials" }, { status: 401 });
+    return Response.json(
+      { message: "Invalid credentials" },
+      { status: 401 }
+    );
   }
 
   const isValid = await bcrypt.compare(password, admin.password);
   if (!isValid) {
-    return Response.json({ message: "Invalid credentials" }, { status: 401 });
+    return Response.json(
+      { message: "Invalid credentials" },
+      { status: 401 }
+    );
   }
 
+  // ✅ ONLY ADDITION: tokenVersion
   const token = jwt.sign(
-    { adminId: admin._id, role: "admin" },
+    {
+      adminId: admin._id,
+      role: "admin",
+      tokenVersion: admin.tokenVersion,
+    },
     process.env.JWT_SECRET!,
     { expiresIn: "7d" }
   );
 
   const cookieStore = await cookies();
-
   cookieStore.set("admin_token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

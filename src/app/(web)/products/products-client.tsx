@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatPriceUSD } from '@/lib/price';
+import EnquiryModal from "@/components/enquiry-modals";
 
 type Props = {
   categories: any[];
@@ -13,13 +14,13 @@ type Props = {
 };
 
 /* ================= PRICE RANGES ================= */
-const PRICE_RANGES = [
-  { label: "Under ₹500", min: 0, max: 500 },
-  { label: "Under ₹1000", min: 0, max: 1000 },
-  { label: "Under ₹2000", min: 0, max: 2000 },
-  { label: "Under ₹5000", min: 0, max: 5000 },
-  { label: "Above ₹5000", min: 5000, max: Infinity },
-];
+// const PRICE_RANGES = [
+//   { label: "Under ₹500", min: 0, max: 500 },
+//   { label: "Under ₹1000", min: 0, max: 1000 },
+//   { label: "Under ₹2000", min: 0, max: 2000 },
+//   { label: "Under ₹5000", min: 0, max: 5000 },
+//   { label: "Above ₹5000", min: 5000, max: Infinity },
+// ];
 
 export default function ProductsClient({
   categories,
@@ -29,8 +30,14 @@ export default function ProductsClient({
 }: Props) {
   /* ================= STATE ================= */
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedPrices, setSelectedPrices] = useState<string[]>([]);
+  // const [selectedPrices, setSelectedPrices] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [enquiryOpen, setEnquiryOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<{
+  id: string;
+  name: string;
+  category?: string;
+} | null>(null);
 
   /* ================= APPLY URL CATEGORY ================= */
   useEffect(() => {
@@ -54,13 +61,13 @@ export default function ProductsClient({
     );
   };
 
-  const togglePrice = (label: string) => {
-    setSelectedPrices((prev) =>
-      prev.includes(label)
-        ? prev.filter((p) => p !== label)
-        : [...prev, label]
-    );
-  };
+  // const togglePrice = (label: string) => {
+  //   setSelectedPrices((prev) =>
+  //     prev.includes(label)
+  //       ? prev.filter((p) => p !== label)
+  //       : [...prev, label]
+  //   );
+  // };
 
   /* ================= FILTER LOGIC ================= */
   const filteredProducts = useMemo(() => {
@@ -72,41 +79,49 @@ export default function ProductsClient({
         selectedCategories.length === 0 ||
         selectedCategories.includes(category);
 
-      const price =
-        product.discountedPrice ?? product.sellingPrice ?? 0;
+      // const price =
+      //   product.discountedPrice ?? product.sellingPrice ?? 0;
 
-      const priceMatch =
-        selectedPrices.length === 0 ||
-        selectedPrices.some((label) => {
-          const range = PRICE_RANGES.find(
-            (r) => r.label === label
-          );
-          if (!range) return false;
-          return price >= range.min && price <= range.max;
-        });
+      // const priceMatch =
+      //   selectedPrices.length === 0 ||
+      //   selectedPrices.some((label) => {
+      //     const range = PRICE_RANGES.find(
+      //       (r) => r.label === label
+      //     );
+      //     if (!range) return false;
+      //     return price >= range.min && price <= range.max;
+      //   });
 
       return (
         categoryMatch &&
-        priceMatch &&
+      //  priceMatch &&
         product.status === "active"
       );
     });
-  }, [products, selectedCategories, selectedPrices]);
+  }, [products, selectedCategories]);
 
   /* ================= UI ================= */
   return (
     <section className="container py-16">
       <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-12">
 
-        {/* ================= FILTER SIDEBAR ================= */}
-        <aside
-          className={`
-            fixed inset-y-0 left-0 z-50 w-[85%] max-w-sm bg-white p-6
-            transform transition-transform duration-300
-            lg:static lg:translate-x-0 lg:w-auto lg:p-0
-            ${showFilters ? "translate-x-0" : "-translate-x-full"}
-          `}
-        >
+  <aside
+  className={`
+    fixed inset-y-0 left-0 z-50 w-[85%] max-w-sm bg-white p-6
+    transform transition-transform duration-300
+    lg:static lg:z-auto lg:w-auto lg:p-0
+    ${showFilters ? "translate-x-0" : "-translate-x-full"}
+    lg:translate-x-0
+  `}
+>
+  {/* 👇 STICKY WRAPPER */}
+ <div className="
+    lg:sticky
+    lg:top-16
+    lg:max-h-[calc(100vh-4rem)]
+    lg:overflow-y-auto
+    lg:pr-6
+  ">
           {/* Mobile Header */}
           <div className="flex items-center justify-between mb-6 lg:hidden">
             <h3 className="text-lg font-semibold">Filters</h3>
@@ -141,7 +156,7 @@ export default function ProductsClient({
             </div>
 
             {/* Price */}
-            <div>
+            {/* <div>
               <h3 className="text-lg font-semibold mb-4">Price</h3>
               <div className="space-y-3">
                 {PRICE_RANGES.map((range) => (
@@ -159,7 +174,7 @@ export default function ProductsClient({
                   </label>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             {/* Apply Button */}
             <button
@@ -168,7 +183,7 @@ export default function ProductsClient({
             >
               Apply Filters
             </button>
-          </div>
+          </div> </div>
         </aside>
 
         {/* Overlay */}
@@ -204,6 +219,8 @@ export default function ProductsClient({
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
               {filteredProducts.map((product, index) => {
+
+                const isSandalPure = product.categoryName?.toLowerCase() === "sandal pure";
                 const sellingPrice = product.sellingPrice ?? 0;
                 const discountedPrice =
                   product.discountedPrice ?? sellingPrice;
@@ -261,37 +278,72 @@ export default function ProductsClient({
 
                         {/* CONTENT */}
                         <div className="p-5 text-left space-y-1 flex-1">
-                          <h3 className="text-sm sm:text-base font-semibold text-gray-900 line-clamp-2 min-h-[40px]">
-                            {product.name}
-                          </h3>
+                          <h3 className="mt-3 font-semibold line-clamp-2 text-gray-900">
+                      {product.name}
+                    </h3>
 
-                          {product.categoryName && (
-                            <p className="text-sm text-gray-500">
-                              {product.categoryName}
-                            </p>
-                          )}
+                    {/* Category */}
+                    {product.categoryName && (
+                      <p className="text-sm text-gray-500">
+                        {product.categoryName}
+                      </p>
+                    )}
 
-                          <div className="pt-2 space-y-0.5">
-                            <div className="flex items-center gap-2">
-                              {sellingPrice !== discountedPrice && (
-                                <span className="text-sm text-gray-400 line-through">
-                               {formatPriceUSD(sellingPrice, usdRate)}                                </span>
-                              )}
-                              <span className="text-lg font-bold text-gray-900">
-                                 {formatPriceUSD(discountedPrice, usdRate)}
+                        <div className="pt-2 space-y-1">
 
-                              </span>
-                            </div>
+  {/* ✅ SANDAL PURE → SHOW PRICE */}
+  {isSandalPure && (
+    <div className="flex items-center gap-2">
+      {sellingPrice !== discountedPrice && (
+        <span className="text-sm text-gray-400 line-through">
+          {formatPriceUSD(sellingPrice, usdRate)}
+        </span>
+      )}
+      <span className="text-lg font-bold text-gray-900">
+        {formatPriceUSD(discountedPrice, usdRate)}
+      </span>
+    </div>
+  )}
 
-                            {product.minOrderQty && (
-                              <span className="inline-block mt-2 rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600">
-                                MOQ:{" "}
-                                <span className="font-medium">
-                                  {product.minOrderQty}
-                                </span>
-                              </span>
-                            )}
-                          </div>
+  {/* ✅ MOQ — ALWAYS SHOWN */}
+  {/* {product.minOrderQty && (
+    <span className="inline-block rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600">
+      MOQ: <span className="font-medium">{product.minOrderQty}</span>
+    </span>
+  )} */}
+
+  {/* ✅ NON–SANDAL PURE → ENQUIRY BUTTON */}
+{!isSandalPure && (
+  <button
+    onClick={(e) => {
+      e.preventDefault();
+      setSelectedProduct({
+        id: product.id,
+        name: product.name,
+        category: product.categoryName,
+      });
+      setEnquiryOpen(true);
+    }}
+    className="
+      mt-2
+      inline-flex items-center justify-center
+      rounded-md
+      bg-gray-50
+      px-4 py-2
+      text-sm font-medium
+      text-gray-800
+      border border-gray-200
+      hover:bg-gray-100
+      transition
+    "
+  >
+    Send Enquiry
+  </button>
+)}
+
+
+</div>
+
                         </div>
                       </div>
                     </Link>
@@ -302,6 +354,15 @@ export default function ProductsClient({
           )}
         </div>
       </div>
+      {selectedProduct && (
+  <EnquiryModal
+    open={enquiryOpen}
+    onOpenChange={setEnquiryOpen}
+    product={selectedProduct}
+  />
+)}
+      
     </section>
+    
   );
 }

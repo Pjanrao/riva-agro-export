@@ -5,73 +5,209 @@ export async function GET() {
   const client = await clientPromise;
   const db = client.db();
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const ordersCol = db.collection("orders");
+  const orderMgmtCol = db.collection("ordermanagements");
 
+  /* ================= DATE RANGE ================= */
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const endOfToday = new Date();
+  endOfToday.setHours(23, 59, 59, 999);
+
+  /* ================= STATUS ================= */
+  const COMPLETED = ["Delivered"];
+  const CANCELLED = ["Cancelled"];
+
+  const ONGOING = [
+    "shipped",
+    "Shipped",
+    "confirmed",
+    "Confirmed",
+    "processing",
+    "Processing",
+  ];
+
+  const UPCOMING = ["pending", "Pending"];
+
+  /* ================= COUNTS ================= */
   const [
-    totalRevenueAgg,
-    todayRevenueAgg,
+    ordersCount,
+    orderMgmtCount,
 
-    totalOrders,
     todayOrders,
-
-    totalClients,
-    totalVendors,
-
-    ongoingOrders,
-    upcomingOrders,
 
     completedOrders,
     cancelledOrders,
+    ongoingOrders,
+    upcomingOrders,
+
+    ordersRevenueAgg,
+    orderMgmtRevenueAgg,
+
+    todayOrdersRevenueAgg,
+    todayOrderMgmtRevenueAgg,
+
+    customersCount,
+    usersCount,
+    vendorsCount,
+
+    // ✅ NEW (ADDED – nothing removed)
+    totalProducts,
+    totalCategories,
   ] = await Promise.all([
-    // Revenue
-    db.collection("orders").aggregate([
-      { $group: { _id: null, total: { $sum: "$totalAmount" } } },
+    /* TOTAL ORDERS */
+    ordersCol.countDocuments(),
+    orderMgmtCol.countDocuments(),
+
+    /* TODAY ORDERS */
+    Promise.all([
+      ordersCol.countDocuments({
+        createdAt: {
+          $gte: startOfToday.toISOString(),
+          $lte: endOfToday.toISOString(),
+        },
+      }),
+      orderMgmtCol.countDocuments({
+        createdAt: {
+          $gte: startOfToday,
+          $lte: endOfToday,
+        },
+      }),
+    ]).then(([a, b]) => a + b),
+
+    /* COMPLETED */
+    Promise.all([
+      ordersCol.countDocuments({ status: { $in: COMPLETED } }),
+      orderMgmtCol.countDocuments({ status: { $in: COMPLETED } }),
+    ]).then(([a, b]) => a + b),
+
+    /* CANCELLED */
+    Promise.all([
+      ordersCol.countDocuments({ status: { $in: CANCELLED } }),
+      orderMgmtCol.countDocuments({ status: { $in: CANCELLED } }),
+    ]).then(([a, b]) => a + b),
+
+    /* ONGOING */
+    Promise.all([
+      ordersCol.countDocuments({ status: { $in: ONGOING } }),
+      orderMgmtCol.countDocuments({ status: { $in: ONGOING } }),
+    ]).then(([a, b]) => a + b),
+
+    /* UPCOMING */
+    Promise.all([
+      ordersCol.countDocuments({ status: { $in: UPCOMING } }),
+      orderMgmtCol.countDocuments({ status: { $in: UPCOMING } }),
+    ]).then(([a, b]) => a + b),
+
+    /* ================= TOTAL REVENUE ================= */
+    ordersCol.aggregate([
+      { $match: { status: { $in: COMPLETED } } },
+      {
+        $group: {
+          _id: null,
+          total: {
+            $sum: { $toDouble: { $ifNull: ["$total", 0] } },
+          },
+        },
+      },
     ]).toArray(),
 
-    db.collection("orders").aggregate([
-      { $match: { createdAt: { $gte: today } } },
-      { $group: { _id: null, total: { $sum: "$totalAmount" } } },
+    orderMgmtCol.aggregate([
+      { $match: { status: { $in: COMPLETED } } },
+      {
+        $group: {
+          _id: null,
+          total: {
+            $sum: { $toDouble: { $ifNull: ["$totalAmount", 0] } },
+          },
+        },
+      },
     ]).toArray(),
 
-    // Orders
-    db.collection("orders").countDocuments(),
-    db.collection("orders").countDocuments({ createdAt: { $gte: today } }),
+    /* ================= TODAY REVENUE ================= */
+    ordersCol.aggregate([
+      { $addFields: { created: { $toDate: "$createdAt" } } },
+      {
+        $match: {
+          status: { $in: COMPLETED },
+          created: { $gte: startOfToday, $lte: endOfToday },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: {
+            $sum: { $toDouble: { $ifNull: ["$total", 0] } },
+          },
+        },
+      },
+    ]).toArray(),
 
-    // Users
-    db.collection("users").countDocuments({ role: "client" }),
+    orderMgmtCol.aggregate([
+      {
+        $match: {
+          status: { $in: COMPLETED },
+          createdAt: { $gte: startOfToday, $lte: endOfToday },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: {
+            $sum: { $toDouble: { $ifNull: ["$totalAmount", 0] } },
+          },
+        },
+      },
+    ]).toArray(),
+
+    /* CLIENTS */
+    db.collection("customers").countDocuments(),
+    db.collection("users").countDocuments(),
+
+    /* VENDORS */
     db.collection("users").countDocuments({ role: "vendor" }),
 
-    // Order states
-    db.collection("orders").countDocuments({ status: "ongoing" }),
-    db.collection("orders").countDocuments({ status: "upcoming" }),
-
-    db.collection("orders").countDocuments({ status: "completed" }),
-    db.collection("orders").countDocuments({ status: "cancelled" }),
+    /* ✅ ADDED FOR DASHBOARD */
+    db.collection("products").countDocuments(),
+    db.collection("categories").countDocuments(),
   ]);
 
-  const totalRevenue = totalRevenueAgg[0]?.total || 0;
-  const todayRevenue = todayRevenueAgg[0]?.total || 0;
+  /* ================= FINAL VALUES ================= */
+  const totalOrders = ordersCount + orderMgmtCount;
+  const totalClients = customersCount + usersCount;
+
+  const totalRevenue =
+    (ordersRevenueAgg[0]?.total || 0) +
+    (orderMgmtRevenueAgg[0]?.total || 0);
+
+  const todayRevenue =
+    (todayOrdersRevenueAgg[0]?.total || 0) +
+    (todayOrderMgmtRevenueAgg[0]?.total || 0);
 
   const averageOrderValue =
-    todayOrders > 0 ? Math.round(todayRevenue / todayOrders) : 0;
+    completedOrders > 0
+      ? Math.round(totalRevenue / completedOrders)
+      : 0;
 
   return NextResponse.json({
     totalRevenue,
     todayRevenue,
+    averageOrderValue,
 
     totalOrders,
     todayOrders,
 
-    averageOrderValue,
-
-    totalClients,
-    totalVendors,
-
+    completedOrders,
+    cancelledOrders,
     ongoingOrders,
     upcomingOrders,
 
-    completedOrders,
-    cancelledOrders,
+    totalClients,
+    totalVendors: vendorsCount,
+
+    // ✅ NEW (used by dashboard cards)
+    totalProducts,
+    totalCategories,
   });
 }

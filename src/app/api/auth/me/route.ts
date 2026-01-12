@@ -11,6 +11,8 @@ export async function GET() {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("access_token")?.value;
+    console.log("COOKIES:", (await cookies()).getAll());
+
 
     if (!token) {
       return NextResponse.json({ user: null }, { status: 401 });

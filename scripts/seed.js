@@ -20,7 +20,7 @@ async function seed() {
     const adminsCollection = db.collection("admins");
 
     const existingAdmin = await adminsCollection.findOne({
-      email: "admin@rivaagro.com",
+      email: "rivaagroexports@gmail.com",
     });
 
     if (existingAdmin) {
@@ -28,10 +28,10 @@ async function seed() {
       return;
     }
 
-    const hashedPassword = await bcrypt.hash("Admin@123", 10);
+    const hashedPassword = await bcrypt.hash("Rivaagro@123", 10);
 
     await adminsCollection.insertOne({
-      email: "admin@rivaagro.com",
+      email: "rivaagroexports@gmail.com",
       password: hashedPassword,
       role: "admin",
       createdAt: new Date(),

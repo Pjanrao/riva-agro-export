@@ -3,6 +3,8 @@
 import { Collection, Db, MongoClient, ObjectId } from 'mongodb';
 import clientPromise from '../mongodb';
 import type { User } from '../types';
+import bcrypt from "bcryptjs";
+
 
 let client: MongoClient;
 let db: Db;
@@ -30,6 +32,64 @@ function toUser(doc: any): User {
     const { _id, ...rest } = doc;
     return { ...rest, id: _id.toHexString() };
 }
+
+
+export const resetUserPassword = async (
+  hashedToken: string,
+  newPassword: string
+): Promise<boolean> => {
+  if (!users) await init();
+
+  const now = new Date();
+
+  // Find user with valid token
+  const user = await users.findOne({
+    resetPasswordToken: hashedToken,
+    resetPasswordExpire: { $gt: now },
+  });
+
+  if (!user) {
+    return false;
+  }
+
+  // Hash new password
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  await users.updateOne(
+    { _id: user._id },
+    {
+      $set: {
+        password: hashedPassword,
+      },
+      $unset: {
+        resetPasswordToken: "",
+        resetPasswordExpire: "",
+      },
+    }
+  );
+
+  return true;
+}; 
+
+
+export const setResetPasswordToken = async (
+  userId: string,
+  token: string,
+  expire: Date
+): Promise<void> => {
+  if (!users) await init();
+
+  await users.updateOne(
+    { _id: new ObjectId(userId) },
+    {
+      $set: {
+        resetPasswordToken: token,
+        resetPasswordExpire: expire,
+      },
+    }
+  );
+};
+
 
 export const getUsers = async (): Promise<User[]> => {
     if (!users) await init();
@@ -77,3 +137,26 @@ export const deleteUser = async (id: string): Promise<boolean> => {
     const result = await users.deleteOne({ _id: new ObjectId(id) });
     return result.deletedCount === 1;
 };
+
+export const updateUserPasswordById = async (
+  id: string,
+  hashedPassword: string
+): Promise<boolean> => {
+  if (!users) await init();
+  if (!ObjectId.isValid(id)) return false;
+
+  const result = await users.updateOne(
+    { _id: new ObjectId(id) },
+    {
+      $set: {
+        password: hashedPassword,
+        updatedAt: new Date().toISOString()
+      },
+    }
+  );
+
+  return result.modifiedCount === 1;
+};
+
+
+

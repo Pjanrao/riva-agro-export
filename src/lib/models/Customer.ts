@@ -4,42 +4,51 @@ import mongoose, { Schema, model, models } from 'mongoose';
 
 export type CustomerType = {
   _id?: string;
+
   fullName: string;
   contactNo: string;
   email: string;
-  address: string;
+
   country: string;
   state: string;
   city: string;
   pin: string;
-  referenceName?: string;
-  referenceContact?: string;
+
+  latitude?: string | null;
+  longitude?: string | null;
+
+  address: string;
+  referenceName?: string | null;
+  referenceContact?: string | null;
+
   createdAt?: Date;
   updatedAt?: Date;
 };
 
 /* ================= SCHEMA ================= */
 
-const CustomerSchema = new Schema<CustomerType>(
+const CustomerSchema = new Schema(
   {
     fullName: { type: String, required: true },
     contactNo: { type: String, required: true },
     email: { type: String, required: true },
-    address: { type: String, required: true },
+
     country: { type: String, required: true },
     state: { type: String, required: true },
     city: { type: String, required: true },
     pin: { type: String, required: true },
-    referenceName: { type: String },
-    referenceContact: { type: String },
+
+    latitude: { type: String, default: null },
+    longitude: { type: String, default: null },
+
+    address: { type: String, required: true },
+    referenceName: { type: String, default: null },
+    referenceContact: { type: String, default: null },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 /* ================= MODEL ================= */
 
-// ✅ Export VALUE safely
 export const CustomerModel =
   models.Customer || model<CustomerType>('Customer', CustomerSchema);

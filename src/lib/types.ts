@@ -30,10 +30,7 @@ export type Product = {
   categoryName?: string;
 
   hsCode: string;
-
-  /* 🔹 OLD (keep for backward compatibility) */
-  units?: ProductUnit[];
-
+  
   /* 🔹 NEW (current product model) */
   minOrderQty?: string;
   discountedPrice?: number;
@@ -58,7 +55,7 @@ export interface CartItem {
   image: string;
 }
 
-/* ================= ORDER ================= */
+/* ================= SHIPPING ADDRESS ================= */
 
 export interface ShippingAddress {
   name: string;
@@ -67,11 +64,24 @@ export interface ShippingAddress {
   country: string;
   zip: string;
 }
-
+/* ================= ORDER (CUSTOMER CHECKOUT) ================= */
+/**
+ * THIS IS THE ORDER USED IN:
+ * - /api/orders
+ * - /admin/orders
+ * - checkout flow
+ */
 export interface Order {
   _id?: ObjectId;
   id: string;
-  userId: string;
+  userId: 
+    | string
+    | {
+        _id?: ObjectId;
+        name: string;
+        email: string;
+        contact?: string;
+      };
   items: CartItem[];
   total: number;
   status: 'Pending' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
@@ -80,8 +90,11 @@ export interface Order {
   paymentStatus: 'Pending' | 'Paid' | 'Failed';
   paymentId?: string;
   currency: "INR" | "USD";
+  resetPasswordToken?: string;
+resetPasswordExpire?: Date;
   createdAt: string;
-
+  updatedAt?: string;
+ 
 }
 
 /* ================= USER ================= */
@@ -122,6 +135,7 @@ export interface User {
 /* ================= Customers ================= */
 
 export type Customer = {
+  _id?: ObjectId;
   id: string;
   customer_id: string;
 
@@ -129,6 +143,9 @@ export type Customer = {
   contactNo: string;
   email: string;
   address: string;
+
+   latitude?: string;
+  longitude?: string;
 
   country: string;
   state: string;
@@ -163,3 +180,54 @@ export type Banner = {
   status: 'active' | 'inactive';
 };
 
+/* =========================================================
+   🔥 ADMIN MANUAL ORDER (OPTIONAL – KEEP SEPARATE)
+========================================================= */
+
+export interface AdminOrder {
+  _id?: ObjectId;
+  id?: string;
+
+  customerId: string;
+  customerName: string;
+
+  productId: string;
+  productName: string;
+
+  hsCode?: string;
+  minOrderQty?: string;
+
+  quantity: number;
+  discountedPrice?: number;
+
+  shippingCharges?: number;
+  taxApplied?: boolean;
+  taxAmount?: number;
+
+  totalAmount: number;
+
+  deliveryAddress?: string;
+
+  latitude?: string;
+  longitude?: string;
+
+  status?: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Cancelled";
+
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface Enquiry {
+  _id?: string;
+  productId: string;
+  productName: string;
+  category?: string;
+
+  name: string;
+  email: string;
+  phone?: string;
+  quantity?: string;
+  message?: string;
+
+  createdAt: Date;
+}

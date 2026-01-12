@@ -5,6 +5,13 @@ import { useAuthStore } from "@/store/use-auth-store";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,7 +22,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { User } from "@/lib/types";
+
+import ChangePasswordForm from "@/components/change-password-form";
 
 export default function ProfilePage() {
   const { user, isLoading } = useAuth();
@@ -23,20 +31,21 @@ export default function ProfilePage() {
   const setUser = useAuthStore((s) => s.setUser);
 
   const [editMode, setEditMode] = useState(false);
- const [formData, setFormData] = useState<any>({
-  name: "",
-  email: "",
-  contactNo: "",
-  country: "",
-  state: "",
-  city: "",
-  pincode: "",
-  latitude: "",
-  longitude: "",
-  referenceName: "",
-  referenceContact: "",
-});
+  const [showPassword, setShowPassword] = useState(false);
 
+  const [formData, setFormData] = useState<any>({
+    name: "",
+    email: "",
+    contactNo: "",
+    country: "",
+    state: "",
+    city: "",
+    pincode: "",
+    latitude: "",
+    longitude: "",
+    referenceName: "",
+    referenceContact: "",
+  });
 
   /* ---------------- AUTH GUARD ---------------- */
   useEffect(() => {
@@ -46,23 +55,22 @@ export default function ProfilePage() {
   }, [user, isLoading, router]);
 
   useEffect(() => {
-  if (user) {
-    setFormData({
-      name: user.name ?? "",
-      email: user.email ?? "",
-      contactNo: user.contactNo ?? "",
-      country: user.country ?? "",
-      state: user.state ?? "",
-      city: user.city ?? "",
-      pincode: user.pincode ?? "",
-      latitude: user.latitude?.toString() ?? "",
-      longitude: user.longitude?.toString() ?? "",
-      referenceName: user.referenceName ?? "",
-      referenceContact: user.referenceContact ?? "",
-    });
-  }
-}, [user]);
-
+    if (user) {
+      setFormData({
+        name: user.name ?? "",
+        email: user.email ?? "",
+        contactNo: user.contactNo ?? "",
+        country: user.country ?? "",
+        state: user.state ?? "",
+        city: user.city ?? "",
+        pincode: user.pincode ?? "",
+        latitude: user.latitude?.toString() ?? "",
+        longitude: user.longitude?.toString() ?? "",
+        referenceName: user.referenceName ?? "",
+        referenceContact: user.referenceContact ?? "",
+      });
+    }
+  }, [user]);
 
   if (isLoading || !user) return null;
 
@@ -81,7 +89,7 @@ export default function ProfilePage() {
 
     if (res.ok) {
       const data = await res.json();
-      setUser(data.user); // ✅ update Zustand
+      setUser(data.user);
       setEditMode(false);
     }
   };
@@ -136,13 +144,18 @@ export default function ProfilePage() {
               <ProfileRow label="Reference Name" value={user.referenceName ?? "—"} />
               <ProfileRow label="Reference Contact" value={user.referenceContact ?? "—"} />
 
-              <Button
-                variant="outline"
-                className="mt-4"
-                onClick={() => setEditMode(true)}
-              >
-                Edit Profile
-              </Button>
+              <div className="flex gap-3 pt-4">
+                <Button variant="outline" onClick={() => setEditMode(true)}>
+                  Edit Profile
+                </Button>
+
+                <Button
+                  variant="outline"
+                  onClick={() => setShowPassword(true)}
+                >
+                  Change Password
+                </Button>
+              </div>
             </>
           )}
 
@@ -190,11 +203,24 @@ export default function ProfilePage() {
           )}
         </CardContent>
       </Card>
+
+      {/* 🔐 CHANGE PASSWORD MODAL */}
+      <Dialog open={showPassword} onOpenChange={setShowPassword}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Change Password</DialogTitle>
+          </DialogHeader>
+
+          <ChangePasswordForm
+            onSuccess={() => setShowPassword(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
 
-/* ---------------- SMALL HELPERS ---------------- */
+/* ---------------- HELPERS ---------------- */
 
 function ProfileRow({ label, value }: { label: string; value: string }) {
   return (
@@ -207,7 +233,6 @@ function ProfileRow({ label, value }: { label: string; value: string }) {
 
 function FormInput(props: any) {
   const { label, value, ...inputProps } = props;
-
   return (
     <div className="space-y-2">
       <Label>{label}</Label>
@@ -215,4 +240,3 @@ function FormInput(props: any) {
     </div>
   );
 }
-
