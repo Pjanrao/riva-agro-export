@@ -16,6 +16,13 @@ import {
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 
+/* ================= PROPS ================= */
+/* ✅ SINGLE Props interface (FIX) */
+interface Props {
+  token?: string;          // kept (even if unused)
+  onSuccess?: () => void;
+}
+
 /* ================= SCHEMA ================= */
 
 const formSchema = z
@@ -37,13 +44,11 @@ const formSchema = z
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface Props {
-  onSuccess?: () => void;
-}
-
 /* ================= COMPONENT ================= */
 
-export default function ChangePasswordForm({ onSuccess }: Props) {
+export default function ChangePasswordForm({
+  onSuccess,
+}: Props) {
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -167,4 +172,3 @@ export default function ChangePasswordForm({ onSuccess }: Props) {
     </Form>
   );
 }
-
