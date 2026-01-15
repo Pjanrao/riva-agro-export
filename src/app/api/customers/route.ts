@@ -4,6 +4,10 @@ import { CustomerModel } from '@/lib/models/Customer';
 
 export const runtime = 'nodejs';
 
+/* ================= HELPERS ================= */
+
+const phoneRegex = /^[0-9]{10,15}$/;
+
 /* ================= GET CUSTOMERS ================= */
 
 export async function GET() {
@@ -15,7 +19,7 @@ export async function GET() {
     });
 
     return NextResponse.json(customers);
-  } catch (err: any) {
+  } catch (err) {
     console.error('GET CUSTOMERS ERROR:', err);
     return NextResponse.json(
       { message: 'Internal Server Error' },
@@ -47,6 +51,7 @@ export async function POST(req: NextRequest) {
       referenceContact,
     } = body;
 
+    /* -------- Required fields validation -------- */
     if (
       !fullName ||
       !contactNo ||
@@ -63,6 +68,27 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    /* -------- Phone validation -------- */
+    if (!phoneRegex.test(contactNo)) {
+      return NextResponse.json(
+        { message: 'Contact number must be 10–15 digits' },
+        { status: 400 }
+      );
+    }
+
+    /* -------- Duplicate check -------- */
+    const existingCustomer = await CustomerModel.findOne({
+      $or: [{ email }, { contactNo }],
+    });
+
+    if (existingCustomer) {
+      return NextResponse.json(
+        { message: 'Customer with email or contact number already exists' },
+        { status: 409 }
+      );
+    }
+
+    /* -------- Create customer -------- */
     const customer = await CustomerModel.create({
       fullName,
       contactNo,
@@ -72,16 +98,14 @@ export async function POST(req: NextRequest) {
       state,
       city,
       pin,
-
       latitude: latitude ?? null,
       longitude: longitude ?? null,
-
       referenceName: referenceName ?? null,
       referenceContact: referenceContact ?? null,
     });
 
     return NextResponse.json(customer, { status: 201 });
-  } catch (err: any) {
+  } catch (err) {
     console.error('CREATE CUSTOMER ERROR:', err);
     return NextResponse.json(
       { message: 'Internal Server Error' },

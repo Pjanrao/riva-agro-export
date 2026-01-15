@@ -131,7 +131,21 @@ export default function FeaturedProduct({
             })}
           </div>
         </div>
+              {/* View All Products Button */}
+              
+<div className="mt-14 flex justify-center">
+  <Link href="/products">
+    <Button
+      size="lg"
+      className="px-10"
+    >
+      View All Products
+    </Button>
+  </Link>
+</div>
       </section>
+
+
 
       {/* ✅ SINGLE MODAL INSTANCE */}
       {selectedProduct && (

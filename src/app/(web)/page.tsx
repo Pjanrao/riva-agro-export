@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Leaf, Truck, ShieldCheck } from 'lucide-react';
+import { Leaf, Truck, ShieldCheck,Phone, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -461,6 +461,85 @@ const featuredProducts = products
   </div>
 </section>
 
+{/* CERTIFICATIONS & LICENSES */}
+<section className="py-20 bg-white">
+  <div className="container">
+
+    {/* Heading */}
+    <div className="text-center">
+      <h2 className="text-3xl font-bold tracking-wide uppercase">
+        Certification & Licenses
+      </h2>
+      <div className="mx-auto mt-4 h-1 w-24 bg-primary" />
+    </div>
+
+    {/* Certificates Grid */}
+    <div className="mt-16 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-10 items-center">
+
+      {/* FSSAI */}
+      <div className="flex items-center justify-center">
+        <img
+          src="/uploads/certificates/fssai.png"
+          alt="FSSAI Certification"
+          className="max-h-16 object-contain"
+        />
+      </div>
+
+      {/* APEDA */}
+      <div className="flex items-center justify-center">
+        <img
+          src="/uploads/certificates/apeda.png"
+          alt="APEDA Certification"
+          className="max-h-16 object-contain"
+        />
+      </div>
+
+      {/* IEC */}
+      <div className="flex items-center justify-center">
+        <img
+          src="/uploads/certificates/iec.png"
+          alt="Import Export Code"
+          className="max-h-16 object-contain"
+        />
+      </div>
+
+      {/* MSME */}
+      <div className="flex items-center justify-center">
+        <img
+          src="/uploads/certificates/msme.png"
+          alt="MSME Registered"
+          className="max-h-16 object-contain"
+        />
+      </div>
+
+      {/* Udyog Aadhaar */}
+      <div className="flex items-center justify-center">
+        <img
+          src="/uploads/certificates/udyog-aadhaar.png"
+          alt="Udyog Aadhaar"
+          className="max-h-16 object-contain"
+        />
+      </div>
+
+      {/* DGFT */}
+      <div className="flex items-center justify-center">
+        <img
+          src="/uploads/certificates/dgft.png"
+          alt="Directorate General of Foreign Trade"
+          className="max-h-16 object-contain"
+        />
+      </div>
+
+    </div>
+
+    {/* Trust Line */}
+    <p className="mt-14 text-center text-muted-foreground max-w-2xl mx-auto">
+      Our certifications reflect our commitment to quality, compliance,
+      and ethical agricultural exports that meet global trade standards.
+    </p>
+
+  </div>
+</section>
  
     </div>
 

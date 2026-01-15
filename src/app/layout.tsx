@@ -4,6 +4,8 @@ import { Toaster } from '@/components/ui/toaster';
 import AuthProvider from '@/components/auth-provider';
 import { CartProvider } from '@/hooks/use-cart';
 import StoreProvider from '@/lib/redux/StoreProvider';
+import FloatingActions from "@/components/FloatingActions";
+
 
 export const metadata: Metadata = {
   title: 'Riva Agro Exports',

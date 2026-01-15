@@ -61,13 +61,161 @@ export default function AboutPage() {
 
   </div>
 </section>
+{/* ================= COMPANY PROFILE ================= */}
+<section className="py-6 bg-secondary">
+  <div className="container max-w-6xl">
+
+    {/* Heading */}
+    <div className="text-center mb-8">
+      <span className="inline-block rounded-full bg-primary/10 px-5 py-2 text-sm font-semibold text-primary">
+        Company Profile
+      </span>
+
+      <h3 className="mt-6 font-headline text-4xl md:text-4xl font-bold tracking-tight text-gray-900">
+        Business Overview
+      </h3>
+    </div>
+
+    {/* Table Card */}
+    <div className="bg-white rounded-3xl border shadow-sm overflow-hidden mb-6">
+
+      <div className="divide-y">
+
+        {[
+          ["Name of Founder", "Mr. Tejas Marathe"],
+          ["Year of Establishment", "2025"],
+          ["Name of Company", "Riva Agro Exports"],
+          ["Nature of Business", "Export Company"],
+          [
+            "Products Offered",
+            "Banana, Custurd Apple, Chickpea, Chilli, Onion, Lemon, Corn, Sandal Wood, Sandal Pure",
+          ],
+          [
+            "Certification & Licenses",
+            "IEC | MSME | APEDA | FSSAI | GSTIN",
+          ],
+          [
+            "Our Vision",
+            "To establish Vision Infinity Trade as a globally recognized and trusted name in rice exports by delivering unmatched quality, sustainability, and reliability to international markets.",
+          ],
+         
+        ].map(([label, value], index) => (
+          <div
+            key={index}
+            className="grid grid-cols-1 md:grid-cols-[280px_1fr]"
+          >
+            {/* Label */}
+            <div className="bg-[#256368] text-white px-6 py-4 font-semibold">
+              {label}
+            </div>
+
+            {/* Value */}
+            <div className="px-6 py-4 text-muted-foreground leading-relaxed">
+              {value}
+            </div>
+          </div>
+        ))}
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{/* ================= FOUNDER / OWNER ================= */}
+<section className="py-20 bg-white">
+  <div className="container max-w-6xl">
+
+    {/* Heading */}
+    <div className="text-center mb-16">
+      <span className="inline-block rounded-full bg-primary/10 px-5 py-2 text-sm font-semibold text-primary">
+        Leadership
+      </span>
+
+      <h3 className="mt-6 font-headline text-4xl md:text-4xl font-bold tracking-tight text-gray-900">
+        Founder & Owner
+      </h3>
+    </div>
+
+    {/* Content */}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+      {/* LEFT: Photo + Highlights */}
+      <div className="flex flex-col items-center">
+
+        {/* Photo */}
+        <div className="relative w-[260px] h-[320px] rounded-3xl overflow-hidden shadow-lg border">
+          <Image
+            src="/uploads/founder.png"
+            alt="Founder - Riva Agro Exports"
+            fill
+            className="object-cover"
+          />
+        </div>
+
+        {/* Highlights BELOW photo */}
+        <div className="mt-8 grid grid-cols-3 gap-4 w-full max-w-sm">
+
+          <div className="rounded-2xl bg-secondary p-4 text-center">
+            <p className="text-xl font-bold text-gray-900">10+</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Years Farming
+            </p>
+          </div>
+
+          <div className="rounded-2xl bg-secondary p-4 text-center">
+            <p className="text-xl font-bold text-gray-900">Global</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Export Reach
+            </p>
+          </div>
+
+          <div className="rounded-2xl bg-secondary p-4 text-center">
+            <p className="text-xl font-bold text-gray-900">100%</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Own Farms
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      {/* RIGHT: Details */}
+      <div>
+        <h3 className="text-3xl font-bold text-gray-900">
+          Mr. Tejas Marathe
+        </h3>
+
+        <p className="mt-2 text-sm font-medium text-primary">
+          Founder & Owner — Farm & Export Operations
+        </p>
+
+        <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+          Mr. Tejas Marathe is the founder and owner of Riva Agro Exports and
+          the agricultural farms that supply our export-grade produce.
+          With hands-on experience in farming and international trade,
+          he has built a vertically integrated export model focused on
+          quality, transparency, and sustainability.
+        </p>
+
+        <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
+          His direct involvement from cultivation to global shipment ensures
+          consistent quality, ethical sourcing, and long-term trust with
+          international buyers.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 
 {/* ================= OUR MISSION ================= */}
-<section className="pt-15 pb-10 bg-secondary">
+<section className="pt-20 pb-10 bg-secondary">
   <div className="container max-w-5xl ">
 
     {/* Heading (same pattern as others) */}
-    <div className="text-center mb-16">
+    <div className="text-center mb-12">
       <span className="inline-block rounded-full bg-primary/10 px-5 py-2 text-sm font-semibold text-primary">
         Our Mission
       </span>
@@ -128,6 +276,8 @@ export default function AboutPage() {
   </div>
 </section>
 
+
+
 {/* ================= OUR LOCATIONS ================= */}
 <section className="py-10 bg-secondary">
   <div className="container max-w-6xl">
@@ -138,14 +288,11 @@ export default function AboutPage() {
         Our Locations
       </span>
 
-      <h2 className="mt-6 font-headline text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
+      <h3 className="mt-6 font-headline text-4xl md:text-4xl font-bold tracking-tight text-gray-900">
         From Farm to Corporate Operations
-      </h2>
+      </h3>
 
-      <p className="mt-6 text-lg text-muted-foreground max-w-3xl mx-auto">
-        Our presence spans from agricultural sourcing at the farm level
-        to professional export operations at our corporate office.
-      </p>
+    
     </div>
 
     {/* Locations Grid */}
@@ -154,14 +301,10 @@ export default function AboutPage() {
       {/* FARM LOCATION */}
       <div className="bg-white rounded-3xl border shadow-sm overflow-hidden">
         <div className="p-8">
-          <h3 className="text-2xl font-bold text-gray-900">
+          <h4 className="text-xl font-semibold text-gray-700">
             Farm Location
-          </h3>
-          <p className="mt-3 text-muted-foreground leading-relaxed">
-            Our agricultural sourcing hub where premium-quality produce
-            is cultivated, harvested, and prepared for export under
-            strict quality standards.
-          </p>
+          </h4>
+       
 
           <p className="mt-4 font-medium text-sm text-muted-foreground">
             📍 SR NO 110/2/A OSARLI MANJARE OSARI MANJARE NANDURB AR NANDURBAR Osarli 425412
@@ -169,7 +312,7 @@ export default function AboutPage() {
         </div>
 
         {/* Map */}
-        <div className="relative h-[320px]">
+        <div className="relative h-[250px]">
         <iframe
   src="https://www.google.com/maps?q=21.416306,74.454417&hl=en&z=15&output=embed"
   className="absolute inset-0 h-full w-full border-0"
@@ -183,20 +326,16 @@ export default function AboutPage() {
       {/* CORPORATE OFFICE */}
       <div className="bg-white rounded-3xl border shadow-sm overflow-hidden">
         <div className="p-8">
-          <h3 className="text-2xl font-bold text-gray-900">
+          <h4 className="text-xl font-semibold text-gray-700">
             Corporate Office
-          </h3>
-          <p className="mt-3 text-muted-foreground leading-relaxed">
-            Our corporate office manages export documentation, logistics
-            coordination, compliance, and global client relationships.
-          </p>
-
-          <p className="mt-4 font-semibold text-sm text-muted-foreground">
-            📍 209 sai heaven appatment chalthan surat gujarat 394305  </p>
+          </h4>
+       
+          <p className="mt-4 font-medium text-sm text-muted-foreground">
+            📍 209 sai heaven appatment chalthan <br/>surat gujarat 394305  </p>
         </div>
 
         {/* Map */}
-        <div className="relative h-[320px]"> 
+        <div className="relative h-[250px]"> 
                <iframe
   src="https://www.google.com/maps?q=21.155889,72.957694&hl=en&z=15&output=embed"
   className="absolute inset-0 h-full w-full border-0"
