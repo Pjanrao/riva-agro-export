@@ -8,6 +8,7 @@ import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { Separator } from "@/components/ui/separator";
 import { formatPriceUSD } from "@/lib/price";
+import EnquiryModal from "./enquiry-modals";
 
 
 interface ProductDetailsProps {
@@ -19,8 +20,15 @@ export function ProductDetails({ product, usdRate }: ProductDetailsProps) {
   const { addToCart } = useCart();
 
  const minOrderQty = product.minOrderQty;
+const isSandalPure =
+  product.categoryName?.toLowerCase() === "sandal pure";
+const [enquiryOpen, setEnquiryOpen] = useState(false);
 
-
+const selectedProduct = {
+  id: product.id,
+  name: product.name,
+  category: product.categoryName,
+};
 
 // ✅ ALWAYS number, never null (for logic only)
 
@@ -82,18 +90,20 @@ const decrement = () => {
           </h1>
 
           {/* PRICE */}
-          <div className="mt-4 flex items-end gap-3">
-           <span className="text-2xl font-semibold text-green-600">
-  {formatPriceUSD(discountedPrice, usdRate)}
-</span>
+{isSandalPure && (
+  <div className="mt-4 flex items-end gap-3">
+    <span className="text-2xl font-semibold text-green-600">
+      {formatPriceUSD(discountedPrice, usdRate)}
+    </span>
 
-{discountedPrice < sellingPrice && (
-  <span className="text-sm text-muted-foreground line-through">
-    {formatPriceUSD(sellingPrice, usdRate)}
-  </span>
+    {discountedPrice < sellingPrice && (
+      <span className="text-sm text-muted-foreground line-through">
+        {formatPriceUSD(sellingPrice, usdRate)}
+      </span>
+    )}
+  </div>
 )}
-         
-          </div>
+
 
           <Separator className="my-6" />
 
@@ -149,11 +159,12 @@ const decrement = () => {
 
           {/* ADD TO CART / QTY */}
           <div className="mt-8">
-            {quantity === 0 ? (
-              <Button size="lg" onClick={addInitialQty}>
-                <ShoppingCart className="mr-2 h-5 w-5" />
-                Add to Cart
-              </Button>
+  {isSandalPure ? (
+    quantity === 0 ? (
+      <Button size="lg" onClick={addInitialQty}>
+        <ShoppingCart className="mr-2 h-5 w-5" />
+        Add to Cart
+      </Button>
             ) : (
               <div className="flex items-center gap-4">
                 <Button variant="outline" onClick={decrement}>
@@ -168,10 +179,28 @@ const decrement = () => {
                   +
                 </Button>
               </div>
-            )}
-          </div>
+           )
+  ) : (
+    <Button
+  size="lg"
+  variant="outline"
+  onClick={() => {
+    setEnquiryOpen(true);
+  }}
+>
+  Send Enquiry
+</Button>
+  )}
+</div>
+
+
         </div>
       </div>
+      <EnquiryModal
+  open={enquiryOpen}
+  onOpenChange={setEnquiryOpen}
+  product={selectedProduct}
+/>
     </div>
   );
 }
