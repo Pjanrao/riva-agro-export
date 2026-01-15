@@ -70,7 +70,7 @@ export default function AdminCategoriesPage() {
     } catch {
       toast({
         variant: 'destructive',
-        title: 'Error',
+        title: 'Error',  duration: 2000,
         description: 'Failed to fetch categories.',
       });
     } finally {
@@ -92,7 +92,7 @@ export default function AdminCategoriesPage() {
       if (!res.ok) throw new Error();
 
       setCategories((prev) => prev.filter((c) => c.id !== id));
-      toast({ title: '✅ Category deleted' });
+      toast({ title: '✅ Category deleted Successfully' , duration: 2000, });
     } catch {
       toast({
         variant: 'destructive',
@@ -204,17 +204,18 @@ export default function AdminCategoriesPage() {
                     </TableCell>
 
                     {/* STATUS */}
-                    <TableCell>
-                      <Badge
-                        variant={
-                          c.status === 'active'
-                            ? 'default'
-                            : 'outline'
-                        }
-                      >
-                        {c.status}
-                      </Badge>
-                    </TableCell>
+                   <TableCell>
+  <Badge
+    className={
+      c.status === 'inactive'
+        ? 'bg-red-100 text-red-700 hover:bg-red-100'
+        : 'bg-green-100 text-green-700 hover:bg-green-100'
+    }
+  >
+    {c.status}
+  </Badge>
+</TableCell>
+
 
                     {/* FEATURED */}
                     <TableCell>

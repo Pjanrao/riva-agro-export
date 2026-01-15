@@ -16,9 +16,11 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   const product = await getProductById(params.id);
+
   if (!product) {
     return NextResponse.json({ message: "Not found" }, { status: 404 });
   }
+
   return NextResponse.json(product);
 }
 
@@ -32,48 +34,66 @@ export async function PUT(
     const data = await req.formData();
 
     const updates: any = {};
-    const images = data.getAll("images") as File[];
 
-    // text fields
+    /* ===== TEXT FIELDS ===== */
     ["name", "description", "category", "hsCode", "minOrderQty"].forEach(
-      (f) => {
-        const v = data.get(f);
-        if (v !== null) updates[f] = v.toString();
+      (field) => {
+        const value = data.get(field);
+        if (value !== null) updates[field] = value.toString();
       }
     );
 
-    if (data.get("discountedPrice"))
+    if (data.get("discountedPrice")) {
       updates.discountedPrice = Number(data.get("discountedPrice"));
+    }
 
-    if (data.get("sellingPrice"))
+    if (data.get("sellingPrice")) {
       updates.sellingPrice = Number(data.get("sellingPrice"));
+    }
 
-    if (data.get("status"))
+    if (data.get("status")) {
       updates.status =
         data.get("status") === "inactive" ? "inactive" : "active";
+    }
 
     updates.featured = data.get("featured") === "true";
 
-    /* ===== IMAGE UPDATE (CLOUDINARY) ===== */
+    /* ===== EXISTING IMAGES (FROM FRONTEND) ===== */
+    let existingImages: string[] = [];
 
-    if (images.length) {
-      const imageUrls: string[] = [];
-
-      for (const image of images) {
-        if (!image || image.size === 0) continue;
-
-        const buffer = Buffer.from(await image.arrayBuffer());
-        const base64 = `data:${image.type};base64,${buffer.toString("base64")}`;
-
-        const uploadRes = await cloudinary.uploader.upload(base64, {
-          folder: "products",
-        });
-
-        imageUrls.push(uploadRes.secure_url);
+    const existingImagesRaw = data.get("existingImages");
+    if (existingImagesRaw) {
+      try {
+        existingImages = JSON.parse(existingImagesRaw.toString());
+      } catch {
+        existingImages = [];
       }
+    }
 
-      updates.images = imageUrls;
-      updates.primaryImage = imageUrls[0];
+    /* ===== NEW IMAGE UPLOAD ===== */
+    const newImages = data.getAll("images") as File[];
+    const uploadedUrls: string[] = [];
+
+    for (const image of newImages) {
+      if (!image || image.size === 0) continue;
+
+      const buffer = Buffer.from(await image.arrayBuffer());
+      const base64 = `data:${image.type};base64,${buffer.toString("base64")}`;
+
+      const uploadRes = await cloudinary.uploader.upload(base64, {
+        folder: "products",
+      });
+
+      uploadedUrls.push(uploadRes.secure_url);
+    }
+
+    /* ===== FINAL IMAGE MERGE LOGIC ===== */
+    const finalImages = [...existingImages, ...uploadedUrls];
+
+    // 🚨 Prevent empty images (VERY IMPORTANT)
+    if (finalImages.length > 0) {
+      updates.images = finalImages;
+      updates.primaryImage = finalImages[0];
     }
 
     const updated = await updateProduct(params.id, updates);
@@ -85,6 +105,7 @@ export async function PUT(
     return NextResponse.json(updated);
   } catch (err: any) {
     console.error("PRODUCT UPDATE ERROR:", err);
+
     return NextResponse.json(
       { message: "Internal Server Error", error: err.message },
       { status: 500 }

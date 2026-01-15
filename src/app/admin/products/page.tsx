@@ -94,8 +94,11 @@ export default function AdminProductsPage() {
       return;
     }
 
-    toast({ title: 'Product deleted' });
-    fetchProducts();
+toast({
+  title: 'Product Added Successfully',
+  duration: 2000, // ⏱️ 2 seconds
+});
+ fetchProducts();
   };
 
   /* ================= FILTER ================= */
@@ -244,9 +247,18 @@ export default function AdminProductsPage() {
                             ₹{p.sellingPrice ?? 0}
                           </TableCell>
 
-                          <TableCell>
-                            <Badge>{p.status}</Badge>
-                          </TableCell>
+                         <TableCell>
+  <Badge
+    className={
+      p.status === 'inactive'
+        ? 'bg-red-100 text-red-700 hover:bg-red-100'
+        : 'bg-green-100 text-green-700 hover:bg-green-100'
+    }
+  >
+    {p.status}
+  </Badge>
+</TableCell>
+
 
                           <TableCell className="text-center space-x-1">
                             <Button

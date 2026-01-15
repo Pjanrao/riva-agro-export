@@ -5,16 +5,20 @@ import cloudinary from "@/lib/cloudinary";
 export const runtime = "nodejs";
 export const maxDuration = 300;
 
-/* ================= GET (ALL CATEGORIES) ================= */
-export async function GET() {
+/* ================= GET (ALL / FILTERED CATEGORIES) ================= */
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const onlyActive = searchParams.get("onlyActive") === "true";
+
   const categories = await getCategories();
 
-  // return only active categories (for dropdowns)
-  const activeCategories = categories.filter(
-    (c: any) => c.status === "active"
-  );
+  // 🔹 For dropdowns: /api/categories?onlyActive=true
+  // 🔹 For admin table: /api/categories
+  const result = onlyActive
+    ? categories.filter((c: any) => c.status === "active")
+    : categories;
 
-  return NextResponse.json(activeCategories);
+  return NextResponse.json(result);
 }
 
 /* ================= POST (CREATE CATEGORY) ================= */

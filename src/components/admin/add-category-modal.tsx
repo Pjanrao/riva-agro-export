@@ -97,7 +97,7 @@ export default function AddCategoryModal({
 
       if (!res.ok) throw new Error();
 
-     toast({ title: '✅ Category created' });
+     toast({ title: '✅ Category created Successfully ',duration: 2000, });
 
 resetForm();
 setOpen(false);
@@ -132,15 +132,6 @@ refresh();
                 Enter category details
               </p>
             </div>
-
-            {/* SINGLE CLOSE ICON */}
-            {/* <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => setOpen(false)}
-            >
-              <X className="h-4 w-4" />
-            </Button> */}
           </div>
         </DialogHeader>
 

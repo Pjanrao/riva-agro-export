@@ -147,9 +147,9 @@ export default function AdminLayout({
       <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
         {/* ===== DESKTOP SIDEBAR ===== */}
         <aside className="hidden lg:flex lg:flex-col h-screen border-r bg-muted/40">
-          <div className="flex h-16 items-center border-b px-6">
+          <div className="flex h-12 items-center border-b px-6">
             <Link href="/admin/dashboard">
-              <Logo />
+             <Logo className="h-6 sm:h-7 md:h-8" />
             </Link>
           </div>
 

@@ -90,7 +90,7 @@ export default function EditCategoryModal({
       return;
     }
 
-    toast({ title: 'Category updated' });
+     toast({ title: '✅ Category updated Successfully ',duration: 2000, });
     setOpen(false);
     refresh();
   };

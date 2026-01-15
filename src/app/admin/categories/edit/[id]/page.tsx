@@ -109,13 +109,13 @@ export default function EditCategoryPage() {
 
       if (!res.ok) throw new Error();
 
-      toast({ title: '✅ Category updated' });
+      toast({ title: '✅ Category updated successfully' , duration: 2000,});
       router.push('/admin/categories');
       router.refresh();
     } catch {
       toast({
         variant: 'destructive',
-        title: 'Update failed',
+        title: 'Update failed', duration: 2000,
       });
     } finally {
       setIsSubmitting(false);
