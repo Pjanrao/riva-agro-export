@@ -82,6 +82,28 @@ export interface Order {
         email: string;
         contact?: string;
       };
+/* ================= ✅ NEW (ADD THIS) ================= */
+  customerId?:
+    | string
+    | {
+        _id?: ObjectId;
+
+        fullName: string;
+        email: string;
+        contactNo: string;
+
+        address: string;
+        city: string;
+        state: string;
+        country: string;
+        pin: string;
+
+        latitude?: string;
+        longitude?: string;
+
+        createdAt?: string;
+      };
+
   items: CartItem[];
   total: number;
   status: 'Pending' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
