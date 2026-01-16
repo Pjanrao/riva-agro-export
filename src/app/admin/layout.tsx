@@ -147,7 +147,7 @@ export default function AdminLayout({
       <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
         {/* ===== DESKTOP SIDEBAR ===== */}
         <aside className="hidden lg:flex lg:flex-col h-screen border-r bg-muted/40">
-          <div className="flex h-12 items-center border-b px-6">
+          <div className="flex h-16 items-center border-b px-6">
             <Link href="/admin/dashboard">
              <Logo className="h-6 sm:h-7 md:h-8" />
             </Link>
@@ -212,10 +212,10 @@ export default function AdminLayout({
               </SheetContent>
             </Sheet>
 
-            <div className="flex flex-1 items-center justify-between">
-              <h1 className="text-lg font-semibold capitalize">
+            <div className="flex flex-1 items-center justify-end">
+              {/* <h1 className="text-lg font-semibold capitalize">
                 {pathname.split("/").pop()?.replace("-", " ")}
-              </h1>
+              </h1> */}
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

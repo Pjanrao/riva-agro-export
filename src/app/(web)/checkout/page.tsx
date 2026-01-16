@@ -1,3 +1,305 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useCart } from "@/hooks/use-cart";
+import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
+
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Separator } from "@/components/ui/separator";
+
+import { getUsdRate } from "@/lib/getUsdRate";
+import { formatPriceUSD } from "@/lib/price";
+import type { ShippingAddress, Order } from "@/lib/types";
+
+/* ================= SCHEMA ================= */
+
+const shippingSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  address: z.string().min(1, "Address is required"),
+  city: z.string().min(1, "City is required"),
+  country: z.string().min(1, "Country is required"),
+  zip: z.string().min(1, "ZIP code is required"),
+});
+
+/* ================= PAGE ================= */
+
+export default function CheckoutPage() {
+  const router = useRouter();
+  const { user } = useAuth();
+  const { cartItems, cartTotal, clearCart } = useCart();
+  const { toast } = useToast();
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+
+  // ✅ USD RATE
+  const [usdRate, setUsdRate] = useState<number>(1);
+
+  useEffect(() => {
+    async function fetchRate() {
+      try {
+        const rate = await getUsdRate();
+        setUsdRate(rate || 1);
+      } catch {
+        setUsdRate(1);
+      }
+    }
+    fetchRate();
+  }, []);
+
+  const form = useForm<z.infer<typeof shippingSchema>>({
+    resolver: zodResolver(shippingSchema),
+    defaultValues: {
+      name: "",
+      address: "",
+      city: "",
+      country: "",
+      zip: "",
+    },
+  });
+
+  /* ================= GUARDS ================= */
+
+  useEffect(() => {
+    if (!user) {
+      router.replace("/login?redirect=/checkout");
+    } else if (cartItems.length === 0) {
+      router.replace("/cart");
+    } else {
+      setIsReady(true);
+    }
+  }, [user, cartItems, router]);
+
+  /* ================= PLACE ORDER ================= */
+
+const placeOrder = async (shippingDetails: ShippingAddress) => {
+  setIsSubmitting(true);
+
+  try {
+    // ✅ cartTotal is already USD
+    const usdTotal = Number(cartTotal.toFixed(2));
+
+    const orderData: Omit<Order, "id" | "_id" | "createdAt"> = {
+      userId: user!.id,
+      items: cartItems,        // item.price is USD
+      total: usdTotal,         // USD (60.88)
+      status: "Processing",
+      shippingAddress: shippingDetails,
+      paymentMethod: "COD",
+      paymentStatus: "Pending",
+      currency: "USD",
+    };
+
+    const res = await fetch("/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(orderData),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to place order");
+    }
+
+    clearCart();
+
+    toast({
+      title: "✅ Order Placed Successfully",
+      description: "Your order has been placed and is being processed.",
+    });
+
+    router.push("/profile/orders");
+  } catch {
+    toast({
+      variant: "destructive",
+      title: "Order Failed",
+      description: "Something went wrong. Please try again.",
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+  /* ================= SUBMIT ================= */
+
+  function onSubmit(values: z.infer<typeof shippingSchema>) {
+    placeOrder(values);
+  }
+
+  if (!isReady) return null;
+
+  /* ================= UI ================= */
+
+  return (
+    <div className="container py-12">
+      <h1 className="font-headline text-4xl font-bold mb-8">
+        Checkout
+      </h1>
+
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+        >
+          {/* LEFT */}
+          <div className="lg:col-span-2 space-y-8">
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-headline text-2xl">
+                  Shipping Address
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Full Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Address</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <FormField
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>City</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    name="country"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Country</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    name="zip"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>ZIP Code</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* RIGHT */}
+          <div className="lg:col-span-1">
+            <Card className="sticky top-24">
+              <CardHeader>
+                <CardTitle className="font-headline text-2xl">
+                  Order Summary (USD)
+                </CardTitle>
+              </CardHeader>
+
+              <CardContent className="space-y-4">
+                {cartItems.map((item, index) => {
+                  const itemTotal = item.price * item.quantity;
+                  return (
+                    <div
+                      key={`${item.variantId}-${index}`}
+                      className="flex justify-between text-sm"
+                    >
+                      <span className="text-muted-foreground">
+                        {item.name} (x{item.quantity})
+                      </span>
+                      <span>
+                        {formatPriceUSD(itemTotal, usdRate)}
+                      </span>
+                    </div>
+                  );
+                })}
+
+                <Separator />
+
+                <div className="flex justify-between font-bold text-lg">
+                  <span>Total</span>
+                  <span>
+                    {formatPriceUSD(cartTotal, usdRate)}
+                  </span>
+                </div>
+              </CardContent>
+
+              <CardContent>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  size="lg"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting
+                    ? "Placing Order..."
+                    : "Place Order"}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </form>
+      </Form>
+    </div>
+  );
+}
+
+
+
+
 /* Code for payment getway */
  
 // "use client";
@@ -496,305 +798,3 @@
 //     </div>
 //   );
 // }
-
-"use client";
-
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-
-import { useCart } from "@/hooks/use-cart";
-import { useAuth } from "@/hooks/use-auth";
-import { useToast } from "@/hooks/use-toast";
-
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
-
-import { getUsdRate } from "@/lib/getUsdRate";
-import { formatPriceUSD } from "@/lib/price";
-import type { ShippingAddress, Order } from "@/lib/types";
-
-/* ================= SCHEMA ================= */
-
-const shippingSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  address: z.string().min(1, "Address is required"),
-  city: z.string().min(1, "City is required"),
-  country: z.string().min(1, "Country is required"),
-  zip: z.string().min(1, "ZIP code is required"),
-});
-
-/* ================= PAGE ================= */
-
-export default function CheckoutPage() {
-  const router = useRouter();
-  const { user } = useAuth();
-  const { cartItems, cartTotal, clearCart } = useCart();
-  const { toast } = useToast();
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isReady, setIsReady] = useState(false);
-
-  // ✅ USD RATE
-  const [usdRate, setUsdRate] = useState<number>(1);
-
-  useEffect(() => {
-    async function fetchRate() {
-      try {
-        const rate = await getUsdRate();
-        setUsdRate(rate || 1);
-      } catch {
-        setUsdRate(1);
-      }
-    }
-    fetchRate();
-  }, []);
-
-  const form = useForm<z.infer<typeof shippingSchema>>({
-    resolver: zodResolver(shippingSchema),
-    defaultValues: {
-      name: "",
-      address: "",
-      city: "",
-      country: "",
-      zip: "",
-    },
-  });
-
-  /* ================= GUARDS ================= */
-
-  useEffect(() => {
-    if (!user) {
-      router.replace("/login?redirect=/checkout");
-    } else if (cartItems.length === 0) {
-      router.replace("/cart");
-    } else {
-      setIsReady(true);
-    }
-  }, [user, cartItems, router]);
-
-  /* ================= PLACE ORDER ================= */
-
-  const placeOrder = async (shippingDetails: ShippingAddress) => {
-    setIsSubmitting(true);
-
-    try {
-      // ✅ USD TOTAL
-      const usdTotal = Number(
-        ((cartTotal / usdRate) || 0).toFixed(2)
-      );
-
-      const orderData: Omit<Order, "id" | "_id" | "createdAt"> = {
-        userId: user!.id,
-        items: cartItems,
-        total: usdTotal, // ✅ STORE USD
-        status: "Processing",
-        shippingAddress: shippingDetails,
-        paymentMethod: "COD",
-        paymentStatus: "Pending",
-        currency: "USD", // 🔥 recommended
-      };
-
-      const res = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData),
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to place order");
-      }
-
-      clearCart();
-
-      toast({
-        title: "✅ Order Placed Successfully",
-        description: "Your order has been placed and is being processed.",
-      });
-
-      router.push("/profile/orders");
-    } catch {
-      toast({
-        variant: "destructive",
-        title: "Order Failed",
-        description: "Something went wrong. Please try again.",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  /* ================= SUBMIT ================= */
-
-  function onSubmit(values: z.infer<typeof shippingSchema>) {
-    placeOrder(values);
-  }
-
-  if (!isReady) return null;
-
-  /* ================= UI ================= */
-
-  return (
-    <div className="container py-12">
-      <h1 className="font-headline text-4xl font-bold mb-8">
-        Checkout
-      </h1>
-
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-1 lg:grid-cols-3 gap-8"
-        >
-          {/* LEFT */}
-          <div className="lg:col-span-2 space-y-8">
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-headline text-2xl">
-                  Shipping Address
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <FormField
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Full Name</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Address</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <FormField
-                    name="city"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>City</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    name="country"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Country</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    name="zip"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>ZIP Code</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* RIGHT */}
-          <div className="lg:col-span-1">
-            <Card className="sticky top-24">
-              <CardHeader>
-                <CardTitle className="font-headline text-2xl">
-                  Order Summary (USD)
-                </CardTitle>
-              </CardHeader>
-
-              <CardContent className="space-y-4">
-                {cartItems.map((item, index) => {
-                  const itemTotal = item.price * item.quantity;
-                  return (
-                    <div
-                      key={`${item.variantId}-${index}`}
-                      className="flex justify-between text-sm"
-                    >
-                      <span className="text-muted-foreground">
-                        {item.name} (x{item.quantity})
-                      </span>
-                      <span>
-                        {formatPriceUSD(itemTotal, usdRate)}
-                      </span>
-                    </div>
-                  );
-                })}
-
-                <Separator />
-
-                <div className="flex justify-between font-bold text-lg">
-                  <span>Total</span>
-                  <span>
-                    {formatPriceUSD(cartTotal, usdRate)}
-                  </span>
-                </div>
-              </CardContent>
-
-              <CardContent>
-                <Button
-                  type="submit"
-                  className="w-full"
-                  size="lg"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting
-                    ? "Placing Order..."
-                    : "Place Order"}
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </form>
-      </Form>
-    </div>
-  );
-}
-

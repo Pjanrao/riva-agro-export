@@ -7,7 +7,6 @@ import {
 } from "@/lib/models/Order";
 import type { Order as OrderType } from "@/lib/types";
 
-
 /* ======================================================
    GET HANDLER
    - /api/orders            → get all orders
@@ -19,7 +18,6 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const orderId = searchParams.get("id");
 
-    // 🔹 GET SINGLE ORDER
     if (orderId) {
       const order = await getOrderById(orderId);
 
@@ -33,7 +31,6 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(order, { status: 200 });
     }
 
-    // 🔹 GET ALL ORDERS
     const orders = await getOrders();
     return NextResponse.json(orders, { status: 200 });
   } catch (error) {
@@ -46,22 +43,18 @@ export async function GET(req: NextRequest) {
 }
 
 /* ======================================================
-   POST HANDLER
+   POST HANDLER  🔥 FIXED TOTAL LOGIC
    - /api/orders → create new order
 ====================================================== */
 
 export async function POST(req: NextRequest) {
   try {
-    const orderData: Omit<OrderType, "id" | "_id" | "createdAt"> =
-      await req.json();
+    const orderData = await req.json();
 
-    // 🔍 Basic validation
     if (
-      !orderData ||
-      !orderData.userId ||
-      !orderData.items ||
-      orderData.items.length === 0 ||
-      !orderData.total
+      !orderData?.userId ||
+      !orderData?.items ||
+      orderData.items.length === 0
     ) {
       return NextResponse.json(
         { message: "Missing required fields" },
@@ -69,10 +62,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const newOrder = await createOrder(orderData);
+    // ✅ FIX: Store PRICE IN USD ONLY
+    const safeItems = orderData.items.map((item: any) => ({
+      ...item,
+      price: Number(item.price),      // MUST be 60.88 (USD)
+      quantity: Number(item.quantity) || 1,
+    }));
+
+    const safeOrderData = {
+      ...orderData,
+      items: safeItems,
+      currency: "USD" as const,       // IMPORTANT
+    };
+
+    const newOrder = await createOrder(safeOrderData);
     return NextResponse.json(newOrder, { status: 201 });
   } catch (error) {
-    console.error("Failed to create order:", error);
+    console.error("Create order failed:", error);
     return NextResponse.json(
       { message: "Failed to create order" },
       { status: 500 }
@@ -106,7 +112,6 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    // 🔒 LOCK DELIVERED ORDERS (extra safety)
     const existingOrder = await getOrderById(orderId);
 
     if (!existingOrder) {

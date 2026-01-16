@@ -7,7 +7,7 @@ import clientPromise from "@/lib/mongodb";
 import type { User } from "@/lib/types";
 
 interface JwtPayload {
-  userId: string;
+  id: string;
 }
 
 function toUser(doc: any): User {
@@ -19,8 +19,10 @@ function toUser(doc: any): User {
 export async function PUT(req: Request) {
   try {
     /* ---------- AUTH ---------- */
-    const cookieStore = await cookies();
-    const token = cookieStore.get("access_token")?.value;
+  const cookieStore = await cookies();
+const token = cookieStore.get("auth_token")?.value;
+
+console.log("TOKEN:", token);
 
     if (!token) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -31,7 +33,7 @@ export async function PUT(req: Request) {
       process.env.JWT_SECRET!
     ) as JwtPayload;
 
-    if (!ObjectId.isValid(decoded.userId)) {
+    if (!ObjectId.isValid(decoded.id)) {
       return NextResponse.json({ message: "Invalid user" }, { status: 400 });
     }
 
@@ -43,6 +45,7 @@ export async function PUT(req: Request) {
       country,
       state,
       city,
+      address,
       pincode,
       latitude,
       longitude,
@@ -55,7 +58,9 @@ export async function PUT(req: Request) {
       !!country &&
       !!state &&
       !!city &&
+      !!address &&
       !!pincode;
+      
 
     /* ---------- DB ---------- */
     const client = await clientPromise;
@@ -65,7 +70,7 @@ export async function PUT(req: Request) {
     const users = db.collection("users");
 
     await users.updateOne(
-      { _id: new ObjectId(decoded.userId) },
+      { _id: new ObjectId(decoded.id) },
       {
         $set: {
           name,
@@ -73,6 +78,7 @@ export async function PUT(req: Request) {
           country,
           state,
           city,
+          address,       
           pincode,
           latitude,
           longitude,
@@ -85,7 +91,7 @@ export async function PUT(req: Request) {
     );
 
     const updatedUser = await users.findOne({
-      _id: new ObjectId(decoded.userId),
+      _id: new ObjectId(decoded.id),
     });
 
     if (!updatedUser) {

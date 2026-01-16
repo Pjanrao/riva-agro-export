@@ -118,6 +118,7 @@ export interface User {
   state?: string;
   city?: string;
   pincode?: string;
+  address?: string;
 
   latitude?: number;
   longitude?: number;

@@ -40,6 +40,7 @@ export default function ProfilePage() {
     country: "",
     state: "",
     city: "",
+    address: "",
     pincode: "",
     latitude: "",
     longitude: "",
@@ -63,6 +64,7 @@ export default function ProfilePage() {
         country: user.country ?? "",
         state: user.state ?? "",
         city: user.city ?? "",
+        address: user.address ?? "",
         pincode: user.pincode ?? "",
         latitude: user.latitude?.toString() ?? "",
         longitude: user.longitude?.toString() ?? "",
@@ -84,6 +86,7 @@ export default function ProfilePage() {
     const res = await fetch("/api/users/profile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
+       credentials: "include",
       body: JSON.stringify(formData),
     });
 
@@ -95,30 +98,19 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="container py-12">
-      <h1 className="font-headline text-4xl font-bold mb-8">
-        My Profile
-      </h1>
-
-      <Card className="max-w-3xl mx-auto">
-        <CardHeader>
-          <CardTitle className="font-headline text-2xl">
-            Profile Information
-          </CardTitle>
-          <CardDescription>
-            View and manage your personal details.
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent className="space-y-6">
-
-          {/* 🔔 PROFILE INCOMPLETE ALERT */}
+    <div className="container py-4">
+       {/* ===== PAGE HEADER ===== */}
+      <div className="max-w-5xl mx-auto mb-8 text-center sm:text-left">
+        <h3 className="font-headline text-2xl font-bold mb-5">
+          My Profile
+        </h3>
+       
+        {/* 🔔 PROFILE INCOMPLETE ALERT */}
           {!user.profileCompleted && !editMode && (
             <div className="rounded-md border border-yellow-300 bg-yellow-50 p-4 text-sm">
               <p className="font-medium">Profile incomplete</p>
               <p className="text-muted-foreground">
-                Complete your profile to place orders and request export quotes.
-              </p>
+Providing additional information helps us serve you better during orders and enquiries.              </p>
               <Button
                 size="sm"
                 className="mt-3"
@@ -128,16 +120,23 @@ export default function ProfilePage() {
               </Button>
             </div>
           )}
+  </div>
 
+      <Card className="max-w-5xl mx-auto">
+      
+<CardContent className="space-y-4">
+
+        
           {/* ================= VIEW MODE ================= */}
           {!editMode && (
-            <>
-              <ProfileRow label="Name" value={user.name} />
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6 mt-5">
+              <ProfileRow label="Full Name" value={user.name} />
               <ProfileRow label="Email" value={user.email} />
               <ProfileRow label="Contact No" value={user.contactNo ?? "—"} />
               <ProfileRow label="Country" value={user.country ?? "—"} />
               <ProfileRow label="State" value={user.state ?? "—"} />
               <ProfileRow label="City" value={user.city ?? "—"} />
+              <ProfileRow label="Address" value={user.address ?? "—"} />
               <ProfileRow label="Pincode" value={user.pincode ?? "—"} />
               <ProfileRow label="Latitude" value={user.latitude?.toString() ?? "—"} />
               <ProfileRow label="Longitude" value={user.longitude?.toString() ?? "—"} />
@@ -156,7 +155,7 @@ export default function ProfilePage() {
                   Change Password
                 </Button>
               </div>
-            </>
+            </div>
           )}
 
           {/* ================= EDIT MODE ================= */}
@@ -166,19 +165,21 @@ export default function ProfilePage() {
               <FormInput label="Email" name="email" value={formData.email} readOnly />
               <FormInput label="Contact No" name="contactNo" value={formData.contactNo} onChange={handleChange} />
 
-              <div className="grid grid-cols-2 gap-4">
+<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormInput label="Country" name="country" value={formData.country} onChange={handleChange} />
                 <FormInput label="State" name="state" value={formData.state} onChange={handleChange} />
                 <FormInput label="City" name="city" value={formData.city} onChange={handleChange} />
                 <FormInput label="Pincode" name="pincode" value={formData.pincode} onChange={handleChange} />
+                <FormInput label="Address" name="address" value={formData.address} onChange={handleChange} />
+
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormInput label="Latitude" name="latitude" value={formData.latitude} onChange={handleChange} />
                 <FormInput label="Longitude" name="longitude" value={formData.longitude} onChange={handleChange} />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormInput
                   label="Reference Name"
                   name="referenceName"
@@ -193,7 +194,7 @@ export default function ProfilePage() {
                 />
               </div>
 
-              <div className="flex gap-3 pt-4">
+<div className="flex justify-end gap-3 pt-6">
                 <Button onClick={handleSave}>Save Profile</Button>
                 <Button variant="ghost" onClick={() => setEditMode(false)}>
                   Cancel
