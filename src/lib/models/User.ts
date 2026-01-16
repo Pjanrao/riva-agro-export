@@ -30,7 +30,7 @@ async function init() {
 function toUser(doc: any): User {
     if (!doc) return doc;
     const { _id, ...rest } = doc;
-    return { ...rest, id: _id.toHexString() };
+    return { ...rest, _id: doc._id,id: _id.toHexString() };
 }
 
 

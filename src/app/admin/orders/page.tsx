@@ -1101,6 +1101,18 @@ const customer =
                 {customer.address}, {customer.city}, {customer.state},{" "}
                 {customer.country} - {customer.pin}
               </p>
+
+
+      {/* LOCATION (OPTIONAL) */}
+      <p>
+        <span className="font-medium">Latitude :</span>{" "}
+        {customer.latitude || "—"}
+      </p>
+
+      <p>
+        <span className="font-medium">Longitude :</span>{" "}
+        {customer.longitude || "—"}
+      </p>
             </>
           ) : (
             <p className="text-muted-foreground">
