@@ -36,17 +36,17 @@ export async function POST(req: NextRequest) {
     }
 
     // 🔐 CREATE JWT
-  const mongoUserId = (user as any)._id?.toString();
+//   const mongoUserId = (user as any)._id?.toString();
 
-if (!mongoUserId) {
-  return NextResponse.json(
-    { message: "Invalid user record" },
-    { status: 500 }
-  );
-}
+// if (!mongoUserId) {
+//   return NextResponse.json(
+//     { message: "Invalid user record" },
+//     { status: 500 }
+//   );
+// }
 
 const token = jwt.sign(
-  { userId: mongoUserId },
+  { userId: user.id },
   process.env.JWT_SECRET!,
   { expiresIn: "7d" }
 );

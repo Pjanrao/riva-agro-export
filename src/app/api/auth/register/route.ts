@@ -5,10 +5,10 @@ import bcrypt from 'bcryptjs';
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, password } = await req.json();
+    const { name, email, contactNo, password } = await req.json();
 
-    if (!name || !email || !password) {
-      return NextResponse.json({ message: 'Name, email, and password are required' }, { status: 400 });
+    if (!name || !email || !password || !contactNo) {
+      return NextResponse.json({ message: 'Name, email, contactNo, and password are required' }, { status: 400 });
     }
     
     if (password.length < 8) {
@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
     await createUser({
       name,
       email,
+      contactNo,
       password: hashedPassword,
       role: 'User',
     });
