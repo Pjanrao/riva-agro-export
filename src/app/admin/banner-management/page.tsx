@@ -148,18 +148,18 @@ const fetchBanners = async () => {
   return (
     <>
       {/* HEADER */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-start sm:justify-between mb-4 w-full gap-3 sm:gap-4" >
         <div>
-          <h1 className="text-xl font-semibold">
+          <h1 className="text-lg sm:text-xl md:text-2xl font-semibold">
             Banner Management
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Manage website banners & visibility
           </p>
         </div>
 
         <Button
-          className="bg-green-600 hover:bg-green-700 text-white"
+          className="bg-green-600 hover:bg-green-700 text-white w-auto text-sm sm:text-base h-9 sm:h-10 ml-auto"
           onClick={() => {
             setMode('add');
             setSelectedBanner(null);
@@ -172,7 +172,9 @@ const fetchBanners = async () => {
       </div>
 
       {/* TABLE */}
-      <Card>
+      <div className="w-full">
+
+      <Card className="">
         <CardContent className="pt-4">
           <Tabs
             value={statusFilter}
@@ -181,21 +183,23 @@ const fetchBanners = async () => {
               setCurrentPage(1);
             }}
           >
-            <div className="flex justify-between mb-3">
-              <TabsList>
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="active">
-                  Active
-                </TabsTrigger>
-                <TabsTrigger value="inactive">
-                  Inactive
-                </TabsTrigger>
-              </TabsList>
+            <div className="flex flex-col sm:flex-row justify-between gap-2 sm:gap-3 mb-3">
+              <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+                <TabsList>
+                  <TabsTrigger value="all">All</TabsTrigger>
+                  <TabsTrigger value="active">
+                    Active
+                  </TabsTrigger>
+                  <TabsTrigger value="inactive">
+                    Inactive
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
-              <div className="relative w-[220px]">
+              <div className="relative w-full sm:w-[220px]">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4" />
                 <Input
-                  className="pl-8 h-9"
+                  className="pl-8 h-9 text-sm"
                   placeholder="Search…"
                   value={search}
                   onChange={(e) => {
@@ -208,99 +212,105 @@ const fetchBanners = async () => {
 
             <TabsContent value={statusFilter}>
               {loading ? (
-                <div className="py-10 text-center">
+                <div className="py-5 text-center">
                   Loading…
                 </div>
               ) : (
-                <>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Image</TableHead>
-                        <TableHead>Title</TableHead>
-                        <TableHead>Position</TableHead>
-                        <TableHead>Order</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-center">
-                          Actions
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-
-                    <TableBody>
-                      {paginatedBanners.map((b) => (
-                        <TableRow key={b.id}>
-                          <TableCell>
-                            <Image
-                              src={b.image}
-                              width={60}
-                              height={40}
-                              alt={b.heading}
-                              className="rounded object-cover"
-                            />
-                          </TableCell>
-
-                          <TableCell className="font-medium">
-                            {b.heading}
-                          </TableCell>
-
-                          <TableCell>
-                            <Badge variant="outline">
-                              {b.position}
-                            </Badge>
-                          </TableCell>
-
-                          <TableCell>{b.order}</TableCell>
-
-                          <TableCell>
-                            <Badge>{b.status}</Badge>
-                          </TableCell>
-
-                          <TableCell className="text-center space-x-1">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => {
-                                setSelectedBanner(b);
-                                setMode('view');
-                                setOpen(true);
-                              }}
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Button>
-
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => {
-                                setSelectedBanner(b);
-                                setMode('edit');
-                                setOpen(true);
-                              }}
-                            >
-                              <Pencil className="h-4 w-4 text-blue-600" />
-                            </Button>
-
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() =>
-                                handleDelete(b.id)
-                              }
-                            >
-                              <Trash2 className="h-4 w-4 text-red-600" />
-                            </Button>
-                          </TableCell>
+<div className="relative w-full overflow-x-auto -mx-4 sm:mx-0">
+                  <div className="inline-block min-w-full align-middle">
+                    <Table className="w-full text-xs sm:text-sm [&_th]:px-2 sm:[&_th]:px-3 [&_td]:px-2 sm:[&_td]:px-3 [&_th]:py-2 [&_td]:py-2 [&_th]:text-left">
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-10 sm:w-12">Image</TableHead>
+                          <TableHead className="min-w-[120px] sm:w-[120px] md:w-[100px]">Title</TableHead>
+                          <TableHead className="hidden md:table-cell w-16 text-center">
+                            Order
+                          </TableHead>
+                          <TableHead className="w-20 sm:w-24">Status</TableHead>
+                          <TableHead className="text-center w-20 sm:w-24">
+                            Actions
+                          </TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+
+                      <TableBody>
+                        {paginatedBanners.map((b) => (
+                          <TableRow key={b.id}>
+                            <TableCell className="w-10 sm:w-12 shrink-0">
+                              <Image
+                                src={b.image}
+                                width={40}
+                                height={32}
+                                alt={b.heading}
+                                className="rounded object-cover"
+                              />
+                            </TableCell>
+
+                            <TableCell className="min-w-[120px] sm:w-[120px] md:w-[100px]">
+                              <p className="text-xs sm:text-sm font-medium truncate max-w-[110px] sm:max-w-[110px] md:max-w-[90px]">
+                                {b.heading}
+                              </p>
+                            </TableCell>
+
+                            <TableCell className="hidden md:table-cell text-xs sm:text-sm">
+                              {b.order}
+                            </TableCell>
+
+                            <TableCell className="w-20 sm:w-24">
+                              <Badge className="px-2 py-0.5 text-xs rounded-full whitespace-nowrap">
+                                {b.status}
+                              </Badge>
+                            </TableCell>
+
+                            <TableCell className="text-center w-20 sm:w-24">
+                              <div className="flex gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7 p-0"
+                                  onClick={() => {
+                                    setSelectedBanner(b);
+                                    setMode('view');
+                                    setOpen(true);
+                                  }}
+                                >
+                                  <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                </Button>
+
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7 p-0"
+                                  onClick={() => {
+                                    setSelectedBanner(b);
+                                    setMode('edit');
+                                    setOpen(true);
+                                  }}
+                                >
+                                  <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600" />
+                                </Button>
+
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7 p-0"
+                                  onClick={() => handleDelete(b.id)}
+                                >
+                                  <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-red-600" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
 
                   {/* PAGINATION */}
                   {filteredBanners.length >
                     ITEMS_PER_PAGE && (
-                    <div className="flex items-center justify-between mt-4">
-                      <p className="text-sm text-muted-foreground">
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 mt-4 px-4 sm:px-0">
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         Page {currentPage} of {totalPages}
                       </p>
 
@@ -309,6 +319,7 @@ const fetchBanners = async () => {
                           variant="outline"
                           size="sm"
                           disabled={currentPage === 1}
+                          className="text-xs sm:text-sm h-8 sm:h-9"
                           onClick={() =>
                             setCurrentPage((p) => p - 1)
                           }
@@ -322,6 +333,7 @@ const fetchBanners = async () => {
                           disabled={
                             currentPage === totalPages
                           }
+                          className="text-xs sm:text-sm h-8 sm:h-9"
                           onClick={() =>
                             setCurrentPage((p) => p + 1)
                           }
@@ -331,12 +343,13 @@ const fetchBanners = async () => {
                       </div>
                     </div>
                   )}
-                </>
+                </div>
               )}
             </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
+      </div>
 
       {/* MODAL */}
       <BannerModal
@@ -348,4 +361,4 @@ const fetchBanners = async () => {
       />
     </>
   );
-}
+} 

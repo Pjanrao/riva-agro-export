@@ -153,13 +153,31 @@ export function BannerModal({
     onClose();
   };
 
+  /* ================= HANDLE CLOSE ================= */
+
+  const handleClose = () => {
+    // Reset form to default state
+    setForm({
+      heading: '',
+      subHeading: '',
+      image: '',
+      button1Text: 'Get a Quote',
+      button1Link: '/contact',
+      button2Text: 'Find More',
+      productId: 'none',
+      order: 1,
+      status: 'active',
+    });
+    onClose();
+  };
+
   /* ================= UI ================= */
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-<DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+    <Dialog open={open} onOpenChange={handleClose} >
+<DialogContent className="max-w-sm md:max-w-2xl max-h-[90vh] overflow-y-auto w-[92vw] sm:w-full mx-auto p-3 sm:p-6">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl md:text-2xl">
             {mode === 'add'
               ? 'Add Banner'
               : mode === 'edit'
@@ -174,17 +192,18 @@ export function BannerModal({
             alt="Banner"
             width={800}
             height={300}
-            className="rounded mb-4 object-cover"
+            className="rounded mb-3 sm:mb-4 object-cover w-full h-auto"
           />
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
           {/* LEFT */}
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             <div>
-              <Label>Heading</Label>
+              <Label className="text-sm sm:text-base">Heading</Label>
               <Input
                 disabled={isView}
+                className="text-sm h-9 sm:h-10"
                 value={form.heading}
                 onChange={(e) =>
                   setForm({ ...form, heading: e.target.value })
@@ -193,9 +212,10 @@ export function BannerModal({
             </div>
 
             <div>
-              <Label>Sub Heading</Label>
+              <Label className="text-sm sm:text-base">Sub Heading</Label>
               <Input
                 disabled={isView}
+                className="text-sm h-9 sm:h-10"
                 value={form.subHeading}
                 onChange={(e) =>
                   setForm({
@@ -208,11 +228,12 @@ export function BannerModal({
 
             {/* IMAGE UPLOAD */}
             <div>
-              <Label>Banner Image</Label>
+              <Label className="text-sm sm:text-base">Banner Image</Label>
               <Input
                 type="file"
                 accept="image/*"
                 disabled={isView || uploading}
+                className="text-sm h-9 sm:h-10"
                 onChange={async (e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;
@@ -260,11 +281,12 @@ export function BannerModal({
           </div>
 
           {/* RIGHT */}
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             <div>
-              <Label>Button 1 Text</Label>
+              <Label className="text-sm sm:text-base">Button 1 Text</Label>
               <Input
                 disabled={isView}
+                className="text-sm h-9 sm:h-10"
                 value={form.button1Text}
                 onChange={(e) =>
                   setForm({
@@ -276,9 +298,10 @@ export function BannerModal({
             </div>
 
             <div>
-              <Label>Button 1 Link</Label>
+              <Label className="text-sm sm:text-base">Button 1 Link</Label>
               <Input
                 disabled={isView}
+                className="text-sm h-9 sm:h-10"
                 value={form.button1Link}
                 onChange={(e) =>
                   setForm({
@@ -290,9 +313,10 @@ export function BannerModal({
             </div>
 
             <div>
-              <Label>Button 2 Text</Label>
+              <Label className="text-sm sm:text-base">Button 2 Text</Label>
               <Input
                 disabled={isView}
+                className="text-sm h-9 sm:h-10"
                 value={form.button2Text}
                 onChange={(e) =>
                   setForm({
@@ -304,7 +328,7 @@ export function BannerModal({
             </div>
 
             <div>
-              <Label>Button 2 Product</Label>
+              <Label className="text-sm sm:text-base">Button 2 Product</Label>
               <Select
                 disabled={isView}
                 value={form.productId}
@@ -335,10 +359,11 @@ export function BannerModal({
             </div>
 
             <div>
-              <Label>Order</Label>
+              <Label className="text-sm sm:text-base">Order</Label>
               <Input
                 type="number"
                 disabled={isView}
+                className="text-sm h-9 sm:h-10"
                 value={form.order}
                 onChange={(e) =>
                   setForm({
@@ -350,7 +375,7 @@ export function BannerModal({
             </div>
 
             <div>
-              <Label>Status</Label>
+              <Label className="text-sm sm:text-base">Status</Label>
               <Select
                 disabled={isView}
                 value={form.status}
@@ -379,11 +404,11 @@ export function BannerModal({
         </div>
 
         {!isView && (
-          <div className="flex justify-end gap-2 mt-6">
-            <Button variant="outline" onClick={onClose}>
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 mt-4 sm:mt-6">
+            <Button variant="outline" onClick={handleClose} className="text-sm sm:text-base h-9 sm:h-10">
               Cancel
             </Button>
-            <Button onClick={handleSubmit}>Save</Button>
+            <Button onClick={handleSubmit} className="text-sm sm:text-base h-9 sm:h-10">Save</Button>
           </div>
         )}
       </DialogContent>

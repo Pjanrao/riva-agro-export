@@ -237,19 +237,18 @@ useEffect(() => {
 if (isView) {
   return (
     <Dialog open={open} onOpenChange={onClose} >
-      <DialogContent className="max-w-xl p-0">
+      <DialogContent className="max-w-sm md:max-w-xl max-h-[90vh] overflow-y-auto w-[92vw] sm:w-full mx-auto p-3 sm:p-0">
 
         {/* HEADER */}
-        <div className="px-5 py-3 border-b flex justify-between items-center">
-          <DialogTitle className="text-base">
+        <div className="px-3 sm:px-5 py-3 border-b flex justify-between items-center">
+          <DialogTitle className="text-sm sm:text-base">
             Order Details
           </DialogTitle>
          
         </div>
 
         {/* BODY */}
-       {/* BODY */}
-<div className="px-5 py-4 text-sm space-y-3">
+<div className="px-3 sm:px-5 py-3 sm:py-4 text-xs sm:text-sm space-y-2 sm:space-y-3">
 
   {/* SECTION 1 : ORDER + CUSTOMER */}
   <div className="space-y-1">
@@ -340,8 +339,8 @@ if (isView) {
 
 
         {/* FOOTER */}
-        <div className="px-5 py-3 border-t flex justify-end">
-          <Button variant="outline" size="sm" onClick={onClose}>
+        <div className="px-3 sm:px-5 py-3 border-t flex justify-end">
+          <Button variant="outline" size="sm" onClick={onClose} className="text-xs sm:text-sm h-8 sm:h-9">
             Close
           </Button>
         </div>
@@ -355,20 +354,20 @@ if (isView) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
+      <DialogContent className="max-w-sm md:max-w-3xl max-h-[90vh] overflow-y-auto w-[92vw] sm:w-full mx-auto p-3 sm:p-6">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-sm sm:text-base md:text-lg">
             {isEdit ? "Edit Order" : "Add Order"}
           </DialogTitle>
         </DialogHeader>
 
         {/* 🔹 FULL FORM RESTORED */}
-        <div className="grid grid-cols-2 gap-3 text-sm">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 text-xs sm:text-sm">
           {/* CUSTOMER */}
-          <div className="col-span-2">
-            <Label>Customer</Label>
+          <div className="col-span-1 md:col-span-2">
+            <Label className="text-xs sm:text-sm">Customer</Label>
             <select
-              className="w-full border rounded-md px-3 py-2"
+              className="w-full border rounded-md px-2 sm:px-3 py-2 text-xs sm:text-sm"
               value={form.customerId}
               onChange={(e) => {
                 const c = customers.find(
@@ -399,9 +398,9 @@ if (isView) {
 
           {/* CATEGORY */}
           <div>
-            <Label>Category</Label>
+            <Label className="text-xs sm:text-sm">Category</Label>
             <select
-              className="w-full border px-3 py-2 rounded-md"
+              className="w-full border px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm"
               value={form.categoryId}
               onChange={(e) =>
                 handleCategoryChange(e.target.value)
@@ -418,9 +417,9 @@ if (isView) {
 
           {/* PRODUCT */}
           <div>
-            <Label>Product</Label>
+            <Label className="text-xs sm:text-sm">Product</Label>
             <select
-              className="w-full border px-3 py-2 rounded-md"
+              className="w-full border px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm"
               value={form.productId}
               onChange={(e) =>
                 handleProductChange(e.target.value)
@@ -436,22 +435,22 @@ if (isView) {
           </div>
 
           <div>
-            <Label>Min Order Qty</Label>
-            <Input disabled value={`${form.minOrderQty} kg`} />
+            <Label className="text-xs sm:text-sm">Min Order Qty</Label>
+            <Input disabled value={`${form.minOrderQty} kg`} className="text-xs sm:text-sm h-8 sm:h-9" />
           </div>
 
           <div>
-            <Label>HS Code</Label>
-            <Input disabled value={form.hsCode} />
+            <Label className="text-xs sm:text-sm">HS Code</Label>
+            <Input disabled value={form.hsCode} className="text-xs sm:text-sm h-8 sm:h-9" />
           </div>
 
           <div>
-            <Label>Discounted Price</Label>
-            <Input disabled value={form.discountedPrice} />
+            <Label className="text-xs sm:text-sm">Discounted Price</Label>
+            <Input disabled value={form.discountedPrice} className="text-xs sm:text-sm h-8 sm:h-9" />
           </div>
 
           <div>
-            <Label>Quantity</Label>
+            <Label className="text-xs sm:text-sm">Quantity</Label>
             <Input
               type="number"
               min={form.minOrderQty}
@@ -462,11 +461,12 @@ if (isView) {
                   quantity: e.target.value,
                 })
               }
+              className="text-xs sm:text-sm h-8 sm:h-9"
             />
           </div>
 
           <div>
-            <Label>Shipping Charges</Label>
+            <Label className="text-xs sm:text-sm">Shipping Charges</Label>
             <Input
               type="number"
               value={form.shippingCharges}
@@ -476,13 +476,14 @@ if (isView) {
                   shippingCharges: e.target.value,
                 })
               }
+              className="text-xs sm:text-sm h-8 sm:h-9"
             />
           </div>
 
           <div>
-            <Label>Tax Applied</Label>
+            <Label className="text-xs sm:text-sm">Tax Applied</Label>
             <select
-              className="w-full border rounded-md px-3 py-2"
+              className="w-full border rounded-md px-2 sm:px-3 py-2 text-xs sm:text-sm"
               value={String(form.taxApplied)}
               onChange={(e) =>
                 setForm({
@@ -497,8 +498,8 @@ if (isView) {
           </div>
 
           {form.taxApplied && (
-            <div className="col-span-2">
-              <Label>Tax Amount</Label>
+            <div className="col-span-1 md:col-span-2">
+              <Label className="text-xs sm:text-sm">Tax Amount</Label>
               <Input
                 type="number"
                 value={form.taxAmount}
@@ -508,13 +509,14 @@ if (isView) {
                     taxAmount: e.target.value,
                   })
                 }
+                className="text-xs sm:text-sm h-8 sm:h-9"
               />
             </div>
           )}
 
           {/* LOCATION */}
-          <div className="col-span-2">
-            <Label>Location</Label>
+          <div className="col-span-1 md:col-span-2">
+            <Label className="text-xs sm:text-sm">Location</Label>
             <div className="grid grid-cols-2 gap-2">
               <Input
                 placeholder="Latitude"
@@ -525,6 +527,7 @@ if (isView) {
                     latitude: e.target.value,
                   })
                 }
+                className="text-xs sm:text-sm h-8 sm:h-9"
               />
               <Input
                 placeholder="Longitude"
@@ -535,12 +538,13 @@ if (isView) {
                     longitude: e.target.value,
                   })
                 }
+                className="text-xs sm:text-sm h-8 sm:h-9"
               />
             </div>
           </div>
 
-          <div className="col-span-2">
-            <Label>Delivery Address</Label>
+          <div className="col-span-1 md:col-span-2">
+            <Label className="text-xs sm:text-sm">Delivery Address</Label>
             <Textarea
               value={form.deliveryAddress}
               onChange={(e) =>
@@ -549,19 +553,20 @@ if (isView) {
                   deliveryAddress: e.target.value,
                 })
               }
+              className="text-xs sm:text-sm"
             />
           </div>
 
-          <div className="col-span-2 text-right font-semibold">
+          <div className="col-span-1 md:col-span-2 text-right font-semibold text-xs sm:text-sm">
             Total Amount : ₹{total.toFixed(2)}
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 mt-4">
-          <Button variant="outline" onClick={onClose}>
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 mt-3 sm:mt-4">
+          <Button variant="outline" onClick={onClose} className="text-xs sm:text-sm h-8 sm:h-9">
             Cancel
           </Button>
-          <Button onClick={handleSubmit}>
+          <Button onClick={handleSubmit} className="text-xs sm:text-sm h-8 sm:h-9">
             {isEdit ? "Update" : "Submit"}
           </Button>
         </div>
