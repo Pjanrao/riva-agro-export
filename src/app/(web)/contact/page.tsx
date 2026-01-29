@@ -85,9 +85,14 @@ Contact Information</h2>
                     <MapPin className="h-6 w-6" />
                 </div>
                 <div>
-                    <h3 className="font-semibold">Our Address</h3>
-                    <p className="text-muted-foreground">Lorem Ipsum Industrial Area, Dolor Sit Road, Amet City – 400001, India</p>
-                </div>
+                    <h3 className="font-semibold">Our Farm Address</h3>
+                    <p className="text-muted-foreground">📍 SR NO 110/2/A OSARLI MANJARE OSARI MANJARE NANDURBAR NANDURBAR Osarli 425412
+</p>
+               <br/>
+                    <h3 className="font-semibold">Corporate Office Address</h3>
+                    <p className="text-muted-foreground">📍 209 SAI HEAVEN APPARTMENT CHALTHAN <br/>SURAT GUJRAT 394305
+</p>
+                </div> 
             </div>
             <div className="flex items-start gap-4">
                 <div className="bg-primary/10 text-primary p-3 rounded-md">
@@ -95,7 +100,7 @@ Contact Information</h2>
                 </div>
                 <div>
                     <h3 className="font-semibold">Email Us</h3>
-                    <p className="text-muted-foreground">info@rivaagroexports.com</p>
+                    <p className="text-muted-foreground">rivaagroexports@gmail.com</p>
                 </div>
             </div>
             <div className="flex items-start gap-4">
@@ -104,7 +109,7 @@ Contact Information</h2>
                 </div>
                 <div>
                     <h3 className="font-semibold">Call Us</h3>
-                    <p className="text-muted-foreground">+91 8000028181 / +91 9687725260 </p>
+                    <p className="text-muted-foreground">+91 9687725260  / +91 8000028181 </p>
                 </div>
             </div>
         </div>

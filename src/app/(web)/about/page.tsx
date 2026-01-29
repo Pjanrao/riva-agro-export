@@ -331,7 +331,7 @@ export default function AboutPage() {
           </h4>
        
           <p className="mt-4 font-medium text-sm text-muted-foreground">
-            📍 209 sai heaven appatment chalthan <br/>surat gujarat 394305  </p>
+            📍 209 SAI HEAVEN APPARTMENT CHALTHAN <br/>SURAT GUJARAT 394305  </p>
         </div>
 
         {/* Map */}

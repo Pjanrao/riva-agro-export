@@ -28,7 +28,7 @@ const promoBanners = [
     title: "20% Off on Sandal Cream",
     description:
       "Crafted from authentic sandalwood for deep nourishment and natural radiance..",
-    buttonText: "CHECK OUT",
+    buttonText: "SHOP NOW",
     image: "/uploads/banners/promo-1.jpg",
     link: "/sandal-pure",
   },
@@ -46,7 +46,7 @@ const promoBanners = [
     title: "Premium Red Onions",
     description:
       "Carefully selected for strong flavor, long shelf life, and export-grade quality.",
-    buttonText: "CHECK OUT",
+    buttonText: "SHOP NOW",
     image: "/uploads/banners/promo-3.jpg",
     link: "/products/red-onion",
   },
@@ -462,74 +462,66 @@ const featuredProducts = products
 </section>
 
 {/* CERTIFICATIONS & LICENSES */}
-<section className="py-20 bg-white">
+{/* CERTIFICATIONS & LICENSES */}
+{/* CERTIFICATIONS & LICENSES */}
+<section className="py-20 bg-white overflow-hidden">
   <div className="container">
 
     {/* Heading */}
     <div className="text-center">
       <h2 className="text-3xl font-bold tracking-wide uppercase">
-        Certification & Licenses
+        Certifications & Licenses
       </h2>
       <div className="mx-auto mt-4 h-1 w-24 bg-primary" />
     </div>
 
-    {/* Certificates Grid */}
-    <div className="mt-16 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-10 items-center">
+    {/* Slider */}
+    <div className="relative mt-16">
+      <div className="flex gap-16 animate-certifications whitespace-nowrap items-center">
 
-      {/* FSSAI */}
-      <div className="flex items-center justify-center">
-        <img
-          src="/uploads/certificates/fssai.png"
-          alt="FSSAI Certification"
-          className="max-h-16 object-contain"
-        />
+        {[
+          "fssai",
+          "apeda",
+          "iec",
+          "msme",
+          "udyog-aadhaar",
+          "dgft",
+          "gst",
+        ].map((logo) => (
+          <div
+            key={logo}
+            className="flex items-center justify-center min-w-[180px]"
+          >
+            <img
+              src={`/uploads/certificates/${logo}.png`}
+              alt={`${logo} certification`}
+              className="h-20 object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        ))}
+
+        {/* Duplicate for infinite scroll */}
+        {[
+          "fssai",
+          "apeda",
+          "iec",
+          "msme",
+          "udyog-aadhaar",
+          "dgft",
+          "gst",
+        ].map((logo) => (
+          <div
+            key={`dup-${logo}`}
+            className="flex items-center justify-center min-w-[180px]"
+          >
+            <img
+              src={`/uploads/certificates/${logo}.png`}
+              alt={`${logo} certification`}
+              className="h-20 object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        ))}
       </div>
-
-      {/* APEDA */}
-      <div className="flex items-center justify-center">
-        <img
-          src="/uploads/certificates/apeda.png"
-          alt="APEDA Certification"
-          className="max-h-16 object-contain"
-        />
-      </div>
-
-      {/* IEC */}
-      <div className="flex items-center justify-center">
-        <img
-          src="/uploads/certificates/iec.png"
-          alt="Import Export Code"
-          className="max-h-16 object-contain"
-        />
-      </div>
-
-      {/* MSME */}
-      <div className="flex items-center justify-center">
-        <img
-          src="/uploads/certificates/msme.png"
-          alt="MSME Registered"
-          className="max-h-16 object-contain"
-        />
-      </div>
-
-      {/* Udyog Aadhaar */}
-      <div className="flex items-center justify-center">
-        <img
-          src="/uploads/certificates/udyog-aadhaar.png"
-          alt="Udyog Aadhaar"
-          className="max-h-16 object-contain"
-        />
-      </div>
-
-      {/* DGFT */}
-      <div className="flex items-center justify-center">
-        <img
-          src="/uploads/certificates/dgft.png"
-          alt="Directorate General of Foreign Trade"
-          className="max-h-16 object-contain"
-        />
-      </div>
-
     </div>
 
     {/* Trust Line */}
@@ -540,7 +532,8 @@ const featuredProducts = products
 
   </div>
 </section>
- 
+
+
     </div>
 
      

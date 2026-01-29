@@ -149,3 +149,15 @@
 .section {
   @apply pt-16 pb-14;
 }
+@keyframes certifications {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-certifications {
+  animation: certifications 30s linear infinite;
+}

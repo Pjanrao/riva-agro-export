@@ -121,8 +121,8 @@ export default function ExportPolicyPage() {
                 Riva Agro Exports
               </p>
               <p className="text-muted-foreground">
-                Email: info@rivaagroexports.com <br />
-                Phone: 8000028181
+                Email: rivaagroexports@gmail.com <br />
+                Phone: +91 9687725260  / +91 8000028181
               </p>
             </div>
           </div>

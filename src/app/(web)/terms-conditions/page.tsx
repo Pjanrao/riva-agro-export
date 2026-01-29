@@ -164,9 +164,9 @@ export default function TermsConditionsPage() {
               <p className="font-semibold text-gray-900">
                 Riva Agro Exports
               </p>
-              <p className="text-muted-foreground">
-                Email: info@rivaagroexports.com <br />
-                Phone: +91-8000028181
+             <p className="text-muted-foreground">
+                Email: rivaagroexports@gmail.com <br />
+                Phone: +91 9687725260  / +91 8000028181
               </p>
             </div>
           </div>

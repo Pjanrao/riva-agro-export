@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="container py-14">
 
         {/* Top Grid */}
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-4">
+<div className="grid grid-cols-1 gap-10 md:grid-cols-5">
 
           {/* 1️⃣ Brand Column */}
           <div className="space-y-7">
@@ -68,14 +68,7 @@ export default function Footer() {
             </h4>
 
             <ul className="mt-5 space-y-4 text-sm text-muted-foreground">
-              <li className="flex items-start gap-3">
-                <MapPin className="h-5 w-5 text-primary shrink-0" />
-                <span> Farm Addess :  <br/>
-                
-                  SR NO 110/2/A OSARLI MANJARE <br />OSARI
-                  MANJARE NANDURB AR <br/>NANDURBAR Osarli 425412
-                </span>
-              </li>
+            
 
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-primary shrink-0" />
@@ -108,37 +101,72 @@ export default function Footer() {
   </div>
 
 </li>
-
-              <li className="flex items-center gap-3">
+ <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-primary shrink-0" />
-                <span>info@rivaagroexports.com</span>
+                <span>rivaagroexports@gmail.com</span>
               </li>
+
+    {/* Country */}
+    <li className="flex items-center gap-3">
+      <MapPin className="h-5 w-5 text-primary shrink-0" />
+      <span>Country of Origin: India 🇮🇳</span>
+    </li>
+
+             
             </ul>
           </div>
 
           {/* 4️⃣ Farm Location (Map Column) */}
-          <div>
-            <h4 className="font-semibold text-lg text-gray-900">
-              Farm Location
-            </h4>
+         <div>
+  <h4 className="font-semibold text-lg text-gray-900">
+    Farm Location
+  </h4>
 
-            <div className="mt-4 rounded-lg overflow-hidden border">
-              <iframe
-                title="Riva Agro Farm Location"
-                src="https://www.google.com/maps?q=21.416306,74.454417&output=embed"
-                width="100%"
-                height="180"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="w-full"
-              />
-            </div>
+  <p className="mt-2 text-xs text-muted-foreground flex gap-2">
+    <MapPin className="h-4 w-4 text-primary shrink-0 mt-[2px]" />
+    SR No 110/2/A, Osarli Manjare, Nandurbar – 425412
+  </p>
 
-            <p className="mt-3 text-xs text-muted-foreground flex items-start gap-2">
-              <MapPin className="h-4 w-4 text-primary shrink-0 mt-[2px]" />
-              21°24'58.7&quot;N 74°27'15.9&quot;E
-            </p>
-          </div>
+  <div className="mt-3 rounded-lg overflow-hidden border">
+    <iframe
+      src="https://www.google.com/maps?q=21.416306,74.454417&output=embed"
+      height="150"
+      loading="lazy"
+      className="w-full"
+    />
+  </div>
+
+  <p className="mt-2 text-xs text-muted-foreground">
+    21°24'58.7"N 74°27'15.9"E
+  </p>
+</div>
+           {/* 5️⃣ Corporate Office Location */}
+<div>
+  <h4 className="font-semibold text-lg text-gray-900">
+    Corporate Office Location
+  </h4>
+
+  <p className="mt-2 text-xs text-muted-foreground flex gap-2">
+    <MapPin className="h-4 w-4 text-primary shrink-0 mt-[2px]" />
+    209 Sai Heaven Apartment, Chalthan, Surat – 394305
+  </p>
+
+  <div className="mt-3 rounded-lg overflow-hidden border">
+    <iframe
+      src="https://www.google.com/maps?q=21.155889,72.957694&output=embed"
+      height="150"
+      loading="lazy"
+      className="w-full"
+    />
+  </div>
+
+  <p className="mt-2 text-xs text-muted-foreground">
+    21°09'21.2"N 72°57'27.7"E
+  </p>
+</div>
+
+
+          
         </div>
 
         {/* Bottom Bar */}
