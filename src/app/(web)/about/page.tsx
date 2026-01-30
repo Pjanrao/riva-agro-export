@@ -82,7 +82,7 @@ export default function AboutPage() {
       <div className="divide-y">
 
         {[
-          ["Name of Founder", "Mr. Tejas Marathe"],
+          ["Name of Founder", "Mr. Tejas Marathe and Ms. Kushalbai Shirsath"],
           ["Year of Establishment", "2025"],
           ["Name of Company", "Riva Agro Exports"],
           ["Nature of Business", "Export Company"],
@@ -121,8 +121,7 @@ export default function AboutPage() {
 
   </div>
 </section>
-
-{/* ================= FOUNDER / OWNER ================= */}
+{/* ================= FOUNDERS / LEADERSHIP ================= */}
 <section className="py-20 bg-white">
   <div className="container max-w-6xl">
 
@@ -132,77 +131,107 @@ export default function AboutPage() {
         Leadership
       </span>
 
-      <h3 className="mt-6 font-headline text-4xl md:text-4xl font-bold tracking-tight text-gray-900">
-        Founder & Owner
+      <h3 className="mt-6 font-headline text-4xl font-bold tracking-tight text-gray-900">
+        Founders & Management
       </h3>
     </div>
 
-    {/* Content */}
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+    {/* Founders Grid */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
 
-      {/* LEFT: Photo + Highlights */}
-      <div className="flex flex-col items-center">
+      {/* ================= Founder 1 ================= */}
+      <div className="flex flex-col items-center text-center">
 
         {/* Photo */}
-        <div className="relative w-[260px] h-[320px] rounded-3xl overflow-hidden shadow-lg border">
+<div className="relative w-[260px] h-[360px] rounded-3xl overflow-hidden shadow-lg border bg-white flex items-center justify-center">
           <Image
             src="/uploads/founder.png"
-            alt="Founder - Riva Agro Exports"
+            alt="Mr. Tejas Marathe - Founder"
             fill
             className="object-cover"
           />
         </div>
 
-        {/* Highlights BELOW photo */}
-        <div className="mt-8 grid grid-cols-3 gap-4 w-full max-w-sm">
-
-          <div className="rounded-2xl bg-secondary p-4 text-center">
-            <p className="text-xl font-bold text-gray-900">10+</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Years Farming
-            </p>
-          </div>
-
-          <div className="rounded-2xl bg-secondary p-4 text-center">
-            <p className="text-xl font-bold text-gray-900">Global</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Export Reach
-            </p>
-          </div>
-
-          <div className="rounded-2xl bg-secondary p-4 text-center">
-            <p className="text-xl font-bold text-gray-900">100%</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Own Farms
-            </p>
-          </div>
-
-        </div>
-      </div>
-
-      {/* RIGHT: Details */}
-      <div>
-        <h3 className="text-3xl font-bold text-gray-900">
+        {/* Info */}
+        <h3 className="mt-8 text-2xl font-bold text-gray-900">
           Mr. Tejas Marathe
         </h3>
 
-        <p className="mt-2 text-sm font-medium text-primary">
+        <p className="mt-1 text-sm font-medium text-primary">
           Founder & Owner — Farm & Export Operations
         </p>
 
-        <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+        <p className="mt-5 text-muted-foreground leading-relaxed max-w-md">
           Mr. Tejas Marathe is the founder and owner of Riva Agro Exports and
-          the agricultural farms that supply our export-grade produce.
-          With hands-on experience in farming and international trade,
-          he has built a vertically integrated export model focused on
-          quality, transparency, and sustainability.
+          the agricultural farms supplying export-grade produce. With deep
+          hands-on experience in farming and international trade, he leads
+          cultivation, quality control, and global export operations.
         </p>
 
-        <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
-          His direct involvement from cultivation to global shipment ensures
-          consistent quality, ethical sourcing, and long-term trust with
-          international buyers.
+        {/* Highlights */}
+        <div className="mt-6 grid grid-cols-3 gap-4 w-full max-w-sm">
+          <div className="rounded-2xl bg-secondary p-4">
+            <p className="text-xl font-bold">10+</p>
+            <p className="text-xs text-muted-foreground">Years Farming</p>
+          </div>
+
+          <div className="rounded-2xl bg-secondary p-4">
+            <p className="text-xl font-bold">Global</p>
+            <p className="text-xs text-muted-foreground">Export Reach</p>
+          </div>
+
+          <div className="rounded-2xl bg-secondary p-4">
+            <p className="text-xl font-bold">100%</p>
+            <p className="text-xs text-muted-foreground">Own Farms</p>
+          </div>
+        </div>
+      </div>
+
+      {/* ================= Co-Founder ================= */}
+      <div className="flex flex-col items-center text-center">
+
+        {/* Photo */}
+<div className="relative w-[260px] h-[360px] rounded-3xl overflow-hidden shadow-lg border bg-white flex items-center justify-center">
+          <Image
+            src="/uploads/co-founder.png"
+            alt="Ms. Kushalbai Ashok Shirsath - Co-Founder"
+            fill
+            className="object-cover"
+          />
+        </div>
+
+        {/* Info */}
+        <h3 className="mt-8 text-2xl font-bold text-gray-900">
+          Ms. Kushalbai Ashok Shirsath
+        </h3>
+
+        <p className="mt-1 text-sm font-medium text-primary">
+          Co-Founder — Corporate, Documentation & Finance
         </p>
+
+        <p className="mt-5 text-muted-foreground leading-relaxed max-w-md">
+          Ms. Kushalbai Ashok Shirsath is the Co-Founder of Riva Agro Exports, managing corporate operations, export documentation, and finance. With expertise in administration and compliance, she ensures smooth, transparent, and efficient business operations.
+        </p>
+
+        
+
+        {/* Highlights */}
+        <div className="mt-6 grid grid-cols-3 gap-4 w-full max-w-sm">
+          <div className="rounded-2xl bg-secondary p-4">
+            <p className="text-xl font-bold">Admin</p>
+            <p className="text-xs text-muted-foreground">Operations</p>
+          </div>
+
+          <div className="rounded-2xl bg-secondary p-4">
+            <p className="text-xl font-bold">Export</p>
+            <p className="text-xs text-muted-foreground">Documentation</p>
+          </div>
+
+          <div className="rounded-2xl bg-secondary p-4">
+            <p className="text-xl font-bold">Finance</p>
+            <p className="text-xs text-muted-foreground">Management</p>
+          </div>
+        </div>
       </div>
 
     </div>

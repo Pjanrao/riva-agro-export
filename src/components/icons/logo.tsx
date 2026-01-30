@@ -13,7 +13,7 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
         <text
           x="0"
           y="35"
-          className="text-4xl font-bold"
+          className="text-4xl font-extrabold"
           fill="#2F4F2F"
         >
           Riva
@@ -23,7 +23,7 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
         <text
           x="90"
           y="35"
-          className="text-4xl font-semibold fill-foreground"
+          className="text-4xl font-bold fill-foreground"
         >
           Agro Exports
         </text>
