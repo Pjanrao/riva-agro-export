@@ -95,7 +95,7 @@ const [selectedProduct, setSelectedProduct] = useState<{
                   </h3>
 
             <div className="mt-2">
-  {isSandalPure ? (
+  {/* {isSandalPure ? (
     <div className="flex items-center gap-2">
       {discounted < selling && (
         <span className="text-xs text-gray-400 line-through">
@@ -107,7 +107,7 @@ const [selectedProduct, setSelectedProduct] = useState<{
         {formatPriceUSD(discounted, usdRate)}
       </span>
     </div>
-  ) : (
+  ) : ( */}
     <Button
       size="sm"
       variant="outline"
@@ -123,7 +123,7 @@ const [selectedProduct, setSelectedProduct] = useState<{
     >
       Send Enquiry
     </Button>
-  )}
+  {/* )} */}
 </div>
                 </div>
               </Link>

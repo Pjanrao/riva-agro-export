@@ -1,9 +1,8 @@
-// src/app/sandal-pure/page.tsx
+// src/app/(web)/sandal-pure/page.tsx
 import { Metadata } from "next";
+import Image from "next/image";
 import { getProducts } from "@/lib/models/Product";
-import Link from "next/link";
-import { getUsdRate } from "@/lib/getUsdRate";
-
+import SandalPureProducts from "./SandalPureClient";
 
 export const metadata: Metadata = {
   title: "Sandal Pure™ | Premium Sandalwood Skincare Products Exporter",
@@ -25,313 +24,121 @@ export const metadata: Metadata = {
   },
 };
 
-
-import Image from "next/image";
-import { formatPriceUSD } from "@/lib/price";
-
 export default async function SandalPurePage() {
-  const usdRate = await getUsdRate();
   const products = await getProducts();
   const SANDAL_PURE_CATEGORY_ID = "6948e0b8005ecdc6599ba47c";
 
-/* Filter Sandal Pure products */
-const sandalPureProducts = products.filter(
-  (p) =>
-    p.status === "active" &&
-    (
-      p.category?.toString?.() === SANDAL_PURE_CATEGORY_ID ||
-      p.category === SANDAL_PURE_CATEGORY_ID
-    )
-);
+  const sandalPureProducts = products.filter(
+    (p) =>
+      p.status === "active" &&
+      (p.category?.toString?.() === SANDAL_PURE_CATEGORY_ID ||
+        p.category === SANDAL_PURE_CATEGORY_ID)
+  );
 
   return (
     <main className="bg-white">
-{/* <section className="relative w-full h-[550px] overflow-hidden bg-black mb-20"> */}
- <section
-  className="
-    relative w-full
-    pt-16 sm:pt-20 lg:pt-0
-    h-[280px] sm:h-[360px] md:h-[450px] lg:h-[550px]
-    overflow-hidden bg-black
-    mb-16 lg:mb-20
-  "
->
-  <Image
-    src="/uploads/banners/sandal-pure.png"
-    alt="Hero Banner"
-    fill
-    priority
-    sizes="100vw"
-    className="object-cover object-center"
-  />
-</section>
-<section className="w-full bg-[#ffffff] py-18">
-  <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16
-                  grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+      {/* ================= HERO ================= */}
+      <section className="relative w-full h-[280px] sm:h-[360px] md:h-[450px] lg:h-[550px] overflow-hidden bg-black mb-16">
+        <Image
+          src="/uploads/banners/sandal-pure.png"
+          alt="Sandal Pure Banner"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+      </section>
 
-    {/* LEFT — FULL IMAGE */}
-    {/* <div className="relative w-full h-[460px] rounded-3xl overflow-hidden"> */}
-      <div className="relative w-full h-[260px] sm:h-[340px] lg:h-[460px] rounded-3xl overflow-hidden">
-
-      <img
-        src="/uploads/sandal-powder-bowl.png"
-        alt="Indian Sandalwood Heritage"
-        className="w-full h-full object-cover"
-      />
-    </div>
-
-    {/* RIGHT — STORY TEXT */}
-    {/* <div className="max-w-xl"> */}
-    <div className="max-w-xl text-center lg:text-left">
-
-      <p className="text-sm tracking-widest text-[#9c7c2e] uppercase">
-        About Sandal Pure
-      </p>
-
-      {/* <h2 className="mt-6 text-3xl md:text-4xl font-semibold text-[#1c1c1c] leading-tight"> */}
-        <h2 className="mt-6 text-2xl sm:text-3xl md:text-4xl font-semibold text-[#1c1c1c] leading-tight">
-
-        Crafted by the Farmers of{" "}
-        <span className="text-[#b89b3f]">Pure Indian Sandalwood</span>
-      </h2>
-
-      <div className="mt-8 text-gray-700 leading-relaxed space-y-5">
-        <p>
-          Sandal Pure is a brand created by the farmers of sandalwood.
-        </p>
-
-        <p>
-          All our products are made from{" "}
-          <strong>100% sandalwood</strong> — pure, natural, and effective.
-        </p>
-
-        <p>
-          The uniqueness of our products lies in the fact that they are{" "}
-          <strong>precious and pure</strong>, yet offered at very affordable
-          prices.
-        </p>
-
-        <p>
-          Because — we cultivate, we produce, and we ourselves bring it
-          directly to you.
-        </p>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-{/* ================= Sandal Pure Products ================= */}
-{/* ================= Sandal Pure Products (Home Grid Style) ================= */}
-<section className="py-24 bg-[#ffffff]">
-  <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
-
-    {/* Header */}
-    <div className="text-center max-w-3xl mx-auto">
-      <p className="text-sm tracking-widest uppercase text-[#9c2f2f]">
-        Sandal Pure Collection
-      </p>
-
-      <h2 className="mt-4 font-headline text-4xl md:text-5xl font-bold text-[#2b0f0f]">
-        Sandalwood Skincare Products
-      </h2>
-
-      <p className="mt-4 text-sm sm:text-base md:text-lg
- text-[#5f3a3a]">
-        100% Herbal • Farmer Crafted • Export Quality
-      </p>
-    </div>
-
-    {/* Products Grid */}
-    {/* <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10"> */}
-   <div className="mt-16 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8 lg:gap-10">
-
-
-      {sandalPureProducts.map((product, index) => {
-         const selling = product.sellingPrice ?? 0;
-              const discounted = product.discountedPrice ?? selling;
-
-
-        return (
-          <div
-            key={`${product.slug}-${index}`}
-            className="
-              group bg-white rounded-2xl
-              shadow-sm
-              transition-all duration-300
-              hover:shadow-xl hover:-translate-y-1
-            "
-          >
-            <Link href={`/products/${product.slug}`} className="block">
-
-              {/* Image */}
-              <div className="relative aspect-[4/5] bg-gray-50 rounded-t-xl overflow-hidden">
-                <Image
-                  src={
-                    product.primaryImage ||
-                    product.images?.[0] ||
-                    "/uploads/default-product.jpg"
-                  }
-                  alt={product.name}
-                  fill
-                  className=" *:p-4 sm:p-6
-                    object-contain
-                    transition-all duration-300
-                    group-hover:scale-105 group-hover:opacity-90
-                  "
-                />
-
-                {/* Hover Overlay */}
-                <div
-                  className="
-                    absolute inset-0
-                    flex items-center justify-center
-                    bg-black/40
-                    opacity-0
-                    transition-opacity duration-300
-                    group-hover:opacity-100
-                  "
-                >
-                  <span
-                    className="
-                      rounded-full bg-white px-6 py-2
-                      text-sm font-semibold text-gray-900
-                      shadow-lg
-                    "
-                  >
-                    View Product
-                  </span>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-5 text-left space-y-1">
-
-                {/* Product Name */}
-                {/* <h3 className="text-sm font-semibold text-gray-900"> */}
-                  <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 min-h-[40px]">
-
-                  {product.name}
-                </h3>
-
-                {/* Price */}
-                <div className="pt-2">
-                  <div className="flex items-center gap-2">
-                    {selling && discounted && (
-                      <span className="text-xs text-gray-400 line-through">
-                      {formatPriceUSD(selling, usdRate)}
-                      </span>
-                    )}
-                    <span className="text-base font-bold text-gray-900">
-                {formatPriceUSD(discounted, usdRate)}
-                    </span>
-                  </div>
-
-                  {/* MOQ */}
-                  {product.minOrderQty && (
-                    <span className="inline-block mt-2 rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600">
-                      MOQ: {product.minOrderQty}
-                    </span>
-                  )}
-                </div>
-
-              </div>
-            </Link>
+      {/* ================= ABOUT ================= */}
+      <section className="w-full bg-white py-18">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          <div className="relative w-full h-[260px] sm:h-[340px] lg:h-[460px] rounded-3xl overflow-hidden">
+            <img
+              src="/uploads/sandal-powder-bowl.png"
+              alt="Indian Sandalwood Heritage"
+              className="w-full h-full object-cover"
+            />
           </div>
-        );
-      })}
 
-      {sandalPureProducts.length === 0 && (
-        <p className="col-span-full text-center text-gray-600">
-          No Sandal Pure products available at the moment.
-        </p>
-      )}
-    </div>
-  </div>
-</section>
+          <div className="max-w-xl text-center lg:text-left">
+            <p className="text-sm tracking-widest text-[#9c7c2e] uppercase">
+              About Sandal Pure
+            </p>
 
+            <h2 className="mt-6 text-2xl sm:text-3xl md:text-4xl font-semibold text-[#1c1c1c]">
+              Crafted by the Farmers of{" "}
+              <span className="text-[#b89b3f]">Pure Indian Sandalwood</span>
+            </h2>
 
-{/* <section className="w-full bg-[#f7f3eb] py-28 mb-20"> */}
-  <section className="w-full bg-[#f7f3eb] py-16 sm:py-20 lg:py-28 mb-16 lg:mb-20">
+            <div className="mt-8 text-gray-700 space-y-5">
+              <p>Sandal Pure is a brand created by the farmers of sandalwood.</p>
+              <p>
+                All our products are made from <strong>100% sandalwood</strong> —
+                pure, natural, and effective.
+              </p>
+              <p>
+                Because we cultivate, we produce, and we bring it directly to
+                you.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-  <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16
-                  grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+      {/* ================= PRODUCTS ================= */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
+          <div className="text-center max-w-3xl mx-auto">
+            <p className="text-sm tracking-widest uppercase text-[#9c2f2f]">
+              Sandal Pure Collection
+            </p>
+            <h2 className="mt-4 font-headline text-4xl md:text-5xl font-bold text-[#2b0f0f]">
+              Sandalwood Skincare Products
+            </h2>
+            <p className="mt-4 text-[#5f3a3a]">
+              100% Herbal • Farmer Crafted • Export Quality
+            </p>
+          </div>
 
-    {/* LEFT — PURPOSE TEXT */}
-    <div className="max-w-xl">
-      <p className="text-sm tracking-widest text-[#9c7c2e] uppercase">
-        Our Purpose
-      </p>
+          {/* 👉 CLIENT COMPONENT */}
+          <SandalPureProducts products={sandalPureProducts} />
+        </div>
+      </section>
 
-      <h2 className="mt-6 text-3xl md:text-4xl font-semibold text-[#1c1c1c] leading-tight">
-        Bringing the Healing Power of{" "}
-        <span className="text-[#b89b3f]">Indian Sandalwood</span>
-        <br /> to Every Home
-      </h2>
+      {/* ================= PURPOSE ================= */}
+      <section className="w-full bg-[#f7f3eb] py-16 lg:py-28 mb-16">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16 grid grid-cols-1 lg:grid-cols-2 gap-20">
+          <div className="max-w-xl">
+            <p className="text-sm tracking-widest text-[#9c7c2e] uppercase">
+              Our Purpose
+            </p>
 
-      <p className="mt-6 text-gray-700 leading-relaxed">
-        The purpose of Sandal Pure is to bring the medicinal and wellness
-        benefits of Indian sandalwood to every home.
-      </p>
+            <h2 className="mt-6 text-3xl md:text-4xl font-semibold text-[#1c1c1c]">
+              Bringing the Healing Power of{" "}
+              <span className="text-[#b89b3f]">Indian Sandalwood</span>
+            </h2>
 
-      <p className="mt-4 text-gray-700 leading-relaxed">
-        Sandalwood possesses anti-inflammatory, antioxidant, antifungal,
-        antiviral, and anti-aging properties that help keep the skin healthy,
-        radiant, and youthful.
-      </p>
-    </div>
+            <p className="mt-6 text-gray-700">
+              To bring the medicinal and wellness benefits of Indian sandalwood
+              to every home.
+            </p>
+          </div>
 
-    {/* RIGHT — PURPOSE CARDS */}
-    {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-10"> */}
-<div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-10">
-
-      <div className="bg-white rounded-2xl p-8 shadow-sm">
-        <h3 className="text-sm sm:text-base md:text-lg
- font-semibold text-[#1c1c1c]">
-          Fair Value for Farmers
-        </h3>
-        <p className="mt-4 text-gray-700 leading-relaxed">
-          To ensure fair value and respect for the hard work of sandalwood
-          farmers.
-        </p>
-      </div>
-
-      <div className="bg-white rounded-2xl p-8 shadow-sm">
-        <h3 className="text-sm sm:text-base md:text-lg
- font-semibold text-[#1c1c1c]">
-          Herbal for Every Home
-        </h3>
-        <p className="mt-4 text-gray-700 leading-relaxed">
-          To deliver sandalwood-based herbal products to every household.
-        </p>
-      </div>
-
-      <div className="bg-white rounded-2xl p-8 shadow-sm">
-        <h3 className="text-sm sm:text-base md:text-lg
- font-semibold text-[#1c1c1c]">
-          Purity & Quality
-        </h3>
-        <p className="mt-4 text-gray-700 leading-relaxed">
-          To never compromise on purity, quality, or authenticity.
-        </p>
-      </div>
-
-      <div className="bg-white rounded-2xl p-8 shadow-sm">
-        <h3 className="text-sm sm:text-base md:text-lg font-semibold text-[#1c1c1c]">
-          Natural Lifestyle
-        </h3>
-        <p className="mt-4 text-gray-700 leading-relaxed">
-          To inspire society towards a natural and chemical-free lifestyle.
-        </p>
-      </div>
-
-    </div>
-
-  </div>
-</section>
-
-
-
-          </main>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {[
+              ["Fair Value for Farmers", "Respecting farmer efforts"],
+              ["Herbal for Every Home", "Natural wellness products"],
+              ["Purity & Quality", "No compromise on authenticity"],
+              ["Natural Lifestyle", "Chemical-free living"],
+            ].map(([title, desc]) => (
+              <div key={title} className="bg-white rounded-2xl p-8 shadow-sm">
+                <h3 className="font-semibold">{title}</h3>
+                <p className="mt-4 text-gray-700">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }

@@ -12,7 +12,7 @@ type ProductPageProps = {
 };
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const { slug } = params;
+  const { slug } = await params;
 
   const [products, usdRate] = await Promise.all([
     getProducts(),

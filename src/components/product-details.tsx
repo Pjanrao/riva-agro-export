@@ -20,8 +20,8 @@ export function ProductDetails({ product, usdRate }: ProductDetailsProps) {
   const { addToCart } = useCart();
 
  const minOrderQty = product.minOrderQty;
-const isSandalPure =
-  product.categoryName?.toLowerCase() === "sandal pure";
+// const isSandalPure =
+//   product.categoryName?.toLowerCase() === "sandal pure";
 const [enquiryOpen, setEnquiryOpen] = useState(false);
 
 const selectedProduct = {
@@ -90,7 +90,7 @@ const decrement = () => {
           </h1>
 
           {/* PRICE */}
-{isSandalPure && (
+{/* {isSandalPure && (
   <div className="mt-4 flex items-end gap-3">
     <span className="text-2xl font-semibold text-green-600">
       {formatPriceUSD(discountedPrice, usdRate)}
@@ -102,7 +102,7 @@ const decrement = () => {
       </span>
     )}
   </div>
-)}
+)} */}
 
 
           <Separator className="my-6" />
@@ -159,7 +159,7 @@ const decrement = () => {
 
           {/* ADD TO CART / QTY */}
           <div className="mt-8">
-  {isSandalPure ? (
+  {/* {isSandalPure ? (
     quantity === 0 ? (
       <Button size="lg" onClick={addInitialQty}>
         <ShoppingCart className="mr-2 h-5 w-5" />
@@ -180,7 +180,7 @@ const decrement = () => {
                 </Button>
               </div>
            )
-  ) : (
+  ) : ( */}
     <Button
   size="lg"
   variant="outline"
@@ -190,7 +190,7 @@ const decrement = () => {
 >
   Send Enquiry
 </Button>
-  )}
+  {/* )} */}
 </div>
 
 
