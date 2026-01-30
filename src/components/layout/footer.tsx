@@ -69,17 +69,7 @@ export default function Footer() {
 
             <ul className="mt-5 space-y-4 text-sm text-muted-foreground">
             
-
-              <li className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-primary shrink-0" />
-                <Link href="tel:+919687725260" className="hover:text-primary transition">
-                 +91 9687725260  / +91 8000028181
-                </Link>
-              </li>
-              
-              <li>
-
- <div className="flex items-center gap-3">
+<div className="flex items-center gap-3">
     {/* WhatsApp Icon */}
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -99,6 +89,14 @@ export default function Footer() {
       Enquire on WhatsApp
     </Link>
   </div>
+              <li className="flex items-center gap-3">
+                <Phone className="h-5 w-5 text-primary shrink-0" />
+                <Link href="tel:+919687725260" className="hover:text-primary transition">
+                 +91 9687725260  / <br/>+91 8000028181
+                </Link>
+              </li>
+              
+              <li>
 
 </li>
  <li className="flex items-center gap-3">

@@ -462,8 +462,7 @@ const featuredProducts = products
 </section>
 
 {/* CERTIFICATIONS & LICENSES */}
-{/* CERTIFICATIONS & LICENSES */}
-{/* CERTIFICATIONS & LICENSES */}
+
 <section className="py-20 bg-white overflow-hidden">
   <div className="container">
 
