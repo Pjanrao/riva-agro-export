@@ -6,6 +6,7 @@ import {
   updateUserPasswordById,
 } from "@/lib/models/User";
 import { getAuthUser } from "@/lib/auth/get-auth-user";
+import { ObjectId } from "mongodb";
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,6 +15,12 @@ export async function POST(req: NextRequest) {
     // 🔐 Auth check
     const authUser = await getAuthUser();
     console.log("AUTH USER:", authUser);
+    console.log("AUTH USER RAW:", authUser);
+console.log("AUTH USER ID:", authUser?.id);
+console.log(
+  "IS VALID OBJECT ID:",
+  authUser?.id && ObjectId.isValid(authUser.id)
+)
 
     if (!authUser) {
       return NextResponse.json(
