@@ -8,7 +8,7 @@ export async function POST() {
     );
 
     // 🔥 CLEAR AUTH COOKIE
-    response.cookies.set("access_token", "", {
+    response.cookies.set("auth_token", "", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

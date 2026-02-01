@@ -1,4 +1,6 @@
 import { cookies } from "next/headers";
+import { unstable_noStore as noStore } from "next/cache";
+
 import jwt from "jsonwebtoken";
 
 type JwtPayload = {
@@ -10,6 +12,7 @@ type JwtPayload = {
 };
 
 export async function getAuthUser() {
+   noStore(); 
   const cookieStore = await cookies();
   const token = cookieStore.get("auth_token")?.value;
 
