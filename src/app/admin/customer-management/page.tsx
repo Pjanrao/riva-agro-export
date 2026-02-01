@@ -230,15 +230,36 @@ export default function AdminCustomersPage() {
                       {c.city}, {c.state}
                     </TableCell>
                     <TableCell className="text-center space-x-1">
-                      <Button variant="ghost" size="icon">
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon">
-                        <Pencil className="h-4 w-4 text-blue-600" />
-                      </Button>
-                      <Button variant="ghost" size="icon">
-                        <Trash2 className="h-4 w-4 text-red-600" />
-                      </Button>
+                       <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        setSelectedCustomer(c);
+                        setMode('view');
+                        setOpen(true);
+                      }}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                     <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        setSelectedCustomer(c);
+                        setMode('edit');
+                        setOpen(true);
+                      }}
+                    >
+                      <Pencil className="h-4 w-4 text-blue-600" />
+                    </Button>
+
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDelete(c.id)}
+                    >
+                      <Trash2 className="h-4 w-4 text-red-600" />
+                    </Button>
                     </TableCell>
                   </TableRow>
                 ))}
