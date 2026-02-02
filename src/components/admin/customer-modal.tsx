@@ -264,6 +264,7 @@ export function CustomerModal({
   }
 
   toast({ title: 'Customer updated successfully' });
+  form.reset();
   onSaved();
   onClose();
 };
@@ -271,7 +272,7 @@ export function CustomerModal({
 <Dialog
   open={open}
   onOpenChange={(isOpen) => {
-    if (!isOpen) onClose();
+    if (!isOpen)  form.reset();  onClose();
   }}
 >      <DialogContent className="w-[95vw] max-w-[480px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
