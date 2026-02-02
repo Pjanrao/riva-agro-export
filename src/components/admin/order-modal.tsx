@@ -69,46 +69,7 @@ export function OrderModal({
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
 
-  // const [form, setForm] = useState<any>({
-  //   customerId: "",
-  //   customerName: "",
-  //   categoryId: "",
-  //   categoryName: "",
-  //   productId: "",
-  //   productName: "",
-  //   hsCode: "",
-  //   minOrderQty: 0,
-  //   discountedPrice: 0,
-  //   quantity: 1,
-  //   shippingCharges: 0,
-  //   taxApplied: false,
-  //   taxAmount: 0,
-  //   latitude: "",
-  //   longitude: "",
-  //   deliveryAddress: "",
-  //   status: "Pending",
-  //   totalAmount: 0,
-  // });
-
-  /* ================= PREFILL (EDIT / VIEW) ================= */
-
-  // useEffect(() => {
-  //   if (open && data) {
-  //     setForm({
-  //       ...form,
-  //       ...data,
-  //       shippingCharges: data.shippingCharges ?? 0,
-  //       discountedPrice: data.discountedPrice ?? 0,
-  //       taxApplied: data.taxApplied ?? false,
-  //       taxAmount: data.taxAmount ?? 0,
-  //       deliveryAddress: data.deliveryAddress ?? "",
-  //       latitude: data.latitude ?? "",
-  //       longitude: data.longitude ?? "",
-  //     });
-  //   }
-  //   // eslint-disable-next-line
-  // }, [open, data]);
-useEffect(() => {
+  useEffect(() => {
   if (!open) return;
 
   if (mode === "add") {
@@ -120,13 +81,7 @@ useEffect(() => {
     setForm({
       ...initialForm,
       ...data,
-      // shippingCharges: data.shippingCharges ?? 0,
-      // discountedPrice: data.discountedPrice ?? 0,
-      // taxApplied: data.taxApplied ?? false,
-      // taxAmount: data.taxAmount ?? 0,
-      // deliveryAddress: data.deliveryAddress ?? "",
-      // latitude: data.latitude ?? "",
-      // longitude: data.longitude ?? "",
+      
     });
   }
 }, [open, data, mode]);
@@ -144,6 +99,17 @@ useEffect(() => {
       .then((r) => r.json())
       .then(setCategories);
   }, [open, isView]);
+
+  /* ================= LOAD PRODUCTS (EDIT MODE) ================= */
+useEffect(() => {
+  if (!open || mode !== "edit") return;
+  if (!form.categoryId) return;
+
+  fetch(`/api/products?category=${form.categoryId}`)
+    .then((r) => r.json())
+    .then(setProducts);
+}, [open, mode, form.categoryId]);
+
 
   /* ================= CATEGORY → PRODUCTS ================= */
 
@@ -176,6 +142,7 @@ useEffect(() => {
 };
 
 
+
   const handleProductChange = (productId: string) => {
     const p = products.find((x) => x.id === productId);
     if (!p) return;
@@ -189,6 +156,27 @@ useEffect(() => {
       discountedPrice: toNumber(p.discountedPrice),
     }));
   };
+
+  /* ================= SYNC PRODUCT (EDIT MODE) ================= */
+useEffect(() => {
+  if (mode !== "edit") return;
+  if (!form.productId) return;
+  if (products.length === 0) return;
+
+  const p = products.find(
+    (x) => String(x.id) === String(form.productId)
+  );
+
+  if (!p) return;
+
+  setForm((f: any) => ({
+    ...f,
+    discountedPrice: toNumber(p.discountedPrice),
+    minOrderQty: toNumber(p.minOrderQty),
+    hsCode: p.hsCode || "",
+  }));
+}, [mode, products, form.productId]);
+
 
   /* ================= TOTAL ================= */
 
@@ -237,18 +225,19 @@ useEffect(() => {
 if (isView) {
   return (
     <Dialog open={open} onOpenChange={onClose} >
-      <DialogContent className="max-w-sm md:max-w-xl max-h-[90vh] overflow-y-auto w-[92vw] sm:w-full mx-auto p-3 sm:p-0">
+      <DialogContent className="max-w-xl p-0">
 
         {/* HEADER */}
-        <div className="px-3 sm:px-5 py-3 border-b flex justify-between items-center">
-          <DialogTitle className="text-sm sm:text-base">
+        <div className="px-5 py-3 border-b flex justify-between items-center">
+          <DialogTitle className="text-base">
             Order Details
           </DialogTitle>
          
         </div>
 
         {/* BODY */}
-<div className="px-3 sm:px-5 py-3 sm:py-4 text-xs sm:text-sm space-y-2 sm:space-y-3">
+       {/* BODY */}
+<div className="px-5 py-4 text-sm space-y-3">
 
   {/* SECTION 1 : ORDER + CUSTOMER */}
   <div className="space-y-1">
@@ -339,8 +328,8 @@ if (isView) {
 
 
         {/* FOOTER */}
-        <div className="px-3 sm:px-5 py-3 border-t flex justify-end">
-          <Button variant="outline" size="sm" onClick={onClose} className="text-xs sm:text-sm h-8 sm:h-9">
+        <div className="px-5 py-3 border-t flex justify-end">
+          <Button variant="outline" size="sm" onClick={onClose}>
             Close
           </Button>
         </div>
@@ -354,20 +343,20 @@ if (isView) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-sm md:max-w-3xl max-h-[90vh] overflow-y-auto w-[92vw] sm:w-full mx-auto p-3 sm:p-6">
+<DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-sm sm:text-base md:text-lg">
+          <DialogTitle>
             {isEdit ? "Edit Order" : "Add Order"}
           </DialogTitle>
         </DialogHeader>
 
         {/* 🔹 FULL FORM RESTORED */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 text-xs sm:text-sm">
+        <div className="grid grid-cols-2 gap-3 text-sm">
           {/* CUSTOMER */}
-          <div className="col-span-1 md:col-span-2">
-            <Label className="text-xs sm:text-sm">Customer</Label>
+          <div className="col-span-2">
+            <Label>Customer</Label>
             <select
-              className="w-full border rounded-md px-2 sm:px-3 py-2 text-xs sm:text-sm"
+              className="w-full border rounded-md px-3 py-2"
               value={form.customerId}
               onChange={(e) => {
                 const c = customers.find(
@@ -398,9 +387,9 @@ if (isView) {
 
           {/* CATEGORY */}
           <div>
-            <Label className="text-xs sm:text-sm">Category</Label>
+            <Label>Category</Label>
             <select
-              className="w-full border px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm"
+              className="w-full border px-3 py-2 rounded-md"
               value={form.categoryId}
               onChange={(e) =>
                 handleCategoryChange(e.target.value)
@@ -417,9 +406,9 @@ if (isView) {
 
           {/* PRODUCT */}
           <div>
-            <Label className="text-xs sm:text-sm">Product</Label>
+            <Label>Product</Label>
             <select
-              className="w-full border px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm"
+              className="w-full border px-3 py-2 rounded-md"
               value={form.productId}
               onChange={(e) =>
                 handleProductChange(e.target.value)
@@ -435,22 +424,22 @@ if (isView) {
           </div>
 
           <div>
-            <Label className="text-xs sm:text-sm">Min Order Qty</Label>
-            <Input disabled value={`${form.minOrderQty} kg`} className="text-xs sm:text-sm h-8 sm:h-9" />
+            <Label>Min Order Qty</Label>
+            <Input disabled value={`${form.minOrderQty} kg`} />
           </div>
 
           <div>
-            <Label className="text-xs sm:text-sm">HS Code</Label>
-            <Input disabled value={form.hsCode} className="text-xs sm:text-sm h-8 sm:h-9" />
+            <Label>HS Code</Label>
+            <Input disabled value={form.hsCode} />
           </div>
 
           <div>
-            <Label className="text-xs sm:text-sm">Discounted Price</Label>
-            <Input disabled value={form.discountedPrice} className="text-xs sm:text-sm h-8 sm:h-9" />
+            <Label>Discounted Price</Label>
+            <Input disabled value={form.discountedPrice} />
           </div>
 
           <div>
-            <Label className="text-xs sm:text-sm">Quantity</Label>
+            <Label>Quantity</Label>
             <Input
               type="number"
               min={form.minOrderQty}
@@ -458,15 +447,14 @@ if (isView) {
               onChange={(e) =>
                 setForm({
                   ...form,
-                  quantity: e.target.value,
+                  quantity: toNumber(e.target.value),
                 })
               }
-              className="text-xs sm:text-sm h-8 sm:h-9"
             />
           </div>
 
           <div>
-            <Label className="text-xs sm:text-sm">Shipping Charges</Label>
+            <Label>Shipping Charges</Label>
             <Input
               type="number"
               value={form.shippingCharges}
@@ -476,14 +464,13 @@ if (isView) {
                   shippingCharges: e.target.value,
                 })
               }
-              className="text-xs sm:text-sm h-8 sm:h-9"
             />
           </div>
 
           <div>
-            <Label className="text-xs sm:text-sm">Tax Applied</Label>
+            <Label>Tax Applied</Label>
             <select
-              className="w-full border rounded-md px-2 sm:px-3 py-2 text-xs sm:text-sm"
+              className="w-full border rounded-md px-3 py-2"
               value={String(form.taxApplied)}
               onChange={(e) =>
                 setForm({
@@ -498,8 +485,8 @@ if (isView) {
           </div>
 
           {form.taxApplied && (
-            <div className="col-span-1 md:col-span-2">
-              <Label className="text-xs sm:text-sm">Tax Amount</Label>
+            <div className="col-span-2">
+              <Label>Tax Amount</Label>
               <Input
                 type="number"
                 value={form.taxAmount}
@@ -509,14 +496,13 @@ if (isView) {
                     taxAmount: e.target.value,
                   })
                 }
-                className="text-xs sm:text-sm h-8 sm:h-9"
               />
             </div>
           )}
 
           {/* LOCATION */}
-          <div className="col-span-1 md:col-span-2">
-            <Label className="text-xs sm:text-sm">Location</Label>
+          <div className="col-span-2">
+            <Label>Location</Label>
             <div className="grid grid-cols-2 gap-2">
               <Input
                 placeholder="Latitude"
@@ -527,7 +513,6 @@ if (isView) {
                     latitude: e.target.value,
                   })
                 }
-                className="text-xs sm:text-sm h-8 sm:h-9"
               />
               <Input
                 placeholder="Longitude"
@@ -538,13 +523,12 @@ if (isView) {
                     longitude: e.target.value,
                   })
                 }
-                className="text-xs sm:text-sm h-8 sm:h-9"
               />
             </div>
           </div>
 
-          <div className="col-span-1 md:col-span-2">
-            <Label className="text-xs sm:text-sm">Delivery Address</Label>
+          <div className="col-span-2">
+            <Label>Delivery Address</Label>
             <Textarea
               value={form.deliveryAddress}
               onChange={(e) =>
@@ -553,20 +537,19 @@ if (isView) {
                   deliveryAddress: e.target.value,
                 })
               }
-              className="text-xs sm:text-sm"
             />
           </div>
 
-          <div className="col-span-1 md:col-span-2 text-right font-semibold text-xs sm:text-sm">
+          <div className="col-span-2 text-right font-semibold">
             Total Amount : ₹{total.toFixed(2)}
           </div>
         </div>
 
-        <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 mt-3 sm:mt-4">
-          <Button variant="outline" onClick={onClose} className="text-xs sm:text-sm h-8 sm:h-9">
+        <div className="flex justify-end gap-3 mt-4">
+          <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit} className="text-xs sm:text-sm h-8 sm:h-9">
+          <Button onClick={handleSubmit}>
             {isEdit ? "Update" : "Submit"}
           </Button>
         </div>
