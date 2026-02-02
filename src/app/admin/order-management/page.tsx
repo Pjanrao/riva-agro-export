@@ -143,6 +143,9 @@ export default function OrdersPage() {
 
     await fetch("/api/ordermanagement", {
       method: "DELETE",
+       headers: {
+    "Content-Type": "application/json",
+  },
       body: JSON.stringify({ id }),
     });
 
@@ -352,7 +355,7 @@ export default function OrdersPage() {
 
                     <td className="py-2 sm:py-4 px-2 sm:px-3 hidden md:table-cell">
                       {order.customerName}
-                    </td>
+                    </td> 
 
                     <td className="py-2 sm:py-4 px-2 sm:px-3 hidden sm:table-cell">
                       {order.productName}

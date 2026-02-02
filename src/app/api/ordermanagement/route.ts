@@ -84,22 +84,45 @@ export async function POST(req: Request) {
 }
 
 /* ================= PUT ================= */
+/* ================= PUT ================= */
 
 export async function PUT(req: Request) {
   try {
     await connectDB();
     const body = await req.json();
 
-    await OrderManagement.findByIdAndUpdate(body.id, body);
+    // ✅ CASE 1: STATUS UPDATE (from table dropdown)
+    if (
+      body.id &&
+      body.status &&
+      Object.keys(body).length === 2
+    ) {
+      await OrderManagement.findByIdAndUpdate(
+        body.id,
+        { status: body.status },
+        { new: true }
+      );
+
+      return NextResponse.json({ success: true });
+    }
+
+    // ✅ CASE 2: FULL ORDER UPDATE (from edit modal)
+    await OrderManagement.findByIdAndUpdate(
+      body.id,
+      body,
+      { new: true }
+    );
 
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (error) {
+    console.error("Order update error:", error);
     return NextResponse.json(
       { error: "Failed to update order" },
       { status: 500 }
     );
   }
 }
+
 
 /* ================= DELETE ================= */
 
