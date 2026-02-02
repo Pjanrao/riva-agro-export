@@ -35,8 +35,9 @@ export default function AdminCustomersPage() {
   /* ================= FETCH ================= */
 
   const fetchCustomers = async () => {
-    const res = await fetch('/api/customers');
-    const data = await res.json();
+const res = await fetch('/api/customers', {
+  cache: 'no-store',
+});    const data = await res.json();
 
     setCustomers(
       data.map((c: any) => ({

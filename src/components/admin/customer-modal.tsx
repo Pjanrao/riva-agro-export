@@ -45,12 +45,12 @@ const schema = z.object({
   email: z.string().email('Enter a valid email'),
   contactNo: z.string().min(10, 'Contact number must be at least 10 digits'),
 
-  country: z.string().min(1, 'Country is required'),
-  state: z.string().min(1, 'State is required'),
-  city: z.string().min(1, 'City is required'),
+  country: z.string().min(1),
+  state: z.string().min(1),
+  city: z.string().min(1),
 
-  pin: z.string().min(1, 'Pincode is required'),
-  address: z.string().min(1, 'Address is required'),
+  pin: z.string().min(1),
+  address: z.string().min(1),
 
   latitude: z.string().optional(),
   longitude: z.string().optional(),
@@ -216,49 +216,64 @@ export function CustomerModal({
       : [];
 
   React.useEffect(() => {
-    if (!open) return;
+  if (!open) return;
 
-    if ((mode === 'edit' || mode === 'view') && customer) {
-      form.reset(customer);
-    }
+  if ((mode === 'edit' || mode === 'view') && customer) {
+    form.reset({
+      ...customer,
+      latitude: customer.latitude ?? '',
+      longitude: customer.longitude ?? '',
+      referenceName: customer.referenceName ?? '',
+      referenceContact: customer.referenceContact ?? '',
+    });
+  }
 
-    if (mode === 'add') {
-      form.reset();
-    }
-  }, [open, mode, customer, form]);
-
+  if (mode === 'add') {
+    form.reset();
+  }
+}, [open, mode, customer, form]);
   const onSubmit = async (values: FormValues) => {
-    if (isView) return;
+  if (isView) return;
 
-    const res = await fetch(
-      mode === 'edit'
-        ? `/api/customers/${customer?.id}`
-        : '/api/customers',
-      {
-        method: mode === 'edit' ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      }
-    );
+  // 🔥 REMOVE EMPTY FIELDS (important for edit)
+  const payload = Object.fromEntries(
+    Object.entries(values).filter(
+      ([_, v]) => v !== '' && v !== undefined
+    )
+  );
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      toast({
-        variant: 'destructive',
-        title: data?.message || 'Save failed',
-      });
-      return;
+  const res = await fetch(
+    mode === 'edit'
+      ? `/api/customers/${customer!.id}`
+      : '/api/customers',
+    {
+      method: mode === 'edit' ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
     }
+  );
 
-    toast({ title: 'Customer saved successfully' });
-    onSaved();
-    onClose();
-  };
+  const data = await res.json();
 
+  if (!res.ok) {
+    toast({
+      variant: 'destructive',
+      title: data?.message || 'Save failed',
+    });
+    return;
+  }
+
+  toast({ title: 'Customer updated successfully' });
+  onSaved();
+  onClose();
+};
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="w-[95vw] max-w-[480px] max-h-[80vh] overflow-y-auto">
+<Dialog
+  open={open}
+  onOpenChange={(isOpen) => {
+    if (!isOpen) onClose();
+  }}
+>      <DialogContent className="w-[95vw] max-w-[480px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {mode === 'view'
