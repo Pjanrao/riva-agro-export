@@ -78,12 +78,12 @@ const socialLinks = [
   }, 
   {
     icon: Linkedin,
-    href: "#",
+    href: "https://www.linkedin.com/in/tejas-undefined-7937453a9?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
     label: "LinkedIn",
   },
   {
     icon: Youtube,
-    href: "#",
+    href: "https://www.youtube.com/@rivaagroexports",
     label: "YouTube",
   },
 ];

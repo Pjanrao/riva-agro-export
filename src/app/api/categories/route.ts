@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createCategory, getCategories } from "@/lib/models/Category";
 import cloudinary from "@/lib/cloudinary";
+export const dynamic = "force-dynamic"; // ✅ ADD THIS
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -18,7 +19,11 @@ export async function GET(req: NextRequest) {
     ? categories.filter((c: any) => c.status === "active")
     : categories;
 
-  return NextResponse.json(result);
+  return NextResponse.json(result,{
+  headers: {
+    "Cache-Control": "no-store, no-cache, must-revalidate",
+  },
+});
 }
 
 /* ================= POST (CREATE CATEGORY) ================= */

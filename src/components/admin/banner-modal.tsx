@@ -184,6 +184,14 @@ export function BannerModal({
               ? 'Edit Banner'
               : 'View Banner'}
           </DialogTitle>
+
+          {/* Banner Image Guideline */}
+<div className="rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-xs sm:text-sm text-primary">
+  <span className="font-medium">Image guideline:</span>{" "}
+  Please upload a banner image with recommended size{" "}
+  <span className="font-semibold">1920 × 1080 px</span> (16:9)
+  for best display across all screens.
+</div>
         </DialogHeader>
 
         {form.image && (
