@@ -182,6 +182,59 @@ export default function AdminOrdersPage() {
 
   /* ================= UI ================= */
 
+  const exportOrdersToCSV = () => {
+  if (filteredOrders.length === 0) {
+    toast({
+      variant: "destructive",
+      title: "No data",
+      description: "No orders available to export",
+    });
+    return;
+  }
+
+  const headers = [
+    "Order ID",
+    "Customer Name",
+    "Status",
+    "Order Date",
+    "Total Amount",
+  ];
+
+  const rows = filteredOrders.map((order) => {
+    const customerName =
+      typeof order.customerId === "object"
+        ? order.customerId.fullName
+        : "";
+
+    return [
+      order.id,
+      customerName,
+      order.status,
+      format(new Date(order.createdAt), "dd-MM-yyyy"),
+      order.total.toFixed(2),
+    ];
+  });
+
+  const csvContent =
+    "data:text/csv;charset=utf-8," +
+    [headers, ...rows]
+      .map((row) => row.join(","))
+      .join("\n");
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+
+  link.setAttribute("href", encodedUri);
+  link.setAttribute(
+    "download",
+    `orders_${format(new Date(), "dd-MM-yyyy")}.csv`
+  );
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
   return (
     <>
       <Card>
@@ -239,10 +292,16 @@ export default function AdminOrdersPage() {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <Button variant="outline" size="sm" className="h-8">
-                <File className="h-3.5 w-3.5 mr-1" />
-                Export
-              </Button>
+             <Button
+  variant="outline"
+  size="sm"
+  className="h-8"
+  onClick={exportOrdersToCSV}
+>
+  <File className="h-3.5 w-3.5 mr-1" />
+  Export
+</Button>
+
             </div>
           </div>
 
